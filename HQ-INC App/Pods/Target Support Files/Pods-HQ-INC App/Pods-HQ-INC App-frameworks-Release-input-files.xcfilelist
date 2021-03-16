@@ -1,0 +1,4 @@
+${PODS_ROOT}/Target Support Files/Pods-HQ-INC App/Pods-HQ-INC App-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Charts/Charts.framework
+${BUILT_PRODUCTS_DIR}/Zip/Zip.framework
+${BUILT_PRODUCTS_DIR}/iOSDFULibrary/iOSDFULibrary.framework
