@@ -11,7 +11,6 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "SubjSetupVC.h"
 #import "AddSensorVC.h"
-#import "SessionAddVC.h"
 #import "SubjDetailsVC.h"
 #import "GlobalSettingVC.h"
 
@@ -34,7 +33,6 @@ CBPeripheral * globalPeripheral;
 NSMutableArray * arrGlobalSensorsAdded;
 
 AddSensorVC * globalAddSensor;
-SessionAddVC * globalSessionAddVC;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 {
@@ -57,6 +55,7 @@ SessionAddVC * globalSessionAddVC;
 -(void)endHudProcess;
 -(void)getPlaceholderText:(UITextField *)txtField  andColor:(UIColor*)color;
 -(void)startHudProcess:(NSString *)text;
+-(void)getPlaceholderText:(UITextField *)txtField  andColor:(UIColor*)color;
 
 
 @end

@@ -7,9 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@import Charts;
-
-
+@import Charts;  
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SubjDetailsVC : UIViewController
@@ -19,15 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
     UIButton *btnRead,*btnSpotCheck,*btnViewSnr;
     UIImageView * imgView;
 }
--(void)SetupDemoFromAddSensorData:(NSMutableArray *)arryData;
 -(void)StartSessionConfirmation:(BOOL)isSessionStartSuccess;
 -(void)SendTemperatureReadingtoDetailVC:(NSMutableArray *)arrSensorData;
 -(void)ShowErrorMessagewithOpcode:(NSString *)strOpcode;
 -(void)ShowErrorMessagewithStopSession:(NSString *)strStopRead;
 -(void)WritePlayerNametoMonitorttoStartSession;
 
-@property (nonatomic, strong) LineChartView* chartView;
+-(void)ReceiveSensorDetails:(NSMutableArray *)arrSensors;
+-(void)LiveSessionReadingStarted:(NSMutableDictionary *)LiveSessionData;
 
+@property (nonatomic, strong) LineChartView* chartView;
 @property(nonatomic, strong) NSMutableDictionary * dataDict;
 @property(nonatomic, strong) NSMutableDictionary * sessionDict;
 @property BOOL isfromSessionList;

@@ -11,7 +11,6 @@
 #import "SubjSetupVC.h"
 #import "PlayerSubjVC.h"
 #import "PlayerSubjCELL.h"
-#import "SessionAddVC.h"
 #import "SessionReadVC.h"
 #import "BLEService.h"
 #import <MessageUI/MessageUI.h>
@@ -30,64 +29,68 @@
     NSMutableArray * arrTempValues;
     NSTimer * blinkTimerl;
     NSInteger blinkCount;
-    NSMutableArray * arrSessionGraphData;
+    NSMutableArray * arrSessionGraphData, * arrSavedSensors;
     UIScrollView *scrlView;
     UITableView * tblDevices;
+    NSMutableDictionary * liveSessionDetail;
 }
 @end
 @implementation SubjDetailsVC
 @synthesize dataDict, sessionDict, isfromSessionList;
 - (void)viewDidLoad
 {
+
     arrSkinsTemp = [[NSMutableArray alloc] init];
     arrCoreTemp = [[NSMutableArray alloc] init];
     yVals1 = [[NSMutableArray alloc] init];
     yVals2 = [[NSMutableArray alloc] init];
     arrTempValues = [[NSMutableArray alloc] init];
+    liveSessionDetail = [[NSMutableDictionary alloc] init];
     
     [self setNeedsStatusBarAppearanceUpdate];
     self.navigationController.navigationBarHidden = true;
-    self.view.backgroundColor = UIColor.clearColor;
+    self.view.backgroundColor = UIColor.blackColor;
     
-    int yy = 64;
-    if (IS_IPHONE_X)
-    {
-        yy = 84;
-    }
-    long scrlHeight = 750;
-    if(IS_IPHONE_5 )
-    {
-        scrlHeight = 1150;
-    }
-    else if (IS_IPHONE_6)
-    {
-        scrlHeight = 860;
-    }
-    else if(IS_IPHONE_4)
-    {
-        scrlHeight = 1250;
-    }
+    int yy = 50;
     
+ 
     UIColor * lbltxtClr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, DEVICE_WIDTH, 50)];
+    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 50)];
     [self setLabelProperties:lblSubjectDetails withText:@"SUBJECT DETAILS" backColor:UIColor.clearColor textColor:lbltxtClr textSize:25];
     lblSubjectDetails.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:lblSubjectDetails];
    
     UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    UIButton * btnSubSetup = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 200, 50)];
+    
+    scrlView =[[UIScrollView alloc] initWithFrame:CGRectMake(0, yy, self.view.frame.size.width, self.view.frame.size.height-yy)];
+    scrlView.backgroundColor = [UIColor clearColor];
+    scrlView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height+150);
+    scrlView.bounces = YES;
+    scrlView.delegate = self;
+    [self.view addSubview:scrlView];
+
+    UIButton * btnSubSetup = [[UIButton alloc]initWithFrame:CGRectMake(100, self.view.frame.size.height-60, 200, 50)];
     [self setButtonProperties:btnSubSetup withTitle:@"Subject setup" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:25];
-//    [btnSubSetup addTarget:self action:@selector(btnSubSetupClick) forControlEvents:UIControlEventTouchUpInside];
+    [btnSubSetup addTarget:self action:@selector(btnSubSetupClick) forControlEvents:UIControlEventTouchUpInside];
     btnSubSetup.layer.cornerRadius = 5;
     [self.view addSubview:btnSubSetup];
 
-    UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+    UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width-250, self.view.frame.size.height-60, 150, 50)];
     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:25];
     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
     btnDone.layer.cornerRadius = 5;
     [self.view addSubview:btnDone];
-
     // for cheking
+    
+    tblDevices = [[UITableView alloc]initWithFrame:CGRectMake(40, self.view.frame.size.height-80, self.view.frame.size.width-80, 150)];
+    tblDevices.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
+    tblDevices.delegate = self;
+    tblDevices.dataSource = self;
+    tblDevices.clipsToBounds = true;
+    tblDevices.layer.cornerRadius = 5;
+    tblDevices.backgroundColor = UIColor.clearColor;
+    [scrlView addSubview:tblDevices];
+    
     arrSubjects = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Subject_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrSubjects];
@@ -139,7 +142,15 @@
 
 
     }
+
     // Do any additional setup after loading the view.
+}
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+  return UIInterfaceOrientationLandscapeLeft; // or Right of course
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+  return UIInterfaceOrientationMaskLandscape;
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -155,8 +166,8 @@
 -(void)SetupForProfileview
 {
     UIView * ProfileView = [[UIView alloc]init];
-    ProfileView.frame = CGRectMake(40, 70, DEVICE_WIDTH-80, DEVICE_HEIGHT/3-115);
-    ProfileView.backgroundColor = UIColor.clearColor;
+    ProfileView.frame = CGRectMake(40, 50, self.view.frame.size.width-80, self.view.frame.size.height/3-115);
+    ProfileView.backgroundColor = UIColor.blackColor;
     [scrlView addSubview:ProfileView];
 
     imgView = [[UIImageView alloc]init];
@@ -181,7 +192,7 @@
     lblNumber.layer.cornerRadius = 0;
     [ProfileView addSubview:lblNumber];
     
-    UILabel* lblLatestReading = [[UILabel alloc]initWithFrame:CGRectMake(imgView.frame.size.width+25, 0, DEVICE_WIDTH, 50)];
+    UILabel* lblLatestReading = [[UILabel alloc]initWithFrame:CGRectMake(imgView.frame.size.width+25, 0, self.view.frame.size.width, 50)];
     [self setLabelProperties:lblLatestReading withText:@"Latest Readings" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblLatestReading.font = [UIFont boldSystemFontOfSize:25];
     [ProfileView addSubview:lblLatestReading];
@@ -199,11 +210,13 @@
       lblSkinTmp.textAlignment = NSTextAlignmentCenter;
       [ProfileView addSubview:lblSkinTmp];
 
+    
     UILabel* lblMoreSubjDetails = [[UILabel alloc]initWithFrame:CGRectMake(zz, 110, ProfileView.frame.size.width-zz, ProfileView.frame.size.height-170)];
     [self setLabelProperties:lblMoreSubjDetails withText:@" More Subject Details" backColor:LblBGcolor textColor:UIColor.blackColor textSize:25];
     lblMoreSubjDetails.textAlignment = NSTextAlignmentCenter;
     [ProfileView addSubview:lblMoreSubjDetails];
      
+    
     UIImageView* imgBattery = [[UIImageView alloc]init]; // zz = imageView height
     imgBattery.frame = CGRectMake(zz, ProfileView.frame.size.height-35, 40, 20);
     imgBattery.image = [UIImage imageNamed:@"battery-1.png"];
@@ -251,11 +264,11 @@
 -(void)setupSecondView
 {
     UIView * tblBgView = [[UIView alloc]init];
-    tblBgView.frame = CGRectMake(40, (DEVICE_HEIGHT/3)-20, DEVICE_WIDTH-80, DEVICE_HEIGHT/3-50);
-    tblBgView.backgroundColor = UIColor.clearColor;
+    tblBgView.frame = CGRectMake(40, (self.view.frame.size.height/3)-20, self.view.frame.size.width-80, self.view.frame.size.height/3-50);
+    tblBgView.backgroundColor = UIColor.blackColor;
     [scrlView addSubview:tblBgView];
     
-    UILabel* lblPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, DEVICE_WIDTH, 50)];
+    UILabel* lblPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 50)];
     [self setLabelProperties:lblPreviousCoreTmp withText:@"Previous Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblPreviousCoreTmp.font = [UIFont boldSystemFontOfSize:25];
     [tblBgView addSubview:lblPreviousCoreTmp];
@@ -269,7 +282,7 @@
     tblPreviousCoreTmp.backgroundColor = UIColor.blackColor;
     [tblBgView addSubview:tblPreviousCoreTmp];
 
-    UILabel* lblPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(tblBgView.frame.size.width/2+20, 0, DEVICE_WIDTH, 50)];
+    UILabel* lblPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(tblBgView.frame.size.width/2+20, 0, self.view.frame.size.width, 50)];
     [self setLabelProperties:lblPreviousSkinTmp withText:@"Previous Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblPreviousSkinTmp.font = [UIFont boldSystemFontOfSize:25];
     [tblBgView addSubview:lblPreviousSkinTmp];
@@ -289,7 +302,7 @@
 -(void)SetupGraphView
 {
     UIView * graphBgView = [[UIView alloc]init];
-    graphBgView.frame = CGRectMake(40, (DEVICE_HEIGHT/3)*2-60, DEVICE_WIDTH-80, DEVICE_HEIGHT/3);
+    graphBgView.frame = CGRectMake(40, (self.view.frame.size.height/3)*2-70, self.view.frame.size.width-80, self.view.frame.size.height/3);
     graphBgView.backgroundColor = UIColor.clearColor;
     [scrlView addSubview:graphBgView];
        
@@ -344,7 +357,6 @@
     
     [_chartView animateWithXAxisDuration:1.8 yAxisDuration:0.5];
      
-    
     ChartYAxis *rightAxis = _chartView.rightAxis;
     rightAxis.labelTextColor = UIColor.clearColor;
     rightAxis.axisLineColor = UIColor.clearColor;
@@ -353,15 +365,26 @@
     rightAxis.drawGridLinesEnabled = NO;
     rightAxis.granularityEnabled = NO;
 
-    
-    tblDevices = [[UITableView alloc]initWithFrame:CGRectMake(0, 50, graphBgView.frame.size.height+10, scrlView.frame.size.height-150)];
-    tblDevices.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    tblDevices.delegate = self;
-    tblDevices.dataSource = self;
-    tblDevices.clipsToBounds = true;
-    tblDevices.layer.cornerRadius = 5;
-    tblDevices.backgroundColor = UIColor.redColor;
-    [scrlView addSubview:tblDevices];
+    // css commented
+//    UILabel* lblGraphPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, _chartView.frame.size.height+40, 200, 40)];
+//       [self setLabelProperties:lblGraphPreviousSkinTmp withText:@"Previous Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
+//       [graphBgView addSubview:lblGraphPreviousSkinTmp];
+//
+//       UILabel* lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(210, _chartView.frame.size.height+40, 60, 40)];
+//       [self setLabelProperties:lblSkinTmp withText:@" ---" backColor:UIColor.clearColor textColor:UIColor.greenColor textSize:20];
+//       [graphBgView addSubview:lblSkinTmp];
+//
+//       UILabel* lblGraphPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(0, _chartView.frame.size.height+40, graphBgView.frame.size.width-80, 40)];
+//       [self setLabelProperties:lblGraphPreviousCoreTmp withText:@"Previous Core Temp" backColor:UIColor.clearColor textColor:UIColor.blueColor textSize:20];
+//       lblGraphPreviousCoreTmp.textAlignment = NSTextAlignmentRight;
+//       [graphBgView addSubview:lblGraphPreviousCoreTmp];
+//
+//       UILabel* lblCoreTmp1 = [[UILabel alloc]initWithFrame:CGRectMake(lblGraphPreviousCoreTmp.frame.size.width, _chartView.frame.size.height+40, 60, 40)];
+//       [self setLabelProperties:lblCoreTmp1 withText:@"---" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
+//       lblCoreTmp1.textAlignment = NSTextAlignmentRight;
+//       [graphBgView addSubview:lblCoreTmp1];
+//
+
 }
 #pragma mark- Table View Method
  -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -386,6 +409,14 @@
         lblTemp.textAlignment = NSTextAlignmentRight;
         [viewHeader addSubview:lblTemp];
         
+    if (tableView == tblDevices)
+    {
+        lblDateTime.text = @"Device name/type";
+        lblTemp.frame = CGRectMake(tblDevices.frame.size.width-100, 0, 100, 35);
+        lblTemp.textAlignment = NSTextAlignmentLeft;
+
+    }
+    
         return viewHeader;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -405,6 +436,10 @@
     else if (tableView == tblPreviousSkinTmp)
     {
         return [arrSkinsTemp count];
+    }
+    else if (tableView == tblDevices)
+    {
+        return 50;
     }
     return true;//arrRecords.count; //array  have to pass here
 }
@@ -598,6 +633,7 @@
         set2.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
         set2.drawCircleHoleEnabled = NO;
         
+        
         NSMutableArray *dataSets = [[NSMutableArray alloc] init];
         [dataSets addObject:set1];
         [dataSets addObject:set2];
@@ -609,6 +645,7 @@
         _chartView.data = data;
     }
 }
+
 #pragma mark-BLE  Methoda
 -(void)SetTempIntervalwithPlayerID
 {
@@ -690,14 +727,15 @@
                 strTemp = [NSString stringWithFormat:@"%@%@",strdotBefore,[strTemp substringWithRange:NSMakeRange(2, [strTemp length] - 2)]];
             }
             NSString * strDataType = @"Skin"; //if Sensor type dermal then its Core, if its Ingestible then its Skin
-            if ([[arrGlobalDevices valueForKey:@"sensor_id"] containsObject:strSensorID])
+            if ([[arrSavedSensors valueForKey:@"sensor_id"] containsObject:strSensorID])
             {
-                NSInteger foundIndex = [[arrGlobalDevices valueForKey:@"sensor_id"] indexOfObject:strSensorID];
+                //3 - Ingestible (Core),  4 - Dermal (Skin)
+                NSInteger foundIndex = [[arrSavedSensors valueForKey:@"sensor_id"] indexOfObject:strSensorID];
                 if (foundIndex != NSNotFound)
                 {
-                    if ([arrGlobalDevices count] > foundIndex)
+                    if ([arrSavedSensors count] > foundIndex)
                     {
-                        if ([[[arrGlobalDevices objectAtIndex:foundIndex] valueForKey:@"sensor_type"] isEqualToString:@"Ingestible"])
+                        if ([[[arrSavedSensors objectAtIndex:foundIndex] valueForKey:@"sensor_type"] isEqualToString:@"3"])
                         {
                             strDataType = @"Core";
                         }
@@ -983,12 +1021,13 @@
     {}
         else
         {
-            double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
-            NSTimeInterval unixTimeStamp = timeStamp ;
-            NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-            NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.dateFormat = @"ddMMyyyhh:mm a";
-            NSString  *finalate = [dateFormatter stringFromDate:exactDate];
+                    
+                    double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
+                    NSTimeInterval unixTimeStamp = timeStamp ;
+                    NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
+                    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"ddMMyyyhh:mm a";
+                    NSString  *finalate = [dateFormatter stringFromDate:exactDate];
             NSString * strFileName = [NSString stringWithFormat:@"%@_%@.csv",[sessionDict valueForKey:@"player_name"], finalate];
             NSData *noteData = [NSData dataWithContentsOfFile:root];
             [mc addAttachmentData:noteData mimeType:@"csv" fileName:strFileName];
@@ -1017,6 +1056,49 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
+-(void)ReceiveSensorDetails:(NSMutableArray *)arrSensors;
+{
+    arrSavedSensors = [[NSMutableArray alloc] init];
+    arrSavedSensors = arrSensors;
+}
+-(void)LiveSessionReadingStarted:(NSMutableDictionary *)LiveSessionData;
+{
+    liveSessionDetail = LiveSessionData;
+    isSessionStarted = YES;
+    [self setButtonProperties:btnRead withTitle:@"Stop\nSession" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    float yOffset = scrollView.contentOffset.y;
+    
+//    NSLog(@"Offset======%f",yOffset);
+//    NSLog(@"Scrollview height======%f",scrollView.frame.size.height);
+    
+    if (scrollView == scrlView)
+    {
+         if (yOffset >= 250)
+         {
+//             scrlView.scrollEnabled = false;
+             tblDevices.scrollEnabled = false;// true
+         }
+     }
+
+     if (scrollView == tblDevices)
+    {
+         if (yOffset <= 0)
+         {
+             scrlView.scrollEnabled = true;
+//             tblDevices.scrollEnabled = false;
+         }
+     }
+}
 @end
 //    "player_id" = 1613640340;
 
+/*
+ SELECT *
+ FROM MyTable
+ WHERE record_date < ?
+ ORDER BY record_date DESC
+ LIMIT 100
+ */

@@ -16,6 +16,13 @@
  *  @discussion Delegate for SGFService.
  *
  */
+@protocol BLEConnectionDelegate <NSObject>
+@required
+-(void)MonitorConnnectedIsSessionActive:(BOOL)isSessionActive;
+-(void)RecieveLiveSessionInformation:(NSMutableDictionary *)dictDetail;
+-(void)RecieveLiveSessionPlayerName:(NSString *)strPlayerName;
+-(void)RecieveLiveSensorInformationofSession:(NSMutableArray *)arrSensors;
+@end
 @protocol BLEServiceDelegate <NSObject>
 
 @optional
@@ -49,7 +56,7 @@
 -(void)ReceiveListofSessionsID:(NSDictionary *)dictData;
 -(void)RecieveSessionInformation:(NSMutableDictionary *)dictDetail;
 -(void)RecievePlayerNameofSession:(NSString *)strPlayerName;
--(void)RecieveSensofrInformationofSession:(NSMutableArray *)arrSensors;
+-(void)RecieveSensorInformationofSession:(NSMutableArray *)arrSensors;
 -(void)RecieveSessionDataString:(NSString *)strData withPacketLength:(int)packetLength;
 -(void)RecieveSessionEndPacket;
 
@@ -64,6 +71,7 @@
  *
  */
 @property (nonatomic, weak) id<BLEServiceDelegate>delegate;
+@property (nonatomic, weak) id<BLEConnectionDelegate>bleConnectdelegate;
 
 -(id)init;
 

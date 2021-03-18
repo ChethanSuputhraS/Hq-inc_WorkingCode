@@ -28,7 +28,7 @@ static BLEService    *sharedInstance    = nil;
 @end
 
 @implementation BLEService
-@synthesize servicePeripheral;
+@synthesize servicePeripheral, bleConnectdelegate;
 
 #pragma mark- Self Class Methods
 -(id)init
@@ -103,8 +103,13 @@ static BLEService    *sharedInstance    = nil;
                     if ([[valueStr substringWithRange:NSMakeRange(0, 6)] isEqualToString:@"020101"])
                     {
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"AuthenticationCompleted" object:nil];
-                        //[self SetUTCTimetoDevice:peripheral];
-//                        [self AddDeviceInformation:peripheral];
+                        
+//                        //To Check whether device is running live session or not...
+//                        NSInteger interval = [@"0" integerValue];
+//                        NSData * dataInterval = [[NSData alloc] initWithBytes:&interval length:2];
+//
+//                        NSMutableData * packetData = [[NSMutableData alloc] initWithData:dataInterval];
+//                        [[BLEService sharedInstance] WriteValuestoDevice:packetData withOcpde:@"32" withLength:@"0" with:peripheral];
                     }
                 }
                 if ([valueStr length]>=36)
@@ -113,31 +118,12 @@ static BLEService    *sharedInstance    = nil;
                         NSString * strKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"EncryptionKey"];
                         NSString * strKeyUnsigned = [self getStringConvertedinUnsigned:strKey];
                         NSString * strPacket = [self getStringConvertedinUnsigned:[valueStr substringWithRange:NSMakeRange(4, 32)]];
-                        NSString * strPactLength = [self getStringConvertedinUnsigned:[valueStr substringWithRange:NSMakeRange(2, 2)]]; // css add this for 0e finding length
 
                         NSString * strDecrypted = [APP_DELEGATE GetDecrypedDataKeyforData:strPacket withKey:strKeyUnsigned withLength:strKey.length / 2];
                         NSString * strOpcode = [valueStr substringWithRange:NSMakeRange(0, 2)];
                         NSLog(@"Opcode= %@       Length= %@        Decrypted Data=%@",strOpcode,[valueStr substringWithRange:NSMakeRange(2, 2)],strDecrypted);
 
-                        if ([strOpcode isEqualToString:@"15"]) //For Scanned Sensors
-                        {
-                            if ([strDecrypted length] > 6)
-                            {
-
-                                NSString * strSensorId = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(0, 4)]];
-                                NSString * strSensorType = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(4, 2)]];//3-Ingestible, 4-Dermal
-                                NSString * strFinalType = @"Ingestible";
-                                
-                                NSLog(@"For Ocpde 15 ====>%@",strSensorType);
-
-                                if ([strSensorType isEqualToString:@"4"])
-                                {
-                                    strFinalType = @"Dermal";
-                                }
-                                [globalAddSensor AddSensortoList:strSensorId withType:strFinalType];
-                            }
-                        }
-                        else if ([strOpcode isEqualToString:@"08"]) //For Added Sensor Response
+                        if ([strOpcode isEqualToString:@"08"]) //For Added Sensor Response
                         {
                             if (([strDecrypted length] > 8))
                             {
@@ -168,20 +154,6 @@ static BLEService    *sharedInstance    = nil;
                             {
                             }
                         }
-                        else if ([strOpcode isEqualToString:@"12"]) //For Start Session Confirmation
-                        {
-                            if (([strDecrypted length] > 4))
-                            {
-                                if ([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"00"]) //Failed
-                                {
-                                    [globalSubjectDetailVC StartSessionConfirmation:NO];
-                                }
-                                else if([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"01"])
-                                {
-                                    [globalSubjectDetailVC StartSessionConfirmation:YES];
-                                }
-                            }
-                        }
                         else if ([strOpcode isEqualToString:@"0b"]) //Confirmation of Read Interval
                         {
                             if (([strDecrypted length] > 4))
@@ -193,7 +165,7 @@ static BLEService    *sharedInstance    = nil;
                                 else if([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"01"])
                                 {
                                     [globalSubjectDetailVC WritePlayerNametoMonitorttoStartSession];
-//                                    NSLog(@"Start Read Temperature++++>>>1200%@",dataMsg);
+                        //                                    NSLog(@"Start Read Temperature++++>>>1200%@",dataMsg);
                                 }
                             }
                         }
@@ -208,7 +180,6 @@ static BLEService    *sharedInstance    = nil;
                                 else if([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"01"])
                                 {
                                     [globalSubjectDetailVC StartSessionConfirmation:YES];
-
                                 }
                             }
                         }
@@ -226,13 +197,6 @@ static BLEService    *sharedInstance    = nil;
                                 }
                             }
                         }
-                        else if ([strOpcode isEqualToString:@"13"]) //For Stop Session Confirmation
-                        {
-                            if (([strDecrypted length] > 4))
-                            {
-                                
-                            }
-                        }
                         else if ([strOpcode isEqualToString:@"0e"]) //Live readings of Device
                         {
                             NSMutableArray * arrSensorData = [[NSMutableArray alloc] init];
@@ -246,7 +210,7 @@ static BLEService    *sharedInstance    = nil;
                                     int divValue =  [strSensorTemp doubleValue];
                                     double fPointData = divValue / 100.0;
                                     NSString *StrFloating = [NSString stringWithFormat:@"%.2f", fPointData];
-                                    
+                                                            
                                     NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorId,@"sensor_id",StrFloating,@"temp", nil];
                                     [arrSensorData addObject:dict];
                                 }
@@ -265,16 +229,132 @@ static BLEService    *sharedInstance    = nil;
                                 NSString * strSessionID = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(6, 2)]];
                                 NSString * strPlayerID = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(8, 8)]];
                                 NSString * strTimestamp = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(16, 8)]];
-//       601A3BC4
-//0001 02 01601a3bc4601a60fbffffff00
                                 NSDictionary * dictData = [NSDictionary dictionaryWithObjectsAndKeys:strSquenceNo,@"sequenceNo",strPacketNo,@"packetno",strSessionID, @"session_id",strPlayerID,@"player_id",strTimestamp,@"timestamp", nil];
-//                                [globalSettingClassVC ReceiveListofSessionsID:dictData];
+                        //                                [globalSettingClassVC ReceiveListofSessionsID:dictData];
                                 NSInteger intMsg = [strSquenceNo integerValue];
                                 NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:2];
-                                [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"15" withLength:@"2" with:globalPeripheral];
-
+                                [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"15" withLength:@"2" with:peripheral];
                                 [self->_delegate ReceiveListofSessionsID:dictData];
+                            }
+                        }
+                        else if ([strOpcode isEqualToString:@"15"]) //For Scanned Sensors
+                        {
+                            if ([strDecrypted length] > 6)
+                            {
+
+                                NSString * strSensorId = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(0, 4)]];
+                                NSString * strSensorType = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(4, 2)]];//3-Ingestible, 4-Dermal
+                                NSString * strFinalType = @"Ingestible";
                                 
+                                NSLog(@"For Ocpde 15 ====>%@",strSensorType);
+
+                                if ([strSensorType isEqualToString:@"4"])
+                                {
+                                    strFinalType = @"Dermal";
+                                }
+                                [globalAddSensor AddSensortoList:strSensorId withType:strFinalType];
+                            }
+                        }
+                        else if ([strOpcode isEqualToString:@"12"]) //For Start Session Confirmation
+                        {
+                            if (([strDecrypted length] > 4))
+                            {
+                                if ([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"00"]) //Failed
+                                {
+                                    [globalSubjectDetailVC StartSessionConfirmation:NO];
+                                }
+                                else if([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"01"])
+                                {
+                                    [globalSubjectDetailVC StartSessionConfirmation:YES];
+                                }
+                            }
+                        }
+                        else if ([strOpcode isEqualToString:@"13"]) //For Stop Session Confirmation
+                        {
+                            if (([strDecrypted length] > 4))
+                            {
+                                
+                            }
+                        }
+                        else if ([strOpcode isEqualToString:@"20"]) //To Check Live Session is Going on or not...
+                        {
+                            if (([strDecrypted length] > 2))
+                            {
+                                if ([[strDecrypted substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"01"])
+                                {
+                                    NSInteger interval = [@"250" integerValue];
+                                    NSData * dataInterval = [[NSData alloc] initWithBytes:&interval length:2];
+
+                                    NSMutableData * packetData = [[NSMutableData alloc] initWithData:dataInterval];
+                                    [[BLEService sharedInstance] WriteValuestoDevice:packetData withOcpde:@"33" withLength:@"1" with:peripheral];
+
+                                    [self->bleConnectdelegate MonitorConnnectedIsSessionActive:YES];
+                                }
+                                else
+                                {
+                                    [self->bleConnectdelegate MonitorConnnectedIsSessionActive:NO];
+                                }
+                            }
+                        }
+                        else if ([strOpcode isEqualToString:@"21"]) //IF Live session going on then get number of sensors for it...
+                        {
+                            NSString * strPacket = [[strDecrypted substringWithRange:NSMakeRange(0, 2)] lowercaseString];
+                            if ([strPacket isEqualToString:@"ff"]) //Session Start
+                            {
+                                if ([strDecrypted length] >= 26)
+                                {
+                                    NSString * strSessionID = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(2, 2)]] ;
+                                    NSString * strPlayerID = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(4, 8)]];
+                                    NSString * strTimestamp = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(12, 8)]];
+                                    NSString * strReadInterval = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(20, 4)]];
+                                    NSString * strNoSensors = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(24, 2)]];
+
+                                    NSMutableDictionary * dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:strSessionID,@"session_id",strPlayerID,@"player_id",strTimestamp,@"timeStamp",strReadInterval,@"read_interval",strNoSensors,@"no_of_sensor", nil];
+                                    [self->bleConnectdelegate RecieveLiveSessionInformation:dict];
+                                    
+                                    NSInteger intMsg = [@"255" integerValue];
+                                    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
+                                    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"33" withLength:@"1" with:peripheral];
+                                }
+                            }
+                            else if ([strPacket isEqualToString:@"fe"]) //Player Name
+                            {
+                               int packetLength = [[self stringFroHex:[valueStr substringWithRange:NSMakeRange(2, 2)]] intValue] - 1;// -1 for fe
+                                if ([strDecrypted length] > packetLength)
+                                {
+                                    NSString * strHexaData = [strDecrypted substringWithRange:NSMakeRange(2, (packetLength * 2) - 2)];
+                                    NSMutableString * strPlayerName = [[NSMutableString alloc] init];
+                                    int i = 0;
+                                    while (i < [strHexaData length])
+                                    {
+                                        NSString * hexChar = [strHexaData substringWithRange: NSMakeRange(i, 2)];
+                                        int value = 0;
+                                        sscanf([hexChar cStringUsingEncoding:NSASCIIStringEncoding], "%x", &value);
+                                        [strPlayerName appendFormat:@"%c", (char)value];
+                                        i+=2;
+                                    }
+                                    [self->bleConnectdelegate RecieveLiveSessionPlayerName:[NSString stringWithFormat:@"%@",strPlayerName]];
+
+                                    NSInteger intMsg = [@"254" integerValue];
+                                    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
+                                    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"33" withLength:@"1" with:peripheral];
+                                }
+                            }
+                            else if ([strPacket isEqualToString:@"fd"]) //Sensor Information
+                            {
+                                NSMutableArray * arrSensorInfo = [[NSMutableArray alloc] init];
+                                int packetLength = [[self stringFroHex:[valueStr substringWithRange:NSMakeRange(2, 2)]] intValue] - 1;// -1 for fd
+                                if (packetLength > 0 )
+                                {
+                                    for (int i=0; i < packetLength/3; i++)
+                                    {
+                                        NSString * strSensorId = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(2 + (i*6), 4)]];
+                                        NSString * strSensorType = [strDecrypted substringWithRange:NSMakeRange(2 + (i*6) + 4, 2)];
+                                        NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorId,@"sensor_id",strSensorType,@"sensor_type", nil];
+                                        [arrSensorInfo addObject:dict];
+                                    }
+                                    [self->bleConnectdelegate RecieveLiveSensorInformationofSession:arrSensorInfo];
+                                }
                             }
                         }
                         else if ([strOpcode isEqualToString:@"10"]) //Session Data
@@ -297,7 +377,7 @@ static BLEService    *sharedInstance    = nil;
                                         
                                         NSInteger intMsg = [@"255" integerValue];
                                         NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-                                        [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:globalPeripheral];
+                                        [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:peripheral];
                                     }
                                 }
                                 else if ([strPacket isEqualToString:@"fe"]) //Player Name
@@ -320,7 +400,7 @@ static BLEService    *sharedInstance    = nil;
 
                                         NSInteger intMsg = [@"254" integerValue];
                                         NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-                                        [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:globalPeripheral];
+                                        [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:peripheral];
                                     }
                                 }
                                 else if ([strPacket isEqualToString:@"fd"]) //Sensor Information
@@ -332,17 +412,15 @@ static BLEService    *sharedInstance    = nil;
                                         for (int i=0; i < packetLength/3; i++)
                                         {
                                             NSString * strSensorId = [strDecrypted substringWithRange:NSMakeRange(2 + (i*6), 4)];
-                                            NSString * strSensorType = [strDecrypted substringWithRange:NSMakeRange(2 + (i*6) + 2, 2)];
+                                            NSString * strSensorType = [strDecrypted substringWithRange:NSMakeRange(2 + (i*6) + 4, 2)];
                                             NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorId,@"sensor_id",strSensorType,@"sensor_type", nil];
                                             [arrSensorInfo addObject:dict];
                                         }
-                                        [self->_delegate RecieveSensofrInformationofSession:arrSensorInfo];
-                                        
-
+                                        [self->_delegate RecieveSensorInformationofSession:arrSensorInfo];
                                     }
                                     NSInteger intMsg = [@"253" integerValue];
                                     NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-                                    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:globalPeripheral];
+                                    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:peripheral];
 
                                 }
                                 else if ([strPacket isEqualToString:@"fc"]) //Session Data

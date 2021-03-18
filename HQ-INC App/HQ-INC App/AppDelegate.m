@@ -17,7 +17,6 @@
 #import "Header.h"
 #import "AddMonitorVC.h"
 #import "BleTestClass.h"
-#import "StoredSubjectDetailVC.h"
 //#import <<#header#>>
 
 @interface AppDelegate ()
@@ -44,9 +43,7 @@
     
     arrGlobalSensorsAdded = [[NSMutableArray alloc] init];
     
-    StoredSubjectDetailVC * view1 = [[StoredSubjectDetailVC alloc]init];
-
-//    PlayerSubjVC * view1 = [[PlayerSubjVC alloc]init];
+    PlayerSubjVC * view1 = [[PlayerSubjVC alloc]init];
     UINavigationController *navig = [[UINavigationController alloc]initWithRootViewController:view1];
     self.window = [[UIWindow alloc]init];
     self.window.frame = self.window.bounds;
@@ -312,5 +309,10 @@
     }
     return data;
 }
-
+-(void)getPlaceholderText:(UITextField *)txtField  andColor:(UIColor*)color
+{
+    Ivar ivar =  class_getInstanceVariable([UITextField class], "_placeholderLabel");
+          UILabel *placeholderLabel = object_getIvar(txtField, ivar);
+          placeholderLabel.textColor = color;
+}
 @end

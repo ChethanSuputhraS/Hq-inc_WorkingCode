@@ -527,7 +527,6 @@ NSInteger selectedIndex;
            NSString * strDermlHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",highDermalC]];
            NSString * strDermlLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",lowDermalC]];
            NSString * strUserId = [NSString stringWithFormat:@"%.0f",[[NSDate date] timeIntervalSince1970]];
-            strUserId  = @"1613640340";
            NSString * requestStr1 = @"NA";
            if (isFromEdit == YES)
            {
@@ -554,6 +553,14 @@ NSInteger selectedIndex;
     if (isValidEntrys == NO)
     {
         [self AlertViewFCTypeCautionCheck];
+    }
+    
+    if (globalSubjectDetailVC)
+    {
+        if ([tmpArrySensor count] > 0)
+        {
+            [globalSubjectDetailVC ReceiveSensorDetails:tmpArrySensor];
+        }
     }
 }
 -(BOOL)isNumberUnique:(NSString *)strCurrentNumber
@@ -1557,6 +1564,7 @@ NSInteger selectedIndex;
 }
 -(void)SetupDemoFromAddSensorData:(NSMutableArray *)arryData
 {
+    NSLog(@"Subject Setup Sensor Data==%@",arryData);
     tmpArrySensor = arryData;
     NSMutableArray * arryTmp = [[NSMutableArray alloc] init];
     arryTmp = [arryData valueForKey:@"sensor_id"];

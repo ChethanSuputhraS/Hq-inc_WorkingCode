@@ -335,7 +335,7 @@
             arrGlobalSensorsAdded = [tmpArry mutableCopy];
             [globalSbuSetupVC SetupDemoFromAddSensorData:tmpArry]; // Added Sensors passing to Previous View
         }
-        [self StopSensorsScanning];
+//        [self StopSensorsScanning];
         [self AddSensorsComplete];
         [self.navigationController popViewControllerAnimated:true];
     }
@@ -358,7 +358,7 @@
         }
         else
         {
-            [self StopSensorsScanning];
+//            [self StopSensorsScanning];
             [self.navigationController popViewControllerAnimated:true];
         }
     }

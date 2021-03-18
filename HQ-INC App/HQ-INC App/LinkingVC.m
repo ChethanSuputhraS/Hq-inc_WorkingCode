@@ -258,6 +258,8 @@
         }
         else
         {
+            [[BLEService sharedInstance] setBleConnectdelegate:self];
+
             [connectionTimer invalidate];
             connectionTimer = nil;
             connectionTimer = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(ConnectionTimeOutMethod) userInfo:nil repeats:NO];
@@ -366,44 +368,6 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 }
 -(void)AuthenticationCompleted:(NSNotification *)notify
 {
-    globalPeripheral = classPeripheral;
-    NSMutableArray * tmpArr = [[BLEManager sharedManager] foundDevices];
-    if ([[tmpArr valueForKey:@"peripheral"] containsObject:globalPeripheral])
-    {
-        NSInteger  foudIndex = [[tmpArr valueForKey:@"peripheral"] indexOfObject:globalPeripheral];
-        if (foudIndex != NSNotFound)
-        {
-            if ([tmpArr count] > foudIndex)
-            {
-                NSString * strCurrentIdentifier = [NSString stringWithFormat:@"%@",globalPeripheral.identifier];
-                NSString * strName = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"name"];
-                NSString * strAddress = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"bleAddress"];
-
-                if (![[arrGlobalDevices valueForKey:@"identifier"] containsObject:strCurrentIdentifier])
-                {
-                    NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:strCurrentIdentifier,@"identifier",globalPeripheral,@"peripheral",strName,@"name",strAddress,@"bleAddress", nil];
-                    [arrGlobalDevices addObject:dict];
-                    NSLog(@"AuthenticationCompleted with Global Devices=%@",arrGlobalDevices);
-                }
-            }
-        }
-    }
-    dispatch_async(dispatch_get_main_queue(), ^(void)
-    {
-        FCAlertView *alert = [[FCAlertView alloc] init];
-        [alert makeAlertTypeSuccess];
-        alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
-        [alert showAlertWithTitle:@"HQ-INC" withSubtitle:@"Monitor connected successfully.." withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
-        [alert doneActionBlock:^{
-            [globalSbuSetupVC ConnectedMonitorDetail:self->dictConnectedPeripheral];
-            [[BLEManager sharedManager] stopScan];
-
-            [APP_DELEGATE startHudProcess:@"Fetching Sessions..."];
-                [[BLEService sharedInstance] setDelegate:self];
-            //    [self generateDummyData];
-                [self WriteCommandtoGetStoredSessions];
-        }];
-    });
 }
 -(void)GlobalBLuetoothCheck
 {
@@ -634,11 +598,14 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 {
     [dictSessionData setValue:strPlayerName forKey:@"player_name"];
 }
--(void)RecieveSensofrInformationofSession:(NSMutableArray *)arrSensors;
+-(void)RecieveSensorInformationofSession:(NSMutableArray *)arrSensors;
 {
-    arrSensorsofSessions = [[NSMutableArray alloc] init];
-    arrSensorsofSessions = [arrSensors mutableCopy];
-    [dictSessionData setObject:arrSensors forKey:@"sensors"];
+    for (int i = 0; i < arrSensors.count; i++)
+    {
+        [arrSensorsofSessions addObject:[arrSensors objectAtIndex:i]];
+    }
+//    arrSensorsofSessions = [arrSensors mutableCopy];
+    [dictSessionData setObject:arrSensorsofSessions forKey:@"sensors"];
     NSLog(@"Session Information====> %@",dictSessionData);
 }
 -(void)RecieveSessionDataString:(NSString *)strData withPacketLength:(int)packetLength;
@@ -727,7 +694,7 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
     if ([arrData count] == 0)
     {
         NSString * strInsertSession = [NSString stringWithFormat:@"insert into 'Session_Table' ('session_id', 'player_id', 'player_name', 'read_interval', 'timeStamp', 'no_of_sensor', 'is_active') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strSessionId,strPlayerId,strPlayerName,strReadInterval,strTimeStamp,strNoofSensors,@"1"];
-//        [[DataBaseManager dataBaseManager] execute:strInsertSession];
+        [[DataBaseManager dataBaseManager] execute:strInsertSession];
     }
     int indexofData = 0;
     int totalSensors = [strNoofSensors intValue];
@@ -763,7 +730,7 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 
             NSString * strDataTime = [NSString stringWithFormat:@"%d",timeValue];
             NSString * strDataQuery = [NSString stringWithFormat:@"insert into 'Session_data' ('session_id', 'temp', 'timestamp', 'sensor_type', 'sensor_id', 'packet') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strSessionId,strTemp,strDataTime,strFinalType,strSensorId,strPacket];
-//            [[DataBaseManager dataBaseManager] execute:strDataQuery];
+            [[DataBaseManager dataBaseManager] execute:strDataQuery];
         }
     }
     NSLog(@"Final Session Data====>%@",arrSessionData);
@@ -812,8 +779,83 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
     NSNumber * startNumber = [[NSNumber alloc] initWithDouble:unixStart];
     return [startNumber stringValue];
 }
+-(void)MonitorConnnectedIsSessionActive:(BOOL)isSessionActive;
+{
+    globalPeripheral = classPeripheral;
 
+    if (isSessionActive == NO)
+    {
+        [APP_DELEGATE endHudProcess];
 
+        globalPeripheral = classPeripheral;
+        NSMutableArray * tmpArr = [[BLEManager sharedManager] foundDevices];
+        if ([[tmpArr valueForKey:@"peripheral"] containsObject:globalPeripheral])
+        {
+            NSInteger  foudIndex = [[tmpArr valueForKey:@"peripheral"] indexOfObject:globalPeripheral];
+            if (foudIndex != NSNotFound)
+            {
+                if ([tmpArr count] > foudIndex)
+                {
+                    NSString * strCurrentIdentifier = [NSString stringWithFormat:@"%@",globalPeripheral.identifier];
+                    NSString * strName = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"name"];
+                    NSString * strAddress = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"bleAddress"];
+
+                    if (![[arrGlobalDevices valueForKey:@"identifier"] containsObject:strCurrentIdentifier])
+                    {
+                        NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:strCurrentIdentifier,@"identifier",globalPeripheral,@"peripheral",strName,@"name",strAddress,@"bleAddress", nil];
+                        [arrGlobalDevices addObject:dict];
+                        NSLog(@"AuthenticationCompleted with Global Devices=%@",arrGlobalDevices);
+                    }
+                }
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^(void)
+        {
+            FCAlertView *alert = [[FCAlertView alloc] init];
+            [alert makeAlertTypeSuccess];
+            alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
+            [alert showAlertWithTitle:@"HQ-INC" withSubtitle:@"Monitor connected successfully.." withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
+            [alert doneActionBlock:^{
+                [globalSbuSetupVC ConnectedMonitorDetail:self->dictConnectedPeripheral];
+                [[BLEManager sharedManager] stopScan];
+
+                self->arrSensorsofSessions = [[NSMutableArray alloc] init];
+
+                [APP_DELEGATE startHudProcess:@"Fetching Sessions..."];
+                    [[BLEService sharedInstance] setDelegate:self];
+                //    [self generateDummyData];
+                    [self WriteCommandtoGetStoredSessions];
+            }];
+        });
+
+    }
+    else
+    {
+//
+    }
+}
+-(void)RecieveLiveSessionInformation:(NSMutableDictionary *)dictDetail
+{
+    
+}
+-(void)RecieveLiveSessionPlayerName:(NSString *)strPlayerName
+{
+    NSString * strMsg = @"";
+    if ([[self checkforValidString:strPlayerName] isEqualToString:@"NA"])
+    {
+        strMsg  = @"Monitor is busy with live session. Can't get stored session now.";
+    }
+    else
+    {
+        strMsg = [NSString stringWithFormat:@"Monitor is doing live session for %@. Can't get stored session now. ",strPlayerName];
+    }
+    
+    [APP_DELEGATE endHudProcess];
+    FCAlertView *alert = [[FCAlertView alloc] init];
+    [alert makeAlertTypeCaution];
+    alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
+    [alert showAlertWithTitle:@"HQ-INC" withSubtitle:strMsg withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
+}
 
 @end
 /*

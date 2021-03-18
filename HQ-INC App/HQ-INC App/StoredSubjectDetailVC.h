@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong) NSMutableDictionary * dataDict;
 @property(nonatomic, strong) NSMutableDictionary * sessionDict;
+@property BOOL isfromSessionList;
 
 
 @end

@@ -89,7 +89,7 @@
 }
 -(void)btnDoneClick
 {
-    
+    [self.navigationController popViewControllerAnimated:true];
 }
 #pragma mark - UITabke view
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -115,7 +115,7 @@
     cell.lblPlayer.frame = CGRectMake(15, 0, DEVICE_WIDTH/2, 80);
     cell.lblPlayer.font = [UIFont fontWithName:CGRegular size:25];
     
-    cell.selectionStyle= UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle= UITableViewCellSelectionStyleNone;
     cell.lblLine.hidden = false;
     cell.lblPlayer.textAlignment = NSTextAlignmentLeft;
     cell.lblPlayer.text = [[arrPlayers objectAtIndex:indexPath.row] valueForKey:@"player_name"];
@@ -133,6 +133,7 @@ return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSMutableDictionary * dict = [arrPlayers objectAtIndex:indexPath.row];
     SessionListVC * session = [[SessionListVC alloc] init];
     session.dictSession = dict;

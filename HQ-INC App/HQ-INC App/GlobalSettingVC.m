@@ -795,7 +795,7 @@
 {
     [dictSessionData setValue:strPlayerName forKey:@"player_name"];
 }
--(void)RecieveSensofrInformationofSession:(NSMutableArray *)arrSensors;
+-(void)RecieveSensorInformationofSession:(NSMutableArray *)arrSensors;
 {
     arrSensorsofSessions = [[NSMutableArray alloc] init];
     arrSensorsofSessions = [arrSensors mutableCopy];

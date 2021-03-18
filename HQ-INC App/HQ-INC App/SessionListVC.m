@@ -76,13 +76,15 @@
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrSessions];
 
     [super viewDidLoad];
+    
+    
     // Do any additional setup after loading the view.
 }
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
 }
-    
+   
 #pragma mark - Buttons
 -(void)btnAddClick
 {
@@ -95,7 +97,7 @@
 }
 -(void)btnDoneClick
 {
-    
+    [self.navigationController popViewControllerAnimated:true];
 }
 #pragma mark - UITabke view
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -121,7 +123,7 @@
     cell.lblPlayer.frame = CGRectMake(15, 0, DEVICE_WIDTH/2, 80);
     cell.lblPlayer.font = [UIFont fontWithName:CGRegular size:25];
 
-    cell.selectionStyle= UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle= UITableViewCellSelectionStyleNone;
     cell.lblLine.hidden = false;
     cell.lblPlayer.textAlignment = NSTextAlignmentLeft;
     cell.lblConncet.hidden = true;
@@ -146,9 +148,10 @@ return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SubjDetailsVC * detail = [[SubjDetailsVC alloc] init]; //  StoredSubjectDetailVC we need to show
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    StoredSubjectDetailVC * detail = [[StoredSubjectDetailVC alloc] init];
     detail.sessionDict = [arrSessions objectAtIndex:indexPath.row];
-//    detail.isfromSessionList = YES;
+    detail.isfromSessionList = YES;
     [self.navigationController pushViewController:detail animated:YES];
 }
  /*-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
