@@ -104,12 +104,14 @@
     {
         cell.backgroundColor = [UIColor lightGrayColor];
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 //    cell.backgroundColor = UIColor.clearColor;
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     ViewSessionVC * vVC  = [[ViewSessionVC alloc] init];
     [self.navigationController pushViewController:vVC animated:true];
 }

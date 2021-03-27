@@ -84,7 +84,9 @@
 {
     return UIStatusBarStyleLightContent;
 }
-   
+    - (BOOL)shouldAutorotate {
+      return NO;
+    }
 #pragma mark - Buttons
 -(void)btnAddClick
 {
@@ -97,7 +99,7 @@
 }
 -(void)btnDoneClick
 {
-    [self.navigationController popViewControllerAnimated:true];
+    
 }
 #pragma mark - UITabke view
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

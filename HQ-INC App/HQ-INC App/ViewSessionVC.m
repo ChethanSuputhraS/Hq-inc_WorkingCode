@@ -100,7 +100,7 @@
     {
         cell.backgroundColor = [UIColor lightGrayColor];
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 //    cell.backgroundColor = UIColor.clearColor;
     return cell;
 }

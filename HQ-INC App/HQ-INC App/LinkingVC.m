@@ -128,7 +128,7 @@
     tblDeviceList.delegate = self;
     tblDeviceList.dataSource= self;
     tblDeviceList.backgroundColor = UIColor.clearColor;
-    tblDeviceList.separatorStyle = UITableViewCellSelectionStyleNone;
+//    tblDeviceList.separatorStyle = UITableViewCellSelectionStyleNone;
     [tblDeviceList setShowsVerticalScrollIndicator:NO];
     tblDeviceList.backgroundColor = [UIColor clearColor];
     tblDeviceList.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -235,12 +235,14 @@
     {
         cell.backgroundColor = [UIColor lightGrayColor];
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = UIColor.clearColor;
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     NSMutableArray * arrayDevices = [[NSMutableArray alloc] init];
     arrayDevices =[[BLEManager sharedManager] foundDevices];
     if ([[[arrayDevices  objectAtIndex:indexPath.row]valueForKey:@"name"] isEqualToString:@"log"])
@@ -696,6 +698,16 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
         NSString * strInsertSession = [NSString stringWithFormat:@"insert into 'Session_Table' ('session_id', 'player_id', 'player_name', 'read_interval', 'timeStamp', 'no_of_sensor', 'is_active') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strSessionId,strPlayerId,strPlayerName,strReadInterval,strTimeStamp,strNoofSensors,@"1"];
         [[DataBaseManager dataBaseManager] execute:strInsertSession];
     }
+    
+    for (int i = 0; i < [arrSensorsofSessions count]; i++)
+    {
+       NSString *  strSensorId = [[arrSensorsofSessions objectAtIndex:i] valueForKey:@"sensor_id"];
+       NSString *  strSensorType = [[arrSensorsofSessions objectAtIndex:i] valueForKey:@"sensor_type"];
+
+        NSString * requestStr =  [NSString stringWithFormat:@"insert into 'Sensor_Table'('session_id',sensor_id,'sensor_type') values(\"%@\",\"%@\",\"%@\")",strSessionId,strSensorId,strSensorType];
+        [[DataBaseManager dataBaseManager] executeSw:requestStr];
+
+    }
     int indexofData = 0;
     int totalSensors = [strNoofSensors intValue];
     int intReadInterval = [strReadInterval intValue];
@@ -710,7 +722,7 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
         NSString * strPacket = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"packetdata"]];
         
         NSString * strFinalType = @"Ingestible";
-        if ([strSensorType isEqualToString:@"4"])
+        if ([strSensorType isEqualToString:@"04"])
         {
             strFinalType = @"Dermal";
         }

@@ -20,19 +20,22 @@
 @interface SubjDetailsVC ()<UITableViewDelegate,UITableViewDataSource,ChartViewDelegate, MFMailComposeViewControllerDelegate>
 {
     NSMutableArray * arrSubjects,*arrRecords;
-    BOOL isSessionStarted, blinkStatus;
+    BOOL isSessionStarted, blinkStatusCore, blinkStatusSkin;
     UILabel* lblCoreTmp;
     UILabel* lblSkinTmp;
     NSMutableArray * arrSkinsTemp, * arrCoreTemp;
     NSMutableArray *yVals1, * yVals2;
     NSInteger xCount;
     NSMutableArray * arrTempValues;
-    NSTimer * blinkTimerl;
-    NSInteger blinkCount;
-    NSMutableArray * arrSessionGraphData, * arrSavedSensors;
-    UIScrollView *scrlView;
+    NSTimer * blinkTimerCore, * blinkTimerSkin;
+    NSInteger coreBlinkCount, skinBlinkCount;
+    NSMutableArray * arrSessionGraphData, * arrSavedSensors, * arrLiveReadingSensorData;
     UITableView * tblDevices;
     NSMutableDictionary * liveSessionDetail;
+    NSMutableArray * arrTwoGraphSensors;
+    
+    UILabel * lblSensor3,* lblSensor4,* lblSensor5,* lblSensor6,* lblSensor7,* lblSensor8,* lblSensor9,* lblSensor10;
+    UILabel * lblTemp3,* lblTemp4,* lblTemp5,* lblTemp6,* lblTemp7,* lblTemp8,* lblTemp9,* lblTemp10;
 }
 @end
 @implementation SubjDetailsVC
@@ -46,29 +49,21 @@
     yVals2 = [[NSMutableArray alloc] init];
     arrTempValues = [[NSMutableArray alloc] init];
     liveSessionDetail = [[NSMutableDictionary alloc] init];
+    arrLiveReadingSensorData = [[NSMutableArray alloc] init];
+    arrTwoGraphSensors = [[NSMutableArray alloc] init];
     
     [self setNeedsStatusBarAppearanceUpdate];
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
     
-    int yy = 50;
-    
- 
     UIColor * lbltxtClr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 50)];
+    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 44)];
     [self setLabelProperties:lblSubjectDetails withText:@"SUBJECT DETAILS" backColor:UIColor.clearColor textColor:lbltxtClr textSize:25];
     lblSubjectDetails.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:lblSubjectDetails];
    
     UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     
-    scrlView =[[UIScrollView alloc] initWithFrame:CGRectMake(0, yy, self.view.frame.size.width, self.view.frame.size.height-yy)];
-    scrlView.backgroundColor = [UIColor clearColor];
-    scrlView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height+150);
-    scrlView.bounces = YES;
-    scrlView.delegate = self;
-    [self.view addSubview:scrlView];
-
     UIButton * btnSubSetup = [[UIButton alloc]initWithFrame:CGRectMake(100, self.view.frame.size.height-60, 200, 50)];
     [self setButtonProperties:btnSubSetup withTitle:@"Subject setup" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:25];
     [btnSubSetup addTarget:self action:@selector(btnSubSetupClick) forControlEvents:UIControlEventTouchUpInside];
@@ -80,16 +75,6 @@
     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
     btnDone.layer.cornerRadius = 5;
     [self.view addSubview:btnDone];
-    // for cheking
-    
-    tblDevices = [[UITableView alloc]initWithFrame:CGRectMake(40, self.view.frame.size.height-80, self.view.frame.size.width-80, 150)];
-    tblDevices.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    tblDevices.delegate = self;
-    tblDevices.dataSource = self;
-    tblDevices.clipsToBounds = true;
-    tblDevices.layer.cornerRadius = 5;
-    tblDevices.backgroundColor = UIColor.clearColor;
-    [scrlView addSubview:tblDevices];
     
     arrSubjects = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Subject_Table"];
@@ -98,54 +83,21 @@
     arrRecords = [[NSMutableArray alloc] init];
     NSString * sqlquery1 = [NSString stringWithFormat:@"select * from Record_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery1 resultsArray:arrRecords];
-
     
     [self SetupForProfileview];
-    [self setupSecondView];
     
     [self SetupGraphView];
-//    [self setDataCount];
 
+    [self SetupBottomSensorView];
+    
     [self gettingImg];
 
+
     [super viewDidLoad];
-    
-    NSLog(@"--------------------------%@",sessionDict);
-    if (isfromSessionList == YES)
-    {
-        arrSessionGraphData = [[NSMutableArray alloc] init];
-        NSString * strSession = [NSString stringWithFormat:@"select * from Session_data where session_id = '%@'",[sessionDict valueForKey:@"session_id"]];
-        [[DataBaseManager dataBaseManager] execute:strSession resultsArray:arrSessionGraphData];
-        [self SendTemperatureReadingtoDetailVC:arrSessionGraphData];
-        
-        btnRead.hidden = YES;
-        btnSpotCheck.hidden = YES;
-        [btnSubSetup setTitle:@"Export Data" forState:UIControlStateNormal];
-        [btnSubSetup addTarget:self action:@selector(exportCSV) forControlEvents:UIControlEventTouchUpInside];
-        
-        imgView.image = [UIImage imageNamed:@"User_Default"];
-        lblName.text = [sessionDict valueForKey:@"player_name"];
-        
-//        imgView.contentMode = UIViewContentModeScaleAspectFit;
 
-        double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
-        NSTimeInterval unixTimeStamp = timeStamp ;
-        NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"dd/MM/yyy hh:mm a";
-        NSString  *finalate = [dateFormatter stringFromDate:exactDate];
-        lblSubjectDetails.text = finalate;
-        
-//        NSMutableArray * i
-        
-//        requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId];
-
-
-    }
-
-    // Do any additional setup after loading the view.
 }
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
   return UIInterfaceOrientationLandscapeLeft; // or Right of course
 }
 
@@ -166,9 +118,9 @@
 -(void)SetupForProfileview
 {
     UIView * ProfileView = [[UIView alloc]init];
-    ProfileView.frame = CGRectMake(40, 50, self.view.frame.size.width-80, self.view.frame.size.height/3-115);
+    ProfileView.frame = CGRectMake(40, 64, self.view.frame.size.width-80, self.view.frame.size.height/3-115);
     ProfileView.backgroundColor = UIColor.blackColor;
-    [scrlView addSubview:ProfileView];
+    [self.view addSubview:ProfileView];
 
     imgView = [[UIImageView alloc]init];
     imgView.frame = CGRectMake(0, 15, ProfileView.frame.size.width-500, ProfileView.frame.size.height-50);
@@ -210,7 +162,6 @@
       lblSkinTmp.textAlignment = NSTextAlignmentCenter;
       [ProfileView addSubview:lblSkinTmp];
 
-    
     UILabel* lblMoreSubjDetails = [[UILabel alloc]initWithFrame:CGRectMake(zz, 110, ProfileView.frame.size.width-zz, ProfileView.frame.size.height-170)];
     [self setLabelProperties:lblMoreSubjDetails withText:@" More Subject Details" backColor:LblBGcolor textColor:UIColor.blackColor textSize:25];
     lblMoreSubjDetails.textAlignment = NSTextAlignmentCenter;
@@ -250,61 +201,14 @@
     {
         lblBattery.hidden = YES;
     }
-    
-//    zz = zz+120;
-//    btnViewSnr = [[UIButton alloc]initWithFrame:CGRectMake(zz, ProfileView.frame.size.height-50, 100, 50)];
-//    [self setButtonProperties:btnViewSnr withTitle:@"View \nsession" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:20];
-//    btnViewSnr.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-//    [btnViewSnr addTarget:self action:@selector(btnSessionClick) forControlEvents:UIControlEventTouchUpInside];
-//    btnViewSnr.layer.cornerRadius = 6;
-//    btnViewSnr.titleLabel.numberOfLines = 0;
-//    [ProfileView addSubview:btnViewSnr];
-}
-#pragma mark- Second View
--(void)setupSecondView
-{
-    UIView * tblBgView = [[UIView alloc]init];
-    tblBgView.frame = CGRectMake(40, (self.view.frame.size.height/3)-20, self.view.frame.size.width-80, self.view.frame.size.height/3-50);
-    tblBgView.backgroundColor = UIColor.blackColor;
-    [scrlView addSubview:tblBgView];
-    
-    UILabel* lblPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 50)];
-    [self setLabelProperties:lblPreviousCoreTmp withText:@"Previous Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-    lblPreviousCoreTmp.font = [UIFont boldSystemFontOfSize:25];
-    [tblBgView addSubview:lblPreviousCoreTmp];
-    
-    tblPreviousCoreTmp = [[UITableView alloc]initWithFrame:CGRectMake(0, 50, tblBgView.frame.size.width/2-20, tblBgView.frame.size.height-50)];
-    tblPreviousCoreTmp.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    tblPreviousCoreTmp.delegate = self;
-    tblPreviousCoreTmp.dataSource = self;
-    tblPreviousCoreTmp.clipsToBounds = true;
-    tblPreviousCoreTmp.layer.cornerRadius = 5;
-    tblPreviousCoreTmp.backgroundColor = UIColor.blackColor;
-    [tblBgView addSubview:tblPreviousCoreTmp];
-
-    UILabel* lblPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(tblBgView.frame.size.width/2+20, 0, self.view.frame.size.width, 50)];
-    [self setLabelProperties:lblPreviousSkinTmp withText:@"Previous Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-    lblPreviousSkinTmp.font = [UIFont boldSystemFontOfSize:25];
-    [tblBgView addSubview:lblPreviousSkinTmp];
-
-    int zt = tblBgView.frame.size.width/2+20;
-    tblPreviousSkinTmp = [[UITableView alloc]initWithFrame:CGRectMake(zt, 50, tblBgView.frame.size.width/2-20, tblBgView.frame.size.height-50)];
-    tblPreviousSkinTmp.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    tblPreviousSkinTmp.clipsToBounds = true;
-    tblPreviousSkinTmp.delegate = self;
-    tblPreviousSkinTmp.dataSource = self;
-    tblPreviousSkinTmp.layer.cornerRadius = 5;
-    tblPreviousSkinTmp.backgroundColor = UIColor.blackColor;
-    [tblBgView addSubview:tblPreviousSkinTmp];
-    
 }
 #pragma mark-Graph view
 -(void)SetupGraphView
 {
     UIView * graphBgView = [[UIView alloc]init];
-    graphBgView.frame = CGRectMake(40, (self.view.frame.size.height/3)*2-70, self.view.frame.size.width-80, self.view.frame.size.height/3);
+    graphBgView.frame = CGRectMake(40, DEVICE_HEIGHT/3-60, DEVICE_WIDTH-80, DEVICE_HEIGHT/3+50);
     graphBgView.backgroundColor = UIColor.clearColor;
-    [scrlView addSubview:graphBgView];
+    [self.view addSubview:graphBgView];
        
     UILabel* lblTrendGraph = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, graphBgView.frame.size.width, 50)];
     [self setLabelProperties:lblTrendGraph withText:@"Trend Graph" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
@@ -364,27 +268,175 @@
     rightAxis.axisMinimum = 0.0;
     rightAxis.drawGridLinesEnabled = NO;
     rightAxis.granularityEnabled = NO;
+}
+-(void)SetupBottomSensorView
+{
+    UILabel* lblotherSnr = [[UILabel alloc]initWithFrame:CGRectMake(40, DEVICE_HEIGHT/2+120, self.view.frame.size.width-80, 50)];
+    [self setLabelProperties:lblotherSnr withText:@"Other sensor" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
+    lblotherSnr.font = [UIFont boldSystemFontOfSize:25];
+    lblotherSnr.layer.borderColor = UIColor.clearColor.CGColor;
+    [self.view addSubview:lblotherSnr];
+    
+    int xx = 40;
+    int yy = DEVICE_HEIGHT-DEVICE_HEIGHT/3;
+    
+    UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
 
-    // css commented
-//    UILabel* lblGraphPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, _chartView.frame.size.height+40, 200, 40)];
-//       [self setLabelProperties:lblGraphPreviousSkinTmp withText:@"Previous Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
-//       [graphBgView addSubview:lblGraphPreviousSkinTmp];
-//
-//       UILabel* lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(210, _chartView.frame.size.height+40, 60, 40)];
-//       [self setLabelProperties:lblSkinTmp withText:@" ---" backColor:UIColor.clearColor textColor:UIColor.greenColor textSize:20];
-//       [graphBgView addSubview:lblSkinTmp];
-//
-//       UILabel* lblGraphPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(0, _chartView.frame.size.height+40, graphBgView.frame.size.width-80, 40)];
-//       [self setLabelProperties:lblGraphPreviousCoreTmp withText:@"Previous Core Temp" backColor:UIColor.clearColor textColor:UIColor.blueColor textSize:20];
-//       lblGraphPreviousCoreTmp.textAlignment = NSTextAlignmentRight;
-//       [graphBgView addSubview:lblGraphPreviousCoreTmp];
-//
-//       UILabel* lblCoreTmp1 = [[UILabel alloc]initWithFrame:CGRectMake(lblGraphPreviousCoreTmp.frame.size.width, _chartView.frame.size.height+40, 60, 40)];
-//       [self setLabelProperties:lblCoreTmp1 withText:@"---" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
-//       lblCoreTmp1.textAlignment = NSTextAlignmentRight;
-//       [graphBgView addSubview:lblCoreTmp1];
-//
-
+    UIView * viewlblTmp = [[UIView alloc] initWithFrame: CGRectMake(xx, yy, DEVICE_WIDTH-xx-40, DEVICE_HEIGHT-yy-80)];
+    viewlblTmp.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:viewlblTmp];
+    
+    int width = viewlblTmp.frame.size.width;
+    int ya = 50;
+    // header
+    UILabel * lblIDtypeLeft = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width/2-10, 45)];
+    [self setLabelProperties:lblIDtypeLeft withText:[NSString stringWithFormat:@" Sensor ID /%@",@"Type"] backColor:btnBGColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblIDtypeLeft];
+    
+    UILabel * lblIDtypeRight = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, 0, width/2-5, 45)];
+    [self setLabelProperties:lblIDtypeRight withText:[NSString stringWithFormat:@" Sensor ID /%@",@"Type"] backColor:btnBGColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblIDtypeRight];
+    
+    UILabel * lblTempLeft = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width/2-15, 45)];
+    [self setLabelProperties:lblTempLeft withText:[NSString stringWithFormat:@"Temp %@",@" "] backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTempLeft.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTempLeft];
+    
+    UILabel * lblTempRight = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, 0, width/2-15, 45)];
+    [self setLabelProperties:lblTempRight withText:[NSString stringWithFormat:@"Temp %@",@" "] backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTempRight.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTempRight];
+    
+    // sensors lalbles
+    ya = ya;
+    lblSensor3 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-10, 45)];
+    [self setLabelProperties:lblSensor3 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor3];
+    
+    lblTemp3 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp3 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp3.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp3];
+    
+    lblSensor7 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-10, 45)];
+    [self setLabelProperties:lblSensor7 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor7];
+    
+    lblTemp7 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp7 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp7.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp7];
+    
+    UILabel * lblLineLeft = [[UILabel alloc] initWithFrame:CGRectMake(0, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineLeft.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineLeft];
+    
+    UILabel * lblLineRight = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineRight.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineRight];
+    
+    
+    ya = ya+50;
+    lblSensor4 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-10, 45)];
+    [self setLabelProperties:lblSensor4 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor4];
+    
+    lblTemp4 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp4 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp4.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp4];
+    
+    lblSensor8 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblSensor8 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor8];
+    
+    lblTemp8 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp8 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp8.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp8];
+    
+    UILabel * lblLineLeft1 = [[UILabel alloc] initWithFrame:CGRectMake(0, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineLeft1.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineLeft1];
+    
+    UILabel * lblLineRight1 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineRight1.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineRight1];
+              
+    ya = ya+50;
+     lblSensor5 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-10, 45)];
+    [self setLabelProperties:lblSensor5 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor5];
+    
+    lblTemp5 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp5 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp5.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp5];
+    
+    lblSensor9 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblSensor9 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor9];
+    
+    lblTemp9 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp9 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp9.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp9];
+    
+    UILabel * lblLineLeft2 = [[UILabel alloc] initWithFrame:CGRectMake(0, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineLeft2.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineLeft2];
+    
+    UILabel * lblLineRight2 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineRight2.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineRight2];
+    
+    ya = ya+50;
+    lblSensor6 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-20, 45)];
+    [self setLabelProperties:lblSensor6 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor6];
+    
+    lblTemp6 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp6 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp6.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp6];
+    
+    lblSensor10 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblSensor10 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    [viewlblTmp addSubview:lblSensor10];
+    
+    lblTemp10 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+10, ya, width/2-20, 45)];
+    [self setLabelProperties:lblTemp10 withText:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    lblTemp10.textAlignment = NSTextAlignmentRight;
+    [viewlblTmp addSubview:lblTemp10];
+    
+    UILabel * lblLineleft3 = [[UILabel alloc] initWithFrame:CGRectMake(0, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineleft3.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineleft3];
+    
+    UILabel * lblLineRight3 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
+    lblLineRight3.backgroundColor = UIColor.lightGrayColor;
+    [viewlblTmp addSubview:lblLineRight3];
+    
+    
+}
+-(NSString *)GetSensorIDandTypeForLableWithIndex:(NSInteger)i
+{
+    if (arrSavedSensors.count > 0)
+    {
+        NSString * strSensorId = [APP_DELEGATE checkforValidString:[[arrSavedSensors objectAtIndex:i] valueForKey:@"sensor_id"]];
+        NSString * strSensorType = [APP_DELEGATE checkforValidString:[[arrSavedSensors objectAtIndex:i] valueForKey:@"sensor_type"]];
+        NSString * strType = @"Skin";
+        if ([strSensorType isEqualToString:@"3"])
+        {
+            strType = @"Core";
+        }
+        return [NSString stringWithFormat:@"%@ / %@", strSensorId, strType];
+    }
+    else
+    {
+        return @" ";
+    }
+  
 }
 #pragma mark- Table View Method
  -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -411,12 +463,11 @@
         
     if (tableView == tblDevices)
     {
-        lblDateTime.text = @"Device name/type";
-        lblTemp.frame = CGRectMake(tblDevices.frame.size.width-100, 0, 100, 35);
+        lblDateTime.frame = CGRectMake(5, 0, tblDevices.frame.size.width, 35);
+        lblDateTime.text = @"Sensor Name (Type)";
+        lblTemp.frame = CGRectMake(tblDevices.frame.size.width-59, 0, 50, 35);
         lblTemp.textAlignment = NSTextAlignmentLeft;
-
     }
-    
         return viewHeader;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -439,7 +490,7 @@
     }
     else if (tableView == tblDevices)
     {
-        return 50;
+        return arrSavedSensors.count;
     }
     return true;//arrRecords.count; //array  have to pass here
 }
@@ -449,9 +500,6 @@
     PlayerSubjCELL *cell = [tableView dequeueReusableCellWithIdentifier:cellP];
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
     cell.lblTemp.frame = CGRectMake(tblPreviousCoreTmp.frame.size.width/2-10, 0, tblPreviousCoreTmp.frame.size.width/2, 40);
-    
-    NSString *string = lblCoreTmp.text;
-    NSString *newStr = [string substringFromIndex:10];
     
     if (tableView == tblPreviousCoreTmp)
     {
@@ -469,6 +517,31 @@
         cell.lblDate.text = [[arrSkinsTemp objectAtIndex:indexPath.row]valueForKey:@"time"];
         cell.lblTemp.text = [NSString stringWithFormat:@"%@ ºF",[[arrSkinsTemp objectAtIndex:indexPath.row]valueForKey:@"temp"]];
 
+    }
+    else if (tableView == tblDevices)
+    {
+       cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+        cell.lblName.frame = CGRectMake(5, 0, DEVICE_WIDTH/2, 40);
+        cell.lblName.textAlignment = NSTextAlignmentLeft;
+        cell.lblTemp.hidden = false;
+        cell.lblTemp.frame = CGRectMake(DEVICE_WIDTH-200, 0, 100, 40);
+
+        NSString * strSensorId = [APP_DELEGATE checkforValidString:[[arrSavedSensors objectAtIndex:indexPath.row] valueForKey:@"sensor_id"]];
+        NSString * strSensorType = [APP_DELEGATE checkforValidString:[[arrSavedSensors objectAtIndex:indexPath.row] valueForKey:@"sensor_type"]];
+        NSString * strTemp = @"NA";
+        if ([[[arrSavedSensors objectAtIndex:indexPath.row] allKeys] containsObject:@"temp"])
+        {
+            strTemp = [APP_DELEGATE checkforValidString:[[arrSavedSensors objectAtIndex:indexPath.row] valueForKey:@"temp"]];
+        }
+        NSString * strType = @"Skin";
+//        if ([[dict valueForKey:@"sensor_type"] isEqualToString:@"04"])//3-Ingestible (Core), 4-Dermal (Skin)
+        if ([strSensorType isEqualToString:@"3"])
+        {
+            strType = @"Core";
+        }
+        cell.lblName.text = [NSString stringWithFormat:@"%@ / %@", strSensorId, strType];
+        cell.lblTemp.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
     }
     return cell;
 }
@@ -494,7 +567,8 @@
  }
 -(void)btnReadClick
 {
-//    [[BLEService sharedInstance] getFloatValueofDecimal:@"8fc2c742"];
+//    [self StopSessionCommandtoDevice];
+
     btnRead.titleLabel.numberOfLines = 0;
 
     if (isSessionStarted == NO)
@@ -532,6 +606,14 @@
 }
 -(void)setupEdintgData
 {
+
+}
+-(void)btnClick:(id)sender
+{
+    if ([sender tag] == 0)
+    {
+        
+    }
 
 }
 #pragma mark- Img Scalling
@@ -576,7 +658,10 @@
     lbl.clipsToBounds = true;
     lbl.layer.cornerRadius = 5;
     lbl.font = [UIFont fontWithName:CGRegular size:txtSize];
+//    lbl.layer.borderWidth = 0.3;
+//    lbl.layer.borderColor = UIColor.lightGrayColor.CGColor;
 }
+
 -(int)getRandomNumberBetween:(int)from and:(int)to;
 {
     return (int)from + arc4random() % (to-from+1);
@@ -645,6 +730,51 @@
         _chartView.data = data;
     }
 }
+-(void)stopBlinking
+{
+    
+}
+-(void)animateCoreTempLabel
+{
+    if (coreBlinkCount >= 6)
+    {
+        coreBlinkCount = 0;
+        [blinkTimerCore invalidate];
+        blinkTimerCore = nil;
+    }
+    else
+    {
+        if(blinkStatusCore == NO){
+           lblCoreTmp.backgroundColor = [UIColor blueColor];
+          blinkStatusCore = YES;
+        }else {
+           lblCoreTmp.backgroundColor = [UIColor whiteColor];
+           blinkStatusCore = NO;
+        }
+        coreBlinkCount = coreBlinkCount + 1;
+    }
+}
+-(void)animateSkinTempLabel
+{
+    if (skinBlinkCount >= 6)
+    {
+        skinBlinkCount = 0;
+        [blinkTimerSkin invalidate];
+        blinkTimerSkin = nil;
+    }
+    else
+    {
+        if(blinkStatusSkin == NO){
+           lblSkinTmp.backgroundColor = [UIColor blueColor];
+          blinkStatusSkin = YES;
+        }else {
+           lblSkinTmp.backgroundColor = [UIColor whiteColor];
+           blinkStatusSkin = NO;
+        }
+        skinBlinkCount = skinBlinkCount + 1;
+    }
+
+}
 
 #pragma mark-BLE  Methoda
 -(void)SetTempIntervalwithPlayerID
@@ -693,31 +823,40 @@
     NSLog(@"AddSensor  DONEClick---==%@",dataMsg);
     [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"09" withLength:@"0" with:globalPeripheral];
 }
-//-(void)SendTemperatureReadingtoDetailVC:(NSString *)strSensorID withTemp:(NSString *)strTemp;
+
+-(void)StartSessionConfirmation:(BOOL)isSessionStartSuccess;
+{
+    if (isSessionStartSuccess == NO)
+    {
+        [self AlertViewFCTypeCaution:@"Something went wrong with Start Session. Please try again."];
+        isSessionStarted = NO;
+    }
+    else
+    {
+//        [APP_DELEGATE startHudProcess:@"Loading..."];
+        isSessionStarted = YES;
+        [self setButtonProperties:btnRead withTitle:@"Stop\nSession" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
+    }
+}
+-(void)WritePlayerNametoMonitorttoStartSession
+{
+    NSString * str = [self hexFromStr:[dataDict objectForKey:@"name"]];
+    NSData * msgData = [self dataFromHexString:str];
+    
+    NSInteger intLength = [[dataDict objectForKey:@"name"] length];
+
+    [[BLEService sharedInstance] WriteValuestoDevice:msgData withOcpde:@"12" withLength:[NSString stringWithFormat:@"%ld",(long)intLength] with:globalPeripheral];
+}
+#pragma mark :---------------
+#pragma mark :- Live Reading Temperature...
+#pragma mark :-------------------
 -(void)SendTemperatureReadingtoDetailVC:(NSMutableArray *)arrSensorData;
 {
     for (int i = 0; i < [arrSensorData count]; i++)
     {
         NSString * strSensorID = [[arrSensorData objectAtIndex:i] valueForKey:@"sensor_id"];
         NSString * strTemp = [[arrSensorData objectAtIndex:i] valueForKey:@"temp"];
-                
-        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"dd/MM/yyy hh:mm:ss";
-        NSString  *dateString ;
-        
-        if (isfromSessionList == YES)
-        {
-            double timeStamp = [[[arrSensorData objectAtIndex:i] valueForKey:@"timestamp"] doubleValue];
-            NSTimeInterval unixTimeStamp = timeStamp ;
-            NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-            dateString = [dateFormatter stringFromDate:exactDate];
-        }
-        else
-        {
-            NSDate *exactDate = [NSDate date];
-            dateString = [dateFormatter stringFromDate:exactDate];
-
-        }
+              
         
         if ([strTemp intValue] > 0)
         {
@@ -739,78 +878,75 @@
                         {
                             strDataType = @"Core";
                         }
+                        [[arrSavedSensors objectAtIndex:foundIndex] setValue:strTemp forKey:@"temp"];
+//                        [tblDevices reloadData];
                     }
                 }
             }
+            [self UpdateOtherSensorTemp];
+
+            
             xCount = xCount + 1;
+            
+            NSLog(@"========Sensord_ID=%@  ======= Sensor_Type =%@ ======= Temp=%@=======",strSensorID, strDataType, strTemp);
 
             if ([strDataType isEqualToString:@"Core"])
             {
-                lblCoreTmp.text = [NSString stringWithFormat:@"Core Tmp %@˚C",strTemp];
-                lblCoreTmp.backgroundColor = [UIColor blueColor];
-                
-                [blinkTimerl invalidate];
-                blinkTimerl = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(0.1) target:self selector:@selector(animateBlinking) userInfo:nil repeats:TRUE];
+                if ([arrCoreTemp count] <= 0)
+                {
+                    [arrCoreTemp addObject:strSensorID];
+                    [APP_DELEGATE endHudProcess];
+                }
+                if ([arrCoreTemp containsObject:strSensorID])
+                {
+                    lblCoreTmp.text = [NSString stringWithFormat:@"Core Tmp %@˚C",strTemp];
+                    lblCoreTmp.backgroundColor = [UIColor blueColor];
+                    
+                    [blinkTimerCore invalidate];
+                    blinkTimerCore = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(0.1) target:self selector:@selector(animateCoreTempLabel) userInfo:nil repeats:TRUE];
 
-//                [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(animateBlinking) userInfo:nil repeats:YES];
-//                [self performSelector:@selector(stopBlinking) withObject:nil afterDelay:0.2];
-                if ([arrCoreTemp count] == 0)
-                {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp",dateString,@"time", nil];
-                    [arrCoreTemp addObject:dict];
+                    if ([yVals1 count] >= 10)
+                    {
+                        [yVals1 removeObjectAtIndex:0];
+                    }
+                    [yVals1 addObject:[[ChartDataEntry alloc] initWithX:xCount y:[strTemp doubleValue]]];
                 }
-                else
-                {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp", dateString,@"time", nil];
-                    [arrCoreTemp insertObject:dict atIndex:0];
-                }
-                [tblPreviousCoreTmp reloadData];
-                
-                [yVals1 addObject:[[ChartDataEntry alloc] initWithX:xCount y:[strTemp doubleValue]]];
-                [APP_DELEGATE endHudProcess];
-                NSLog(@"<=========Core========>%@",strTemp);
+//                NSLog(@"<=========Core========>%@",strTemp);
             }
             else
             {
-                lblSkinTmp.text = [NSString stringWithFormat:@"Skin Tmp %@˚C",strTemp];
-                if ([arrSkinsTemp count] == 0)
+                if ([arrSkinsTemp count] <= 0)
                 {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp", dateString,@"time", nil];
-                    [arrSkinsTemp addObject:dict];
+                    [arrSkinsTemp addObject:strSensorID];
+                    [APP_DELEGATE endHudProcess];
                 }
-                else
+                if ([arrSkinsTemp containsObject:strSensorID])
                 {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp", dateString,@"time", nil];
-                    [arrSkinsTemp insertObject:dict atIndex:0];
-                }
-                [tblPreviousSkinTmp reloadData];
-                [yVals2 addObject:[[ChartDataEntry alloc] initWithX:xCount y:[strTemp doubleValue]]];
-                NSLog(@"<=========Skin========>%@",strTemp);
+                    [blinkTimerSkin invalidate];
+                    blinkTimerSkin = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(0.1) target:self selector:@selector(animateSkinTempLabel) userInfo:nil repeats:TRUE];
+                    lblSkinTmp.text = [NSString stringWithFormat:@"Skin Tmp %@˚C",strTemp];
 
+                    if ([yVals2 count] >= 10)
+                    {
+                        [yVals2 removeObjectAtIndex:0];
+                    }
+
+                    [yVals2 addObject:[[ChartDataEntry alloc] initWithX:xCount y:[strTemp doubleValue]]];
+                }
+//                NSLog(@"<=========Skin========>%@",strTemp);
+            }
+            if ([arrTempValues count] >= 20)
+            {
+//                [arrTempValues removeObjectAtIndex:0];
             }
             [arrTempValues addObject:[NSNumber numberWithDouble:[strTemp doubleValue]]];
-
         }
-        
     }
-    
     double max1 = [[arrTempValues valueForKeyPath: @"@max.self"] doubleValue];
     double min1 = [[arrTempValues valueForKeyPath: @"@min.self"] doubleValue];
 
     _chartView.leftAxis.axisMaximum = max1 + 0.1;
     _chartView.leftAxis.axisMinimum = min1 - 0.1;
-
-     /*for ( int i = 0; i<50; i++)
-     {
-         double strCoreTemp = [self getRandomNumberBetween:92 and:100.4];
-         [yVals1 addObject:[[ChartDataEntry alloc] initWithX:i y:strCoreTemp]];
-     }
-    
-    for ( int i = 0; i<50; i++)
-    {
-        double strCoreTemp = [self getRandomNumberBetween:92 and:100.4];
-        [yVals2 addObject:[[ChartDataEntry alloc] initWithX:i y:strCoreTemp]];
-    }*/
         
     LineChartDataSet *set1 = nil, *set2 = nil;
     
@@ -857,56 +993,119 @@
         
         _chartView.data = data;
     }
-
 }
--(void)stopBlinking
+-(void)UpdateOtherSensorTemp
 {
-    
-}
--(void)animateBlinking
+ if (arrSavedSensors.count > 0)
 {
-    if (blinkCount >= 6)
+    for (int i = 2; i < [arrSavedSensors count] ; i++)
     {
-        blinkCount = 0;
-        [blinkTimerl invalidate];
-        blinkTimerl = nil;
-    }
-    else
-    {
-        if(blinkStatus == NO){
-           lblCoreTmp.backgroundColor = [UIColor blueColor];
-          blinkStatus = YES;
-        }else {
-           lblCoreTmp.backgroundColor = [UIColor whiteColor];
-           blinkStatus = NO;
+        NSString * strTemp = @"NA";
+        if ([[[arrSavedSensors objectAtIndex:i] allKeys] containsObject:@"temp"])
+        {
+            strTemp = [APP_DELEGATE checkforValidString:[[arrSavedSensors objectAtIndex:i] valueForKey:@"temp"]];
         }
-        blinkCount = blinkCount + 1;
+        if (i == 2)
+        {
+            lblSensor3.text = [self GetSensorIDandTypeForLableWithIndex:2];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp3.text = @" ";
+            }
+            else
+            {
+                lblTemp3.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 3)
+        {
+            lblSensor4.text = [self GetSensorIDandTypeForLableWithIndex:3];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp4.text = @" ";
+            }
+            else
+            {
+                lblTemp4.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 4)
+        {
+            lblSensor5.text = [self GetSensorIDandTypeForLableWithIndex:4];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp5.text = @" ";
+            }
+            else
+            {
+                lblTemp5.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 5)
+        {
+            lblSensor6.text = [self GetSensorIDandTypeForLableWithIndex:5];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp6.text = @" ";
+            }
+            else
+            {
+                lblTemp6.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 6)
+        {
+            lblSensor7.text = [self GetSensorIDandTypeForLableWithIndex:6];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp7.text = @" ";
+            }
+            else
+            {
+                lblTemp7.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 7)
+        {
+            lblSensor8.text = [self GetSensorIDandTypeForLableWithIndex:7];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp8.text = @" ";
+            }
+            else
+            {
+                lblTemp8.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 8)
+        {
+            lblSensor9.text = [self GetSensorIDandTypeForLableWithIndex:8];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp9.text = @" ";
+            }
+            else
+            {
+                lblTemp9.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+        else if (i == 9)
+        {
+            lblSensor10.text = [self GetSensorIDandTypeForLableWithIndex:9];
+            if ([strTemp isEqualToString:@"NA"])
+            {
+                lblTemp10.text = @" ";
+            }
+            else
+            {
+                lblTemp10.text = [NSString stringWithFormat:@"%@ ºC", strTemp];
+            }
+        }
+      }
     }
+}
+#pragma mark :- Other Methods
 
-}
--(void)StartSessionConfirmation:(BOOL)isSessionStartSuccess;
-{
-    if (isSessionStartSuccess == NO)
-    {
-        [self AlertViewFCTypeCaution:@"Something went wrong with Start Session. Please try again."];
-        isSessionStarted = NO;
-    }
-    else
-    {
-//        [APP_DELEGATE startHudProcess:@"Loading..."];
-        isSessionStarted = YES;
-        [self setButtonProperties:btnRead withTitle:@"Stop\nSession" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
-    }
-}
--(void)WritePlayerNametoMonitorttoStartSession
-{
-    NSString * str = [self hexFromStr:[dataDict objectForKey:@"name"]];
-    NSData * msgData = [self dataFromHexString:str];
-    
-    NSInteger intLength = [[dataDict objectForKey:@"name"] length];
-
-    [[BLEService sharedInstance] WriteValuestoDevice:msgData withOcpde:@"12" withLength:[NSString stringWithFormat:@"%ld",(long)intLength] with:globalPeripheral];
-}
 -(void)ShowErrorMessagewithOpcode:(NSString *)strOpcode;
 {
     [APP_DELEGATE endHudProcess];
@@ -1067,31 +1266,7 @@
     isSessionStarted = YES;
     [self setButtonProperties:btnRead withTitle:@"Stop\nSession" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
 }
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    float yOffset = scrollView.contentOffset.y;
-    
-//    NSLog(@"Offset======%f",yOffset);
-//    NSLog(@"Scrollview height======%f",scrollView.frame.size.height);
-    
-    if (scrollView == scrlView)
-    {
-         if (yOffset >= 250)
-         {
-//             scrlView.scrollEnabled = false;
-             tblDevices.scrollEnabled = false;// true
-         }
-     }
 
-     if (scrollView == tblDevices)
-    {
-         if (yOffset <= 0)
-         {
-             scrlView.scrollEnabled = true;
-//             tblDevices.scrollEnabled = false;
-         }
-     }
-}
 @end
 //    "player_id" = 1613640340;
 

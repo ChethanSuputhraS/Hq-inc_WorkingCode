@@ -352,7 +352,7 @@
     static NSString *cellP = @"CellProfile";
     PlayerSubjCELL *cell = [tableView dequeueReusableCellWithIdentifier:cellP];
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     cell.lblName.text = @"---";
     cell.lblPlayer.text = @"---";
@@ -439,6 +439,8 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     if (arrSubjects.count > indexPath.row)
        {
            globalSubjectDetailVC = [[SubjDetailsVC alloc]init];

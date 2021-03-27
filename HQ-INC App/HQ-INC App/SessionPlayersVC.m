@@ -89,7 +89,7 @@
 }
 -(void)btnDoneClick
 {
-    [self.navigationController popViewControllerAnimated:true];
+    
 }
 #pragma mark - UITabke view
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -134,6 +134,7 @@ return cell;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     NSMutableDictionary * dict = [arrPlayers objectAtIndex:indexPath.row];
     SessionListVC * session = [[SessionListVC alloc] init];
     session.dictSession = dict;

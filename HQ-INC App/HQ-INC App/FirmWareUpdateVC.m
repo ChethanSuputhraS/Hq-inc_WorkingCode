@@ -126,7 +126,7 @@
     tblMonitorList.delegate = self;
     tblMonitorList.dataSource= self;
     tblMonitorList.backgroundColor = UIColor.clearColor;
-    tblMonitorList.separatorStyle = UITableViewCellSelectionStyleNone;
+//    tblMonitorList.separatorStyle = UITableViewCellSelectionStyleNone;
     [tblMonitorList setShowsVerticalScrollIndicator:NO];
     tblMonitorList.backgroundColor = [UIColor clearColor];
     tblMonitorList.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -345,12 +345,14 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
     {
         cell.backgroundColor = [UIColor lightGrayColor];
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = UIColor.clearColor;
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     NSMutableArray * arrayDevices = [[NSMutableArray alloc] init];
     arrayDevices =[[BLEManager sharedManager] foundDevices];
     if ([[[arrayDevices  objectAtIndex:indexPath.row]valueForKey:@"name"] isEqualToString:@"log"])

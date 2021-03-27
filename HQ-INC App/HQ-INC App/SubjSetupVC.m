@@ -1284,7 +1284,7 @@ NSInteger selectedIndex;
     NSString *cellSensor = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     SubjectSetUpCELL  *cell = [tableView dequeueReusableCellWithIdentifier:cellSensor];
     cell = [[SubjectSetUpCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellSensor];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     //@"Dummy";//[NSString stringWithFormat:@"%@",[[tmpArryMonitor objectAtIndex:indexPath.row] valueForKey:@"id"]];//,[[arrSensors objectAtIndex:indexPath.row] valueForKey:@"number"]];
 
@@ -1324,6 +1324,8 @@ NSInteger selectedIndex;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     selectedIndex = indexPath.row;
     if (isRemoveSnrSelect == NO)
     {

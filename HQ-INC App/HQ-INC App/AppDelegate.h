@@ -55,7 +55,6 @@ AddSensorVC * globalAddSensor;
 -(void)endHudProcess;
 -(void)getPlaceholderText:(UITextField *)txtField  andColor:(UIColor*)color;
 -(void)startHudProcess:(NSString *)text;
--(void)getPlaceholderText:(UITextField *)txtField  andColor:(UIColor*)color;
 
 
 @end

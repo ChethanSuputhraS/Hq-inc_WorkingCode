@@ -8,14 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0444DEEC2601CD20005BE1E6 /* StoredSubjectDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0444DEEB2601CD20005BE1E6 /* StoredSubjectDetailVC.m */; };
-		0444DEF0260363D1005BE1E6 /* UIFloatLabelTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0444DEEE260363D1005BE1E6 /* UIFloatLabelTextField.m */; };
-		0444DEF826037696005BE1E6 /* arrowLeft@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF126037695005BE1E6 /* arrowLeft@3x.png */; };
-		0444DEF926037696005BE1E6 /* arrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF226037695005BE1E6 /* arrowLeft@2x.png */; };
-		0444DEFA26037696005BE1E6 /* reload@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF326037695005BE1E6 /* reload@3x.png */; };
-		0444DEFB26037696005BE1E6 /* rightArrow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF426037695005BE1E6 /* rightArrow@3x.png */; };
-		0444DEFC26037696005BE1E6 /* rightArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF526037695005BE1E6 /* rightArrow@2x.png */; };
-		0444DEFD26037696005BE1E6 /* arrowLeft@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF626037696005BE1E6 /* arrowLeft@1x.png */; };
-		0444DEFE26037696005BE1E6 /* rightArrow@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0444DEF726037696005BE1E6 /* rightArrow@1x.png */; };
 		044D34A025DF8BBD00AA1E07 /* FirmWareUpdateVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 044D349F25DF8BBC00AA1E07 /* FirmWareUpdateVC.m */; };
 		ABC81134242A264700362979 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC81133242A264700362979 /* AppDelegate.m */; };
 		ABC8113A242A264700362979 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABC81138242A264700362979 /* Main.storyboard */; };
@@ -155,6 +147,13 @@
 		FA01E72D2546E18900F8F213 /* CBBOld.TTF in Resources */ = {isa = PBXBuildFile; fileRef = FA01E7292546E18900F8F213 /* CBBOld.TTF */; };
 		FA01E72E2546E18900F8F213 /* CGItalic.TTF in Resources */ = {isa = PBXBuildFile; fileRef = FA01E72A2546E18900F8F213 /* CGItalic.TTF */; };
 		FA01E72F2546E18900F8F213 /* CGRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA01E72B2546E18900F8F213 /* CGRegular.ttf */; };
+		FA3B34BF2604AD4500C53E27 /* UIFloatLabelTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3B34BD2604AD4500C53E27 /* UIFloatLabelTextField.m */; };
+		FA3B34C62604AE0B00C53E27 /* arrowLeft@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3B34C02604AE0B00C53E27 /* arrowLeft@3x.png */; };
+		FA3B34C72604AE0B00C53E27 /* rightArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3B34C12604AE0B00C53E27 /* rightArrow@2x.png */; };
+		FA3B34C82604AE0B00C53E27 /* rightArrow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3B34C22604AE0B00C53E27 /* rightArrow@3x.png */; };
+		FA3B34C92604AE0B00C53E27 /* arrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3B34C32604AE0B00C53E27 /* arrowLeft@2x.png */; };
+		FA3B34CA2604AE0B00C53E27 /* arrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3B34C42604AE0B00C53E27 /* arrowLeft.png */; };
+		FA3B34CB2604AE0B00C53E27 /* rightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3B34C52604AE0B00C53E27 /* rightArrow.png */; };
 		FA6DA7DB25CE7B2E00F76581 /* User_Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6DA7D825CE7B2E00F76581 /* User_Default@2x.png */; };
 		FA6DA7DC25CE7B2E00F76581 /* User_Default@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6DA7D925CE7B2E00F76581 /* User_Default@3x.png */; };
 		FA6DA7DD25CE7B2E00F76581 /* User_Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6DA7DA25CE7B2E00F76581 /* User_Default.png */; };
@@ -167,15 +166,6 @@
 /* Begin PBXFileReference section */
 		0444DEEA2601CD20005BE1E6 /* StoredSubjectDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoredSubjectDetailVC.h; sourceTree = "<group>"; };
 		0444DEEB2601CD20005BE1E6 /* StoredSubjectDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoredSubjectDetailVC.m; sourceTree = "<group>"; };
-		0444DEEE260363D1005BE1E6 /* UIFloatLabelTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIFloatLabelTextField.m; sourceTree = "<group>"; };
-		0444DEEF260363D1005BE1E6 /* UIFloatLabelTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIFloatLabelTextField.h; sourceTree = "<group>"; };
-		0444DEF126037695005BE1E6 /* arrowLeft@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowLeft@3x.png"; sourceTree = "<group>"; };
-		0444DEF226037695005BE1E6 /* arrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowLeft@2x.png"; sourceTree = "<group>"; };
-		0444DEF326037695005BE1E6 /* reload@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reload@3x.png"; sourceTree = "<group>"; };
-		0444DEF426037695005BE1E6 /* rightArrow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightArrow@3x.png"; sourceTree = "<group>"; };
-		0444DEF526037695005BE1E6 /* rightArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightArrow@2x.png"; sourceTree = "<group>"; };
-		0444DEF626037696005BE1E6 /* arrowLeft@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowLeft@1x.png"; sourceTree = "<group>"; };
-		0444DEF726037696005BE1E6 /* rightArrow@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightArrow@1x.png"; sourceTree = "<group>"; };
 		044D349E25DF8BBC00AA1E07 /* FirmWareUpdateVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirmWareUpdateVC.h; sourceTree = "<group>"; };
 		044D349F25DF8BBC00AA1E07 /* FirmWareUpdateVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirmWareUpdateVC.m; sourceTree = "<group>"; };
 		1DE07DB2934D3E6CA01A50C9 /* Pods-HQ-INC App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HQ-INC App.debug.xcconfig"; path = "Target Support Files/Pods-HQ-INC App/Pods-HQ-INC App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -505,6 +495,14 @@
 		FA01E7292546E18900F8F213 /* CBBOld.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = CBBOld.TTF; sourceTree = "<group>"; };
 		FA01E72A2546E18900F8F213 /* CGItalic.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = CGItalic.TTF; sourceTree = "<group>"; };
 		FA01E72B2546E18900F8F213 /* CGRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = CGRegular.ttf; sourceTree = "<group>"; };
+		FA3B34BD2604AD4500C53E27 /* UIFloatLabelTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIFloatLabelTextField.m; sourceTree = "<group>"; };
+		FA3B34BE2604AD4500C53E27 /* UIFloatLabelTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIFloatLabelTextField.h; sourceTree = "<group>"; };
+		FA3B34C02604AE0B00C53E27 /* arrowLeft@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowLeft@3x.png"; sourceTree = "<group>"; };
+		FA3B34C12604AE0B00C53E27 /* rightArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightArrow@2x.png"; sourceTree = "<group>"; };
+		FA3B34C22604AE0B00C53E27 /* rightArrow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rightArrow@3x.png"; sourceTree = "<group>"; };
+		FA3B34C32604AE0B00C53E27 /* arrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowLeft@2x.png"; sourceTree = "<group>"; };
+		FA3B34C42604AE0B00C53E27 /* arrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowLeft.png; sourceTree = "<group>"; };
+		FA3B34C52604AE0B00C53E27 /* rightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightArrow.png; sourceTree = "<group>"; };
 		FA6DA7D825CE7B2E00F76581 /* User_Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "User_Default@2x.png"; sourceTree = "<group>"; };
 		FA6DA7D925CE7B2E00F76581 /* User_Default@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "User_Default@3x.png"; sourceTree = "<group>"; };
 		FA6DA7DA25CE7B2E00F76581 /* User_Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = User_Default.png; sourceTree = "<group>"; };
@@ -528,15 +526,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0444DEED260363D1005BE1E6 /* UIfloatbleTextField */ = {
-			isa = PBXGroup;
-			children = (
-				0444DEEE260363D1005BE1E6 /* UIFloatLabelTextField.m */,
-				0444DEEF260363D1005BE1E6 /* UIFloatLabelTextField.h */,
-			);
-			path = UIfloatbleTextField;
-			sourceTree = "<group>";
-		};
 		3467A253AB44DC2C8529DEEF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -764,7 +753,7 @@
 		CF9C29AE2431C6E2004E32DB /* HelperClass */ = {
 			isa = PBXGroup;
 			children = (
-				0444DEED260363D1005BE1E6 /* UIfloatbleTextField */,
+				FA3B34BC2604AD4500C53E27 /* UIfloatbleTextField */,
 				CF19152B24EE566A00E05C5C /* FCAlertView */,
 				CF19152A24EE53A500E05C5C /* Header.h */,
 				CF19151D24EE50EB00E05C5C /* MNMPullToRefresh */,
@@ -784,13 +773,12 @@
 		CF9C29AF2431C6E2004E32DB /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				0444DEF626037696005BE1E6 /* arrowLeft@1x.png */,
-				0444DEF226037695005BE1E6 /* arrowLeft@2x.png */,
-				0444DEF126037695005BE1E6 /* arrowLeft@3x.png */,
-				0444DEF326037695005BE1E6 /* reload@3x.png */,
-				0444DEF726037696005BE1E6 /* rightArrow@1x.png */,
-				0444DEF526037695005BE1E6 /* rightArrow@2x.png */,
-				0444DEF426037695005BE1E6 /* rightArrow@3x.png */,
+				FA3B34C42604AE0B00C53E27 /* arrowLeft.png */,
+				FA3B34C32604AE0B00C53E27 /* arrowLeft@2x.png */,
+				FA3B34C02604AE0B00C53E27 /* arrowLeft@3x.png */,
+				FA3B34C52604AE0B00C53E27 /* rightArrow.png */,
+				FA3B34C12604AE0B00C53E27 /* rightArrow@2x.png */,
+				FA3B34C22604AE0B00C53E27 /* rightArrow@3x.png */,
 				FA6DA7DA25CE7B2E00F76581 /* User_Default.png */,
 				FA6DA7D825CE7B2E00F76581 /* User_Default@2x.png */,
 				FA6DA7D925CE7B2E00F76581 /* User_Default@3x.png */,
@@ -1624,6 +1612,15 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		FA3B34BC2604AD4500C53E27 /* UIfloatbleTextField */ = {
+			isa = PBXGroup;
+			children = (
+				FA3B34BD2604AD4500C53E27 /* UIFloatLabelTextField.m */,
+				FA3B34BE2604AD4500C53E27 /* UIFloatLabelTextField.h */,
+			);
+			path = UIfloatbleTextField;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1686,10 +1683,10 @@
 			files = (
 				CF19152924EE50EB00E05C5C /* MNMPullToRefreshIcon@2x.png in Resources */,
 				CF258F05246A7D4200765929 /* linked.png in Resources */,
-				0444DEFE26037696005BE1E6 /* rightArrow@1x.png in Resources */,
 				CFABF5D7246FCD0800584B4E /* icon_83.5@2x.png in Resources */,
 				CF0473C3254A854D00D8ABB0 /* arrow.png in Resources */,
 				CF9FE5282477FA520086D977 /* GridSelected.png in Resources */,
+				FA3B34C82604AE0B00C53E27 /* rightArrow@3x.png in Resources */,
 				CF955942246E6ED300B326A2 /* list-view.png in Resources */,
 				CFA05AC1247BCEDB00BEDE64 /* greenSelected.png in Resources */,
 				CF19153F24EE566A00E05C5C /* checkmark-round.png in Resources */,
@@ -1701,7 +1698,6 @@
 				CF19154024EE566A00E05C5C /* star.png in Resources */,
 				CF0473C4254A854D00D8ABB0 /* arrow@3x.png in Resources */,
 				FA01E72D2546E18900F8F213 /* CBBOld.TTF in Resources */,
-				0444DEFD26037696005BE1E6 /* arrowLeft@1x.png in Resources */,
 				CFA90C172473BC7E0033E69B /* splash-logo@2x.png in Resources */,
 				CF95595C246EC2DA00B326A2 /* Splash.png in Resources */,
 				CF258EF8246A6D8600765929 /* fingerprint@3x.png in Resources */,
@@ -1720,11 +1716,11 @@
 				CF9FE5272477FA520086D977 /* Grid.png in Resources */,
 				CF258F08246A7D4200765929 /* grid-view.png in Resources */,
 				CF9E5439246AB3020011A323 /* battery-1@2x.png in Resources */,
+				FA3B34CA2604AE0B00C53E27 /* arrowLeft.png in Resources */,
 				CF19153A24EE566A00E05C5C /* alert-round.png in Resources */,
 				CF19153E24EE566A00E05C5C /* close-round.png in Resources */,
 				CF95D82B2435C42B00758DF8 /* DownArrow@2x.png in Resources */,
 				CFABF5D2246FCD0800584B4E /* icon_76@2x.png in Resources */,
-				0444DEFC26037696005BE1E6 /* rightArrow@2x.png in Resources */,
 				CFA90C182473BC7E0033E69B /* splash-logo@3x.png in Resources */,
 				CF19154924EE5BE200E05C5C /* history@2x.png in Resources */,
 				CF19154B24EE5BE200E05C5C /* history.png in Resources */,
@@ -1737,27 +1733,28 @@
 				CF9FE5232477FA520086D977 /* List@2x.png in Resources */,
 				CF19152724EE50EB00E05C5C /* MNMPullToRefresh.strings in Resources */,
 				FA913F97246FF23200E99777 /* CSide.png in Resources */,
+				FA3B34CB2604AE0B00C53E27 /* rightArrow.png in Resources */,
 				CF95D8292435C42B00758DF8 /* add.png in Resources */,
 				CF955941246E6ED300B326A2 /* list-view@3x.png in Resources */,
 				CFABF5D4246FCD0800584B4E /* icon_29@2x.png in Resources */,
 				CFFFFD1824A4A79A0092290F /* battery-5@3x.png in Resources */,
 				CFA90C122473B65F0033E69B /* Launch Screen.storyboard in Resources */,
 				CF9FE5292477FA520086D977 /* ListSelected@3x.png in Resources */,
-				0444DEF826037696005BE1E6 /* arrowLeft@3x.png in Resources */,
+				FA3B34C62604AE0B00C53E27 /* arrowLeft@3x.png in Resources */,
 				CF9E5442246AC1EB0011A323 /* camera@3x.png in Resources */,
+				FA3B34C92604AE0B00C53E27 /* arrowLeft@2x.png in Resources */,
 				CF9FE5222477FA520086D977 /* Grid@2x.png in Resources */,
 				CF9C29BD2431C6E3004E32DB /* User.png in Resources */,
 				CF9FE52A2477FA520086D977 /* GridSelected@2x.png in Resources */,
 				CFABF5D1246FCD0800584B4E /* icon_29.png in Resources */,
 				CFFFFD1224A4A79A0092290F /* battery-4.png in Resources */,
+				FA3B34C72604AE0B00C53E27 /* rightArrow@2x.png in Resources */,
 				CF9E5443246AC1EB0011A323 /* camera.png in Resources */,
 				CFA05ABC247BCEDB00BEDE64 /* greenSelected@3x.png in Resources */,
 				CFA05AC0247BCEDB00BEDE64 /* radioUnselected.png in Resources */,
 				CF258F06246A7D4200765929 /* grid-view@2x.png in Resources */,
 				FA913F96246FF23200E99777 /* FSide.png in Resources */,
-				0444DEFB26037696005BE1E6 /* rightArrow@3x.png in Resources */,
 				CF19154C24EE5BE200E05C5C /* reload@2x.png in Resources */,
-				0444DEF926037696005BE1E6 /* arrowLeft@2x.png in Resources */,
 				CFA3265E24F7EC44006C4D64 /* backArr@2x.png in Resources */,
 				CFA05ABD247BCEDB00BEDE64 /* greenSelected@2x.png in Resources */,
 				CF258F04246A7D4200765929 /* linked@2x.png in Resources */,
@@ -1767,7 +1764,6 @@
 				CF9E5444246AC1EB0011A323 /* camera@2x.png in Resources */,
 				CFFFFD1524A4A79A0092290F /* battery-4@3x.png in Resources */,
 				FA01E72C2546E18900F8F213 /* CGBoldItalic.TTF in Resources */,
-				0444DEFA26037696005BE1E6 /* reload@3x.png in Resources */,
 				FA01E72E2546E18900F8F213 /* CGItalic.TTF in Resources */,
 				CF9E543C246AB3020011A323 /* battery-1@3x.png in Resources */,
 				CFABF5E1246FFBD600584B4E /* addBlack.png in Resources */,
@@ -1856,7 +1852,7 @@
 				CFABF5C7246FAF7F00584B4E /* CollectionCustomCell.m in Sources */,
 				0444DEEC2601CD20005BE1E6 /* StoredSubjectDetailVC.m in Sources */,
 				CF0473BB25497CF800D8ABB0 /* SessionReadVC.m in Sources */,
-				0444DEF0260363D1005BE1E6 /* UIFloatLabelTextField.m in Sources */,
+				FA3B34BF2604AD4500C53E27 /* UIFloatLabelTextField.m in Sources */,
 				CFA4BF51242E5683006B5928 /* LinkingVC.m in Sources */,
 				CF5359CA24A08D6400B0906B /* NSArray+SBJSON.m in Sources */,
 				CF19153824EE566A00E05C5C /* FCAlertView.m in Sources */,

@@ -28,6 +28,46 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    NSInteger intMsg = 17;
+    NSData * data = [[NSData alloc] initWithBytes:&intMsg length:1];
+    const char *byte = [data bytes];
+    unsigned int length = [data length];
+    NSString * strBits;
+
+    for (int i=0; i<length; i++)
+    {
+        char n = byte[i];
+        char buffer[9];
+        buffer[8] = 0; //for null
+        int j = 8;
+        while(j > 0)
+        {
+            if(n & 0x01)
+            {
+                buffer[--j] = '1';
+            } else
+        {
+            buffer[--j] = '0';
+        }
+        n >>= 1;
+        }
+        strBits = [NSString stringWithFormat:@"%s",buffer];
+        NSLog(@"opopoppopop=%@",strBits);
+
+}
+    NSArray * arrDays = [[NSArray alloc] initWithObjects:@"128",@"64",@"32",@"16",@"8",@"4",@"2",@"1", nil];
+    for (int i = 0; i < strBits.length; i++)
+    {
+        NSString * strStatus = [strBits substringWithRange:NSMakeRange((i*1), 1)];
+        NSLog(@"KAKPKPKPK=%@",[strBits substringWithRange:NSMakeRange((i*1), 1)]);
+
+        if ([strStatus isEqualToString:@"1"])
+        {
+            NSLog(@"Value=%@",[arrDays objectAtIndex:i]);
+        }
+    }
+//        [strDecrypted substringWithRange:NSMakeRange(2, 2)]
+        
     globalArr = [[NSMutableArray alloc] init];
     globalStatusHeight = 20;
     textSize = 20;

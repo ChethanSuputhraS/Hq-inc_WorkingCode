@@ -51,7 +51,7 @@
     [self.view addSubview:btnDone];
 
     
-    [APP_DELEGATE startHudProcess:@"Loking for sensor..."];
+    [APP_DELEGATE startHudProcess:@"Lo0king for Sensors..."];
     
     tmScan = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(timeOutAddSensor) userInfo:nil repeats:NO];
 
@@ -215,11 +215,13 @@
     {
         cell.backgroundColor = [UIColor lightGrayColor];
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
     if ([arrySensors count] > indexPath.row)
     {
         if ([[[arrySensors objectAtIndex:indexPath.row] valueForKey:@"isAdded"] isEqualToString:@"0"])
@@ -566,7 +568,7 @@
 #pragma mark - BLE Methods
 -(void)StartSensorsScanning
 {
-    [APP_DELEGATE startHudProcess:@"Loking for sensor..."];
+    [APP_DELEGATE startHudProcess:@"Looking for Sensors..."];
     
     NSInteger intMsg = [@"0" integerValue];
     NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];

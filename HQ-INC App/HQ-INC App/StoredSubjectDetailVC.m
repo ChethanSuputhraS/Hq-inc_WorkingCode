@@ -34,7 +34,10 @@
     NSMutableArray *yVals1, * yVals2,* arrTempValues;
     bool blinkStatus;
     UIFloatLabelTextField *txtPlayerName,*txtSensorTime,*txtSensorType,*txtSensorNumber;
-
+    NSMutableArray * arrSessionSensors;
+    NSMutableDictionary * dictStoredSessionData;
+    NSInteger dataFetchSensorCount;
+    NSInteger maxDataCount, startTime, endTime;
 }
 @end
 
@@ -56,7 +59,8 @@
     yVals1 = [[NSMutableArray alloc] init];
     yVals2 = [[NSMutableArray alloc] init];
     arrTempValues = [[NSMutableArray alloc] init];
-
+    dictStoredSessionData = [[NSMutableDictionary alloc] init];
+    
     [self setNeedsStatusBarAppearanceUpdate];
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
@@ -90,16 +94,24 @@
     txtPlayerName.frame = CGRectMake(0, 0, aa, 60);
     [self setTextfieldProperties:txtPlayerName withPlaceHolderText:@"Player Name" withTextSize:textSize+2];
     [APP_DELEGATE getPlaceholderText:txtPlayerName andColor:UIColor.lightGrayColor];
-    txtPlayerName.text = @"Jithi";
+    txtPlayerName.text = [APP_DELEGATE checkforValidString:[sessionDict valueForKey:@"player_name"]];
     [viewFortxtFld addSubview:txtPlayerName];
     
     txtSensorTime = [[UIFloatLabelTextField alloc]init];
     txtSensorTime.frame = CGRectMake(aa+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorTime withPlaceHolderText:@"Session Time" withTextSize:textSize];
     [APP_DELEGATE getPlaceholderText:txtSensorTime andColor:UIColor.lightGrayColor];
-    txtSensorTime.text = @"04/02/2021 04:44 PM";
     [viewFortxtFld addSubview:txtSensorTime];
     
+    double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
+    NSTimeInterval unixTimeStamp = timeStamp ;
+    NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"dd/MM/yyy hh:mm a";
+    NSString  *finalate = [dateFormatter stringFromDate:exactDate];
+    txtSensorTime.text = finalate;
+
+
     txtSensorType = [[UIFloatLabelTextField alloc]init];
     txtSensorType.frame = CGRectMake(aa*2+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorType withPlaceHolderText:@"Sensor Type" withTextSize:textSize+2];
@@ -111,46 +123,49 @@
     txtSensorNumber.frame = CGRectMake(aa*3+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorNumber withPlaceHolderText:@"Number of Sensors " withTextSize:textSize];
     [APP_DELEGATE getPlaceholderText:txtSensorNumber andColor:UIColor.lightGrayColor];
-    txtSensorNumber.text = @"1";
+    txtSensorNumber.text = [APP_DELEGATE checkforValidString:[sessionDict valueForKey:@"no_of_sensor"]];
     [viewFortxtFld addSubview:txtSensorNumber];
-    
-//    lblSubjectDetails.text = finalate;
-    
-//    [self SetupForProfileview];
-//    [self setupSecondView];
-    
+
     [self SetupGraphView];
-//    [self setDataCount];
 
-    [self gettingImg];
-    
-//        imgView.contentMode = UIViewContentModeScaleAspectFit;
-    
-    arrSessionGraphData = [[NSMutableArray alloc] init];
-    NSString * strSession = [NSString stringWithFormat:@"select * from Session_data where session_id = '%@'",[sessionDict valueForKey:@"session_id"]];
-//    NSString * strSession = [NSString stringWithFormat:@"select * from Session_data"];
+    arrSessionSensors = [[NSMutableArray alloc] init];
+    NSString * strSensorsQuery = [NSString stringWithFormat:@"select * from Sensor_Table where session_id = '%@' group by sensor_id",[sessionDict valueForKey:@"session_id"]];
+    [[DataBaseManager dataBaseManager] execute:strSensorsQuery resultsArray:arrSessionSensors];
 
-    [[DataBaseManager dataBaseManager] execute:strSession resultsArray:arrSessionGraphData];
-    [self SendTemperatureReadingtoDetailVC:arrSessionGraphData];
+    NSLog(@"=========Session Sensors=====%@",arrSessionSensors);
+
+    dataFetchSensorCount = 0;
     
+    NSInteger readInterval = [[sessionDict valueForKey:@"read_interval"] integerValue];
+    NSInteger totalMaxCount = 300 / [arrSessionSensors count];
+    if (totalMaxCount > 100)
+    {
+        totalMaxCount = 100;
+    }
+    maxDataCount = totalMaxCount;
+    
+    startTime = [[sessionDict valueForKey:@"timeStamp"] integerValue];
+    endTime = startTime + ( readInterval * maxDataCount);
+    [self SetDatetoValue:startTime withLabel:lblPreviousDate];
+    [self SetDatetoValue:endTime withLabel:lblNextDate];
+
+
+    [self FetchSensorDataQuery:0 start:startTime end:endTime];
+
     btnRead.hidden = YES;
     btnSpotCheck.hidden = YES;
     
     imgView.image = [UIImage imageNamed:@"User_Default"];
     lblName.text = [sessionDict valueForKey:@"player_name"];
-    
-    double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
-    NSTimeInterval unixTimeStamp = timeStamp ;
-    NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"dd/MM/yyy hh:mm a";
-    NSString  *finalate = [dateFormatter stringFromDate:exactDate];
+
+    [self gettingImg];
 
     [super viewDidLoad];
     
-    NSLog(@"--------------------------%@",sessionDict);
     // Do any additional setup after loading the view.
 }
+
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [tblPreviousCoreTmp reloadData];
@@ -161,126 +176,8 @@
 {
     return UIStatusBarStyleLightContent;
 }
-#pragma mark- Setup For profile View
--(void)SetupTopInformationView
-{
-    UIView * topView = [[UIView alloc]init];
-    topView.frame = CGRectMake(10, 0, self.view.frame.size.width-20, 50);
-    topView.backgroundColor = UIColor.clearColor;
-    [self.view addSubview:topView];
-    
-    UIColor * lbltxtClr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 00, self.view.frame.size.width, 50)];
-    [self setLabelProperties:lblSubjectDetails withText:@"SUBJECT DETAILS" backColor:UIColor.clearColor textColor:lbltxtClr textSize:25];
-    lblSubjectDetails.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:lblSubjectDetails];
 
 
-}
--(void)SetupForProfileview
-{
-    UIView * ProfileView = [[UIView alloc]init];
-    ProfileView.frame = CGRectMake(40, 70, self.view.frame.size.width-80, self.view.frame.size.height/3-130);
-    ProfileView.backgroundColor = UIColor.clearColor;
-    [self.view addSubview:ProfileView];
-
-    imgView = [[UIImageView alloc]init];
-    imgView.frame = CGRectMake(0, 10, ProfileView.frame.size.width-500, ProfileView.frame.size.height-50);
-    imgView.backgroundColor = UIColor.whiteColor;
-    imgView.contentMode = UIViewContentModeScaleAspectFill;
-    imgView.layer.masksToBounds = true;
-    [ProfileView addSubview:imgView];
-    
-    UIColor * lblNBGC = [UIColor colorWithRed:26.0/255 green:26.0/255 blue:26.0/255 alpha:1];
-    lblName  = [[UILabel alloc]initWithFrame:CGRectMake(0, imgView.frame.size.height, ProfileView.frame.size.width-550, 48)];
-    [self setLabelProperties:lblName withText:@"name" backColor:lblNBGC textColor:UIColor.whiteColor textSize:25];
-//    lblName.text = [dataDict objectForKey:@"name"];
-    lblName.layer.cornerRadius = 0;
-    lblName.textAlignment = NSTextAlignmentCenter;
-    [ProfileView addSubview:lblName];
-        
-    lblNumber = [[UILabel alloc]initWithFrame:CGRectMake(ProfileView.frame.size.width-550, imgView.frame.size.height, 50, 48)];
-    [self setLabelProperties:lblNumber withText:@"#" backColor:UIColor.lightGrayColor textColor:UIColor.whiteColor textSize:25 ];
-//    lblNumber.text = [dataDict objectForKey:@"number"];
-    lblNumber.textAlignment = NSTextAlignmentCenter;
-    lblNumber.layer.cornerRadius = 0;
-    [ProfileView addSubview:lblNumber];
-    
-    UILabel* lblLatestReading = [[UILabel alloc]initWithFrame:CGRectMake(imgView.frame.size.width+25, 0, self.view.frame.size.width, 50)];
-    [self setLabelProperties:lblLatestReading withText:@"Latest Readings" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-    lblLatestReading.font = [UIFont boldSystemFontOfSize:25];
-    [ProfileView addSubview:lblLatestReading];
-    
-    int zz = imgView.frame.size.width+20;
-    UIColor * LblBGcolor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    
-     lblCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(zz, 50,(ProfileView.frame.size.width-zz)/2, 50)];
-    [self setLabelProperties:lblCoreTmp withText:@" Core Tmp --NA-- " backColor:LblBGcolor textColor:UIColor.blackColor textSize:25];//98.6˚F
-    lblCoreTmp.textAlignment = NSTextAlignmentCenter;
-    [ProfileView addSubview:lblCoreTmp];
-    
-    lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake((ProfileView.frame.size.width+zz)/2+5, 50, (ProfileView.frame.size.width-zz)/2-5, 50)];
-      [self setLabelProperties:lblSkinTmp withText:@" Skin Tmp --NA-- " backColor:LblBGcolor textColor:UIColor.blackColor textSize:25];//99.2˚F
-      lblSkinTmp.textAlignment = NSTextAlignmentCenter;
-      [ProfileView addSubview:lblSkinTmp];
-
-    UILabel* lblMoreSubjDetails = [[UILabel alloc]initWithFrame:CGRectMake(zz, 110, ProfileView.frame.size.width-zz, ProfileView.frame.size.height-170)];
-    [self setLabelProperties:lblMoreSubjDetails withText:@"More Subject Details" backColor:LblBGcolor textColor:UIColor.blackColor textSize:25];
-    lblMoreSubjDetails.textAlignment = NSTextAlignmentCenter;
-    [ProfileView addSubview:lblMoreSubjDetails];
-     
-    UIImageView* imgBattery = [[UIImageView alloc]init]; // zz = imageView height
-    imgBattery.frame = CGRectMake(zz, ProfileView.frame.size.height-35, 40, 20);
-    imgBattery.image = [UIImage imageNamed:@"battery-1.png"];
-    imgBattery.backgroundColor = UIColor.clearColor;
-    [ProfileView addSubview:imgBattery];
-    
-    zz = zz + 40;
-    UILabel* lblBattery = [[UILabel alloc]initWithFrame:CGRectMake(zz, ProfileView.frame.size.height-50, 100, 50)];
-    [self setLabelProperties:lblBattery withText:@"100 %" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-    lblBattery.textAlignment = NSTextAlignmentCenter;
-    [ProfileView addSubview:lblBattery];
-    
-
-}
-#pragma mark- Second View
--(void)setupSecondView
-{
-    UIView * tblBgView = [[UIView alloc]init];
-    tblBgView.frame = CGRectMake(40, (self.view.frame.size.height/3)-55, self.view.frame.size.width-80, self.view.frame.size.height/3-50);
-    tblBgView.backgroundColor = UIColor.clearColor;
-    [self.view addSubview:tblBgView];
-    
-    UILabel* lblPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 30)];
-    [self setLabelProperties:lblPreviousCoreTmp withText:@"Previous Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
-    lblPreviousCoreTmp.font = [UIFont boldSystemFontOfSize:20]; //25
-    [tblBgView addSubview:lblPreviousCoreTmp];
-    
-    tblPreviousCoreTmp = [[UITableView alloc]initWithFrame:CGRectMake(0, 30, tblBgView.frame.size.width/2-20, tblBgView.frame.size.height-30)];
-    tblPreviousCoreTmp.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    tblPreviousCoreTmp.delegate = self;
-    tblPreviousCoreTmp.dataSource = self;
-    tblPreviousCoreTmp.clipsToBounds = true;
-    tblPreviousCoreTmp.layer.cornerRadius = 5;
-    tblPreviousCoreTmp.backgroundColor = UIColor.blackColor;
-    [tblBgView addSubview:tblPreviousCoreTmp];
-
-    UILabel* lblPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(tblBgView.frame.size.width/2+20, 0, self.view.frame.size.width, 30)];
-    [self setLabelProperties:lblPreviousSkinTmp withText:@"Previous Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
-    lblPreviousSkinTmp.font = [UIFont boldSystemFontOfSize:20]; //25
-    [tblBgView addSubview:lblPreviousSkinTmp];
-
-    int zt = tblBgView.frame.size.width/2+20;
-    tblPreviousSkinTmp = [[UITableView alloc]initWithFrame:CGRectMake(zt, 30, tblBgView.frame.size.width/2-20, tblBgView.frame.size.height-30)];
-    tblPreviousSkinTmp.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    tblPreviousSkinTmp.clipsToBounds = true;
-    tblPreviousSkinTmp.delegate = self;
-    tblPreviousSkinTmp.dataSource = self;
-    tblPreviousSkinTmp.layer.cornerRadius = 5;
-    tblPreviousSkinTmp.backgroundColor = UIColor.blackColor;
-    [tblBgView addSubview:tblPreviousSkinTmp];
-    
-}
 #pragma mark-Graph view
 -(void)SetupGraphView
 {
@@ -299,22 +196,21 @@
     UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     UIColor * LblBGcolor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
 
-
     UIButton * btnPrevious = [[UIButton alloc]initWithFrame:CGRectMake(wh+5, 0, 50, 50)];
     [self setButtonProperties:btnPrevious withTitle:@"" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:20];
     btnPrevious.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [btnPrevious addTarget:self action:@selector(btnPreviousClick) forControlEvents:UIControlEventTouchUpInside];
     btnPrevious.layer.cornerRadius = 6;
     btnPrevious.titleLabel.numberOfLines = 0;
-    [btnPrevious setImage:[UIImage imageNamed:@"arrowLeft@1x.png"] forState:UIScrollViewDecelerationRateNormal];
+    [btnPrevious setImage:[UIImage imageNamed:@"arrowLeft.png"] forState:UIScrollViewDecelerationRateNormal];
     [graphBgView addSubview:btnPrevious];
     
-    UILabel* lblPreDate = [[UILabel alloc]initWithFrame:CGRectMake(wh*2-80, 0, wh+75, 50)];
-    [self setLabelProperties:lblPreDate withText:@"04/02/2021 04:44 PM" backColor:LblBGcolor textColor:UIColor.blackColor textSize:textSize];
-    lblPreDate.textAlignment = NSTextAlignmentCenter;
-    [graphBgView addSubview:lblPreDate];
+    lblPreviousDate = [[UILabel alloc]initWithFrame:CGRectMake(wh*2-80, 0, wh+75, 50)];
+    [self setLabelProperties:lblPreviousDate withText:@"04/02/2021 04:44 PM" backColor:LblBGcolor textColor:UIColor.blackColor textSize:textSize];
+    lblPreviousDate.textAlignment = NSTextAlignmentCenter;
+    [graphBgView addSubview:lblPreviousDate];
     
-    UILabel* lblNextDate = [[UILabel alloc]initWithFrame:CGRectMake(wh*3+10, 0, wh+75, 50)];
+    lblNextDate = [[UILabel alloc]initWithFrame:CGRectMake(wh*3+10, 0, wh+75, 50)];
     [self setLabelProperties:lblNextDate withText:@"04/02/2021 04:54 PM" backColor:LblBGcolor textColor:UIColor.blackColor textSize:textSize];
     lblNextDate.textAlignment = NSTextAlignmentCenter;
     [graphBgView addSubview:lblNextDate];
@@ -325,7 +221,7 @@
     [btnNext addTarget:self action:@selector(btnNextClick) forControlEvents:UIControlEventTouchUpInside];
     btnNext.layer.cornerRadius = 6;
     btnNext.titleLabel.numberOfLines = 0;
-    [btnNext setImage:[UIImage imageNamed:@"rightArrow@1x.png"] forState:UIScrollViewDecelerationRateNormal];
+    [btnNext setImage:[UIImage imageNamed:@"rightArrow.png"] forState:UIScrollViewDecelerationRateNormal];
     [graphBgView addSubview:btnNext];
     
        // CHARTVIEW
@@ -381,27 +277,6 @@
     rightAxis.axisMinimum = 0.0;
     rightAxis.drawGridLinesEnabled = NO;
     rightAxis.granularityEnabled = NO;
-
-    // css commented
-//    UILabel* lblGraphPreviousSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(10, _chartView.frame.size.height+40, 200, 40)];
-//       [self setLabelProperties:lblGraphPreviousSkinTmp withText:@"Previous Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
-//       [graphBgView addSubview:lblGraphPreviousSkinTmp];
-//
-//       UILabel* lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake(210, _chartView.frame.size.height+40, 60, 40)];
-//       [self setLabelProperties:lblSkinTmp withText:@" ---" backColor:UIColor.clearColor textColor:UIColor.greenColor textSize:20];
-//       [graphBgView addSubview:lblSkinTmp];
-//
-//       UILabel* lblGraphPreviousCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake(0, _chartView.frame.size.height+40, graphBgView.frame.size.width-80, 40)];
-//       [self setLabelProperties:lblGraphPreviousCoreTmp withText:@"Previous Core Temp" backColor:UIColor.clearColor textColor:UIColor.blueColor textSize:20];
-//       lblGraphPreviousCoreTmp.textAlignment = NSTextAlignmentRight;
-//       [graphBgView addSubview:lblGraphPreviousCoreTmp];
-//
-//       UILabel* lblCoreTmp1 = [[UILabel alloc]initWithFrame:CGRectMake(lblGraphPreviousCoreTmp.frame.size.width, _chartView.frame.size.height+40, 60, 40)];
-//       [self setLabelProperties:lblCoreTmp1 withText:@"---" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
-//       lblCoreTmp1.textAlignment = NSTextAlignmentRight;
-//       [graphBgView addSubview:lblCoreTmp1];
-//
-
 }
 #pragma mark- Table View Method
  -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -455,8 +330,6 @@
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
     cell.lblTemp.frame = CGRectMake(tblPreviousCoreTmp.frame.size.width/2-10, 0, tblPreviousCoreTmp.frame.size.width/2, 40);
     
-    NSString *string = lblCoreTmp.text;
-    NSString *newStr = [string substringFromIndex:10];
     
     if (tableView == tblPreviousCoreTmp)
     {
@@ -476,29 +349,6 @@
     }
     
     return cell;
-}
-#pragma mark- Img Scalling
--(void)gettingImg
-{
-    NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
-    NSData *pngData = [NSData dataWithContentsOfFile:filePath];
-    UIImage * mainImage = [UIImage imageWithData:pngData];
-    UIImage * image = [self scaleMyImage:mainImage];
-    imgView.image = image;
-}
--(UIImage *)scaleMyImage:(UIImage *)newImg
-{
-    UIGraphicsBeginImageContext(CGSizeMake(newImg.size.width/2,newImg.size.height/2));
-    [newImg drawInRect: CGRectMake(0, 0, newImg.size.width/2, newImg.size.height/2)];
-    UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return smallImage;
-}
-- (NSString *)documentsPathForFileName:(NSString *)name
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-    NSString *documentsPath = [paths objectAtIndex:0];
-    return [documentsPath stringByAppendingPathComponent:name];
 }
 #pragma mark-All buttons deligates
 -(void)btnDoneClick
@@ -555,214 +405,149 @@
 }
 -(void)btnPreviousClick
 {
+    NSInteger sesstionTime = [[sessionDict valueForKey:@"timeStamp"] integerValue];
     
+    NSInteger readInterval = [[sessionDict valueForKey:@"read_interval"] integerValue];
+    NSInteger tmpStartTime = 0, tmpEndTime = 0;
+    NSInteger storedStart = startTime;
+    tmpStartTime = startTime - ( readInterval * maxDataCount);
+    tmpEndTime = storedStart;
+    if (sesstionTime == tmpEndTime)
+    {
+        
+    }
+    else
+    {
+        dataFetchSensorCount = 0;
+        [self FetchSensorDataQuery:1 start:tmpStartTime end:tmpEndTime];
+    }
+
 }
 -(void)btnNextClick
 {
+    dataFetchSensorCount = 0;
+    NSInteger readInterval = [[sessionDict valueForKey:@"read_interval"] integerValue];
+
+    NSInteger tmpStartTime = 0, tmpEndTime = 0;
+    
+    tmpStartTime = endTime;
+    tmpEndTime = tmpStartTime + ( readInterval * maxDataCount);
+
+    [self FetchSensorDataQuery:2 start:tmpStartTime end:tmpEndTime];
+}
+-(void)FetchSensorDataQuery:(NSInteger)isAction start:(NSInteger)tmpStartTime end:(NSInteger)tmpEndTime
+{
+    BOOL isAllSensorAccessed = NO;
+    if (dataFetchSensorCount == [arrSessionSensors count])
+    {
+        isAllSensorAccessed = YES;
+        [self SendTemperatureReadingtoDetailVC:arrSessionGraphData];
+    }
+    else if([arrSessionSensors count] > dataFetchSensorCount)
+    {
+        isAllSensorAccessed = NO;
+        
+        NSString * strSensorid = [[arrSessionSensors objectAtIndex:dataFetchSensorCount]valueForKey:@"sensor_id"];
+        NSString * strSensorType = [[arrSessionSensors objectAtIndex:dataFetchSensorCount]valueForKey:@"sensor_type"];
+
+        NSMutableArray * arrData = [[NSMutableArray alloc] init];
+        NSString * strQuery = [NSString stringWithFormat:@"select * from Session_data where session_id = '1' and sensor_id = '%@' and timeStamp >= %ld and timeStamp <= %ld limit %ld",strSensorid,(long)tmpStartTime,(long)tmpEndTime, (long)maxDataCount];
+        [[DataBaseManager dataBaseManager] execute:strQuery resultsArray:arrData];
+
+        if ([arrData count] > 0)
+        {
+            [self SetDatetoValue:startTime withLabel:lblPreviousDate];
+            [self SetDatetoValue:endTime withLabel:lblNextDate];
+            
+            startTime = tmpStartTime;
+            endTime = tmpEndTime;
+            
+            NSMutableArray * arrGraph = [[NSMutableArray alloc] init];
+            for (int i =0; i < [arrData count]; i++)
+            {
+                NSString * strTemp = [[arrData objectAtIndex:i] valueForKey:@"temp"];
+                [arrGraph addObject:[[ChartDataEntry alloc] initWithX:i y:[strTemp doubleValue] ]];
+                [arrTempValues addObject:[NSNumber numberWithDouble:[strTemp doubleValue] ]];
+
+            }
+            NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+            [dict setObject:arrGraph forKey:@"data"];
+            [dict setObject:strSensorid forKey:@"sensor_id"];
+            [dict setObject:strSensorType forKey:@"sensor_type"];
+
+            [dictStoredSessionData setObject:dict forKey:strSensorid];
+
+
+        }
+
+        dataFetchSensorCount = dataFetchSensorCount + 1;
+        [self FetchSensorDataQuery:isAction start:tmpStartTime end:tmpEndTime];
+
+
+    }
     
 }
-- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+-(void)fetchSessionDatafromDatabase
 {
-    switch (result)
-    {
-        case MFMailComposeResultCancelled:
-            NSLog(@"Mail cancelled");
-            break;
-        case MFMailComposeResultSaved:
-            NSLog(@"Mail saved");
-            break;
-        case MFMailComposeResultSent:
-            NSLog(@"Mail sent");
-            break;
-        case MFMailComposeResultFailed:
-            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
-            break;
-        default:
-            break;
-    }
-    [self dismissViewControllerAnimated:YES completion:NULL];
 }
+#pragma mark : Set Temperature Data to graph
 -(void)SendTemperatureReadingtoDetailVC:(NSMutableArray *)arrSensorData;
 {
-    for (int i = 0; i < [arrSensorData count]; i++)
-    {
-        NSString * strSensorID = [[arrSensorData objectAtIndex:i] valueForKey:@"sensor_id"];
-        NSString * strTemp = [[arrSensorData objectAtIndex:i] valueForKey:@"temp"];
-                
-        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"dd/MM/yyy hh:mm:ss";
-        NSString  *dateString ;
-        
-        if (isfromSessionList == YES)
-        {
-            double timeStamp = [[[arrSensorData objectAtIndex:i] valueForKey:@"timestamp"] doubleValue];
-            NSTimeInterval unixTimeStamp = timeStamp ;
-            NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-            dateString = [dateFormatter stringFromDate:exactDate];
-        }
-        else
-        {
-            NSDate *exactDate = [NSDate date];
-            dateString = [dateFormatter stringFromDate:exactDate];
-        }
-        
-        if ([strTemp intValue] > 0)
-        {
-            if ([strTemp length] > 3)
-            {
-                NSString * strdotBefore = [strTemp substringWithRange:NSMakeRange(0, 2)];
-                strTemp = [NSString stringWithFormat:@"%@%@",strdotBefore,[strTemp substringWithRange:NSMakeRange(2, [strTemp length] - 2)]];
-            }
-            NSString * strDataType = @"Skin"; //if Sensor type dermal then its Core, if its Ingestible then its Skin
-            if ([[arrGlobalDevices valueForKey:@"sensor_id"] containsObject:strSensorID])
-            {
-                NSInteger foundIndex = [[arrGlobalDevices valueForKey:@"sensor_id"] indexOfObject:strSensorID];
-                if (foundIndex != NSNotFound)
-                {
-                    if ([arrGlobalDevices count] > foundIndex)
-                    {
-                        if ([[[arrGlobalDevices objectAtIndex:foundIndex] valueForKey:@"sensor_type"] isEqualToString:@"Ingestible"])
-                        {
-                            strDataType = @"Core";
-                        }
-                    }
-                }
-            }
-            xCount = xCount + 1;
-
-            if ([strDataType isEqualToString:@"Core"])
-            {
-                lblCoreTmp.text = [NSString stringWithFormat:@"Core Tmp %@˚C",strTemp];
-                lblCoreTmp.backgroundColor = [UIColor blueColor];
-                
-                [blinkTimerl invalidate];
-                blinkTimerl = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(0.1) target:self selector:@selector(animateBlinking) userInfo:nil repeats:TRUE];
-
-//                [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(animateBlinking) userInfo:nil repeats:YES];
-//                [self performSelector:@selector(stopBlinking) withObject:nil afterDelay:0.2];
-                if ([arrCoreTemp count] == 0)
-                {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp",dateString,@"time", nil];
-                    [arrCoreTemp addObject:dict];
-                }
-                else
-                {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp", dateString,@"time", nil];
-                    [arrCoreTemp insertObject:dict atIndex:0];
-                }
-                [tblPreviousCoreTmp reloadData];
-                
-                [yVals1 addObject:[[ChartDataEntry alloc] initWithX:xCount y:[strTemp doubleValue]]];
-                [APP_DELEGATE endHudProcess];
-                NSLog(@"<=========Core========>%@",strTemp);
-            }
-            else
-            {
-                lblSkinTmp.text = [NSString stringWithFormat:@"Skin Tmp %@˚C",strTemp];
-                if ([arrSkinsTemp count] == 0)
-                {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp", dateString,@"time", nil];
-                    [arrSkinsTemp addObject:dict];
-                }
-                else
-                {
-                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorID,@"sensor_id",strDataType,@"sensor_type",strTemp,@"temp", dateString,@"time", nil];
-                    [arrSkinsTemp insertObject:dict atIndex:0];
-                }
-                [tblPreviousSkinTmp reloadData];
-                [yVals2 addObject:[[ChartDataEntry alloc] initWithX:xCount y:[strTemp doubleValue]]];
-                NSLog(@"<=========Skin========>%@",strTemp);
-            }
-            [arrTempValues addObject:[NSNumber numberWithDouble:[strTemp doubleValue]]];
-        }
-    }
-    
     double max1 = [[arrTempValues valueForKeyPath: @"@max.self"] doubleValue];
     double min1 = [[arrTempValues valueForKeyPath: @"@min.self"] doubleValue];
 
-    _chartView.leftAxis.axisMaximum = max1 + 0.1;
-    _chartView.leftAxis.axisMinimum = min1 - 0.1;
-
-     /*for ( int i = 0; i<50; i++)
-     {
-         double strCoreTemp = [self getRandomNumberBetween:92 and:100.4];
-         [yVals1 addObject:[[ChartDataEntry alloc] initWithX:i y:strCoreTemp]];
-     }
+    _chartView.leftAxis.axisMaximum = max1 + 2.1;
+    _chartView.leftAxis.axisMinimum = min1 - 2.1;
     
-    for ( int i = 0; i<50; i++)
-    {
-        double strCoreTemp = [self getRandomNumberBetween:92 and:100.4];
-        [yVals2 addObject:[[ChartDataEntry alloc] initWithX:i y:strCoreTemp]];
-    }*/
-        
-    LineChartDataSet *set1 = nil, *set2 = nil;
-    
-    if (_chartView.data.dataSetCount > 0)
-    {
-        set1 = (LineChartDataSet *)_chartView.data.dataSets[0];
-        set2 = (LineChartDataSet *)_chartView.data.dataSets[1];
-        [set1 replaceEntries:yVals1];
-        [set2 replaceEntries:yVals2];
-        [_chartView.data notifyDataChanged];
-        [_chartView notifyDataSetChanged];
-    }
-    else
-    {
-        set1 = [[LineChartDataSet alloc] initWithEntries:yVals1 label:@"Core Temp"];
-        set1.axisDependency = AxisDependencyLeft;
-        [set1 setColor:[UIColor colorWithRed:51/255.f green:181/255.f blue:229/255.f alpha:1.f]];
-        [set1 setCircleColor:UIColor.whiteColor];
-        set1.lineWidth = 1.8;
-        set1.circleRadius = 0.0;
-        set1.fillColor = UIColor.blueColor; //[UIColor colorWithRed:51/255.f green:181/255.f blue:229/255.f alpha:1.f];
-        set1.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
-        set1.drawCircleHoleEnabled = NO;
-        set1.valueTextColor = UIColor.whiteColor;
-        set1.drawHorizontalHighlightIndicatorEnabled = NO;
-        
-        set2 = [[LineChartDataSet alloc] initWithEntries:yVals2 label:@"Skin Temp"];
-        set2.axisDependency = AxisDependencyLeft;
-        [set2 setColor:[UIColor redColor]];
-        [set2 setCircleColor:UIColor.whiteColor];
-        set2.lineWidth = 1.5;
-        set2.circleRadius = 0.0;
-        set2.fillColor = UIColor.greenColor;
-        set2.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
-        set2.drawCircleHoleEnabled = NO;
-        
+        NSArray * allDataKeys = [dictStoredSessionData allKeys];
         NSMutableArray *dataSets = [[NSMutableArray alloc] init];
-        [dataSets addObject:set1];
-        [dataSets addObject:set2];
-        
+
+        for (int i =0; i < [allDataKeys count]; i++)
+        {
+            NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+            dict = [dictStoredSessionData valueForKey:[allDataKeys objectAtIndex:i]];
+            
+            NSString * strType = @"Ingestible";
+            UIColor * colorSet = [UIColor colorWithRed:51/255.f green:181/255.f blue:229/255.f alpha:1.f];
+            UIColor * colorFill = UIColor.blueColor;
+            if ([[dict valueForKey:@"sensor_type"] isEqualToString:@"04"])//3-Ingestible (Core), 4-Dermal (Skin)
+            {
+                strType = @"Dermal";
+                colorSet = [UIColor redColor];
+                colorFill = UIColor.greenColor;
+            }
+            
+            NSMutableArray * arrData = [dict valueForKey:@"data"];
+            
+            LineChartDataSet * set12 = [[LineChartDataSet alloc] initWithEntries:arrData label:strType];
+            set12.axisDependency = AxisDependencyLeft;
+            [set12 setColor:colorSet];
+            [set12 setCircleColor:UIColor.whiteColor];
+            set12.lineWidth = 1.8;
+            set12.circleRadius = 0.0;
+            set12.fillColor = colorFill; //[UIColor colorWithRed:51/255.f green:181/255.f blue:229/255.f alpha:1.f];
+            set12.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
+            set12.drawCircleHoleEnabled = NO;
+            set12.valueTextColor = UIColor.whiteColor;
+            set12.drawHorizontalHighlightIndicatorEnabled = NO;
+            
+            [dataSets addObject:set12];
+        }
         LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
         [data setValueTextColor:UIColor.clearColor];
         [data setValueFont:[UIFont systemFontOfSize:9.f]];
-        
         _chartView.data = data;
-    }
 }
--(void)animateBlinking
+-(void)SetDatetoValue:(NSInteger )strDate withLabel:(UILabel *)lbl
 {
-    if (blinkCount >= 6)
-    {
-        blinkCount = 0;
-        [blinkTimerl invalidate];
-        blinkTimerl = nil;
-    }
-    else
-    {
-        if(blinkStatus == NO)
-        {
-           lblCoreTmp.backgroundColor = [UIColor blueColor];
-          blinkStatus = YES;
-        }
-        else
-        {
-           lblCoreTmp.backgroundColor = [UIColor whiteColor];
-           blinkStatus = NO;
-        }
-        blinkCount = blinkCount + 1;
-    }
+    double timeStamp = strDate;
+    NSTimeInterval unixTimeStamp = timeStamp ;
+    NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"dd/MM/yyy hh:mm a";
+    NSString  *finalate = [dateFormatter stringFromDate:exactDate];
+    lbl.text = finalate;
+
 }
 #pragma mark- Properties of Button and Lable
 -(void)setButtonProperties:(UIButton *)btn withTitle:(NSString *)strText backColor:(UIColor *)backColor textColor:(UIColor *)txtColor txtSize:(int)txtSize
@@ -799,4 +584,118 @@
     txtfld.font = [UIFont fontWithName:CGRegular size:textSize];
 
 }
+-(void)setTemperoryData
+{
+    arrSessionGraphData = [[NSMutableArray alloc] init];
+    NSString * strSession = [NSString stringWithFormat:@"select * from Session_data where session_id = '%@'",[sessionDict valueForKey:@"session_id"]];
+
+    [[DataBaseManager dataBaseManager] execute:strSession resultsArray:arrSessionGraphData];
+
+    NSString * strDelete = [NSString stringWithFormat:@"delete from Session_data"];
+    [[DataBaseManager dataBaseManager] execute:strDelete];
+
+    int finalDate = 1612437292;
+    for (int i = 0; i < 20; i++)
+    {
+        for (int j = 0; j < 15; j++)
+        {
+
+            float tempValue = [[[arrSessionGraphData objectAtIndex:j] valueForKey:@"temp"] floatValue];
+            float x = (arc4random()%10);
+            float finalTemp = tempValue + (x/10);
+            NSLog(@"Total Finla ==%f",finalTemp);
+
+            finalDate = finalDate + 2;
+            NSString * strDataQuery = [NSString stringWithFormat:@"insert into 'Session_data' ('session_id', 'temp', 'timestamp', 'sensor_type', 'sensor_id', 'packet') values(\"%@\",\"%f\",\"%d\",\"%@\",\"%@\",\"%@\")",@"1",finalTemp,finalDate,@"Ingestible",@"1b04",@"fc00010bb40bb20bb20bb00bb00bae00"];
+                    [[DataBaseManager dataBaseManager] execute:strDataQuery];
+
+        }
+    }
+
+     finalDate = 1612437292;
+    for (int i = 0; i < 20; i++)
+    {
+        for (int j = 0; j < 18; j++)
+        {
+
+            float tempValue = [[[arrSessionGraphData objectAtIndex:j] valueForKey:@"temp"] floatValue];
+            float x = (arc4random()%10);
+            float finalTemp = tempValue + (x/10);
+            NSLog(@"Total Finla ==%f",finalTemp);
+
+            finalDate = finalDate + 2;
+            NSString * strDataQuery = [NSString stringWithFormat:@"insert into 'Session_data' ('session_id', 'temp', 'timestamp', 'sensor_type', 'sensor_id', 'packet') values(\"%@\",\"%f\",\"%d\",\"%@\",\"%@\",\"%@\")",@"1",finalTemp,finalDate,@"Dermal",@"1b05",@"fc00010bb40bb20bb20bb00bb00bae00"];
+                    [[DataBaseManager dataBaseManager] execute:strDataQuery];
+
+        }
+    }
+}
+- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Mail saved");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
+            break;
+        default:
+            break;
+    }
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+-(void)animateBlinking
+{
+    if (blinkCount >= 6)
+    {
+        blinkCount = 0;
+        [blinkTimerl invalidate];
+        blinkTimerl = nil;
+    }
+    else
+    {
+        if(blinkStatus == NO)
+        {
+           lblCoreTmp.backgroundColor = [UIColor blueColor];
+          blinkStatus = YES;
+        }
+        else
+        {
+           lblCoreTmp.backgroundColor = [UIColor whiteColor];
+           blinkStatus = NO;
+        }
+        blinkCount = blinkCount + 1;
+    }
+}
+#pragma mark- Img Scalling
+-(void)gettingImg
+{
+    NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
+    NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+    UIImage * mainImage = [UIImage imageWithData:pngData];
+    UIImage * image = [self scaleMyImage:mainImage];
+    imgView.image = image;
+}
+-(UIImage *)scaleMyImage:(UIImage *)newImg
+{
+    UIGraphicsBeginImageContext(CGSizeMake(newImg.size.width/2,newImg.size.height/2));
+    [newImg drawInRect: CGRectMake(0, 0, newImg.size.width/2, newImg.size.height/2)];
+    UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return smallImage;
+}
+- (NSString *)documentsPathForFileName:(NSString *)name
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    return [documentsPath stringByAppendingPathComponent:name];
+}
+
 @end
