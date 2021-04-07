@@ -508,6 +508,7 @@
 		FA6DA7DA25CE7B2E00F76581 /* User_Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = User_Default.png; sourceTree = "<group>"; };
 		FA913F94246FF23200E99777 /* FSide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FSide.png; sourceTree = "<group>"; };
 		FA913F95246FF23200E99777 /* CSide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CSide.png; sourceTree = "<group>"; };
+		FA954A6F261749030036B3BB /* HQ-INC App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HQ-INC App.entitlements"; sourceTree = "<group>"; };
 		FA9DB1EE25CD706B003D40D2 /* SessionListVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionListVC.h; sourceTree = "<group>"; };
 		FA9DB1EF25CD706B003D40D2 /* SessionListVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionListVC.m; sourceTree = "<group>"; };
 		FA9DB1F125CD752F003D40D2 /* SessionPlayersVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionPlayersVC.h; sourceTree = "<group>"; };
@@ -571,6 +572,7 @@
 		ABC81131242A264700362979 /* HQ-INC App */ = {
 			isa = PBXGroup;
 			children = (
+				FA954A6F261749030036B3BB /* HQ-INC App.entitlements */,
 				CF9C29AE2431C6E2004E32DB /* HelperClass */,
 				CF9D8D76242C7419004B167E /* Constants */,
 				ABC81132242A264700362979 /* AppDelegate.h */,
@@ -2032,8 +2034,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "HQ-INC App/HQ-INC App.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = R4VZDFK7M8;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2049,7 +2052,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.succorfish.HQ-INC-App";
 				PRODUCT_MODULE_NAME = HQ_INC_App;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = Global_App_Dev_Profile_2021;
 				SWIFT_OBJC_BRIDGING_HEADER = "HQ-INC App/HQ-INC App-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2066,8 +2069,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "HQ-INC App/HQ-INC App.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = R4VZDFK7M8;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2083,7 +2087,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.succorfish.HQ-INC-App";
 				PRODUCT_MODULE_NAME = HQ_INC_App;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = Global_App_Dev_Profile_2021;
 				SWIFT_OBJC_BRIDGING_HEADER = "HQ-INC App/HQ-INC App-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;

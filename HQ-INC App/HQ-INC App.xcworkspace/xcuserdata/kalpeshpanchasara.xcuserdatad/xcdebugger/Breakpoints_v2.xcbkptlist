@@ -32,7 +32,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "876"
             endingLineNumber = "876"
-            landmarkName = "-AlertViewFCTypeSuccess:"
+            landmarkName = "-SendTemperatureReadingtoDetailVC:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "947"
             endingLineNumber = "947"
-            landmarkName = "-exportCSV"
+            landmarkName = "-SendTemperatureReadingtoDetailVC:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -241,6 +241,22 @@
             startingLineNumber = "407"
             endingLineNumber = "407"
             landmarkName = "-btnPreviousClick"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5B8CC1E7-7BFB-491F-AE38-9E909251444D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HQ-INC App/FirmWareUpdateVC.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "413"
+            endingLineNumber = "413"
+            landmarkName = "-btnOpenfileClick"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

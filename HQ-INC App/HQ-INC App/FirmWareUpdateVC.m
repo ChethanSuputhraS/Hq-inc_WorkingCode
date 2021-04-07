@@ -106,9 +106,9 @@
      [btnDone setTitle:@"Done" forState:UIControlStateNormal];
      btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
-     [self.view addSubview:btnDone];
+//     [self.view addSubview:btnDone];
     
-    btnUpdateFirmWare = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-120, DEVICE_WIDTH-20, 50)];
+    btnUpdateFirmWare = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
     [self setButtonProperties:btnDone withTitle:@"Open file" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnUpdateFirmWare.layer.cornerRadius = 5;
     [btnUpdateFirmWare setTitle:@"Open file" forState:UIControlStateNormal];
@@ -412,12 +412,86 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 }
 -(void)btnOpenfileClick
 {
-    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.item"]
-                      inMode:UIDocumentPickerModeImport];
+    /*["com.apple.iwork.pages.pages", "com.apple.iwork.numbers.numbers", "com.apple.iwork.keynote.key","public.image", "com.apple.application", "public.item","public.data", "public.content", "public.audiovisual-content", "public.movie", "public.audiovisual-content", "public.video", "public.audio", "public.text", "public.data", "public.zip-archive", "com.pkware.zip-archive", "public.composite-content", "public.text"] */
+    
+    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"com.apple.iwork.pages.pages", @"com.apple.iwork.numbers.numbers", @"com.apple.iwork.keynote.key",@"public.item"] inMode:UIDocumentPickerModeImport];
+
+//    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.item"]
+//                      inMode:UIDocumentPickerModeImport];
     documentPicker.delegate = self;
     documentPicker.modalPresentationStyle = UIModalPresentationFormSheet;
 
     [self presentViewController:documentPicker animated:YES completion:nil];
+}
+-(void)refreshBtnClick
+{
+    //[self setupForAddSensor];
+    [[[BLEManager sharedManager] foundDevices] removeAllObjects];
+    [[BLEManager sharedManager] rescan];
+    [tblMonitorList reloadData];
+    
+    NSArray * tmparr = [[BLEManager sharedManager]getLastConnected];
+    for (int i=0; i<tmparr.count; i++)
+    {
+        CBPeripheral * p = [tmparr objectAtIndex:i];
+        NSString * strCurrentIdentifier = [NSString stringWithFormat:@"%@",p.identifier];
+        if ([[arrGlobalDevices valueForKey:@"identifier"] containsObject:strCurrentIdentifier])
+        {
+            NSInteger  foudIndex = [[arrGlobalDevices valueForKey:@"identifier"] indexOfObject:strCurrentIdentifier];
+            if (foudIndex != NSNotFound)
+            {
+                if ([arrGlobalDevices count] > foudIndex)
+                {
+                    if (![[[[BLEManager sharedManager] foundDevices] valueForKey:@"identifier"] containsObject:strCurrentIdentifier])
+                    {
+                        [[[BLEManager sharedManager] foundDevices] addObject:[arrGlobalDevices objectAtIndex:foudIndex]];
+                    }
+                }
+            }
+        }
+    }
+    
+    if (globalPeripheral.state == CBPeripheralStateConnected)
+    {
+        NSMutableArray * arrDevices = [[NSMutableArray alloc] init];
+        arrDevices =[[BLEManager sharedManager] foundDevices];
+        if (![[arrDevices valueForKey:@"peripheral"] containsObject:globalPeripheral])
+        {
+            if ([[arrGlobalDevices valueForKey:@"peripheral"] containsObject:globalPeripheral])
+            {
+                NSInteger foundIndex = [[arrGlobalDevices valueForKey:@"peripheral"] indexOfObject:globalPeripheral];
+                if (foundIndex != NSNotFound)
+                {
+                    if ([arrGlobalDevices count] > foundIndex)
+                    {
+                        [[[BLEManager sharedManager] foundDevices] addObject:[arrGlobalDevices objectAtIndex:foundIndex]];
+                    }
+                }
+            }
+            else
+            {
+                NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:globalPeripheral.identifier,@"identifier",globalPeripheral,@"peripheral",globalPeripheral.name,@"name",@"NA",@"bleAddress", nil];
+                [[[BLEManager sharedManager] foundDevices] addObject:dict];
+            }
+        }
+        [tblMonitorList reloadData];
+    }
+    if ( [[[BLEManager sharedManager] foundDevices] count] >0)
+    {
+        tblMonitorList.hidden = false;
+        lblNoDevice.hidden = true;
+//        [advertiseTimer invalidate];
+//        advertiseTimer = nil;
+        [tblMonitorList reloadData];
+    }
+    else
+    {
+        tblMonitorList.hidden = true;
+        lblNoDevice.hidden = false;
+//        [advertiseTimer invalidate];
+//        advertiseTimer = nil;
+//        advertiseTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(AdvertiseTimerMethod) userInfo:nil repeats:NO];
+    }
 }
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
