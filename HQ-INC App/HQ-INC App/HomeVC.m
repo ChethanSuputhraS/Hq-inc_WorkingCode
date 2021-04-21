@@ -333,11 +333,13 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 }
 -(void)DeviceDidDisConnectNotification:(NSNotification*)notification//Disconnect periperal
 {
-    dispatch_async(dispatch_get_main_queue(), ^(void){
+    dispatch_async(dispatch_get_main_queue(), ^(void)
+    {
         [[[BLEManager sharedManager] foundDevices] removeAllObjects];
         [[BLEManager sharedManager] rescan];
         [self->tblDeviceList reloadData];
-        [APP_DELEGATE endHudProcess];});
+        [APP_DELEGATE endHudProcess];
+    });
 }
 -(void)AuthenticationCompleted:(NSNotification *)notify
 {

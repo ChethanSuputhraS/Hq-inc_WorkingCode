@@ -273,7 +273,7 @@ static DataBaseManager * dataBaseManager = nil;
     int rc;
     
     // SQL to create new database
-    NSArray* queries = [NSArray arrayWithObjects:@"CREATE TABLE 'Alarm_Table' ('id' INTEGER PRIMARY KEY  NOT NULL, 'high_ingest_F' VARCHAR, 'low_ingest_F' VARCHAR, 'high_dermal_F' VARCHAR, 'low_dermal_F' VARCHAR, 'high_ingest_C' VARCHAR, 'low_ingest_C' VARCHAR, 'high_dermal_C' VARCHAR, 'low_dermal_C' VARCHAR, 'battery_alarm' VARCHAR, 'quantity' VARCHAR)",nil];
+    NSArray* queries = [NSArray arrayWithObjects:@"CREATE TABLE 'Alarm_Table' ('id' INTEGER PRIMARY KEY  NOT NULL, 'high_ingest_F' VARCHAR, 'low_ingest_F' VARCHAR, 'high_dermal_F' VARCHAR, 'low_dermal_F' VARCHAR, 'high_ingest_C' VARCHAR, 'low_ingest_C' VARCHAR, 'high_dermal_C' VARCHAR, 'low_dermal_C' VARCHAR, 'battery_alarm' VARCHAR, 'quantity' VARCHAR, 'celciusSelect' VARCHAR)",nil];
     
     
     if(queries != nil)

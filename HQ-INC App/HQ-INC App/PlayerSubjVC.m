@@ -231,11 +231,6 @@
 {
         return arrSubjects.count+15;
 }
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    CGFloat vWidth = (DEVICE_WIDTH/3)-10;
-    return CGSizeMake(vWidth, vWidth + 20);
-}
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     CollectionCustomCell *cell=[collectionView  dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
@@ -320,11 +315,15 @@
     }
     return cell;
 }
-
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat vWidth = (DEVICE_WIDTH/3)-10;
+    return CGSizeMake(vWidth, vWidth + 20);
+}
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-//        [self InsertRecordTbleData];
+
+    //        [self InsertRecordTbleData];
     if (arrSubjects.count > indexPath.row)
     {
         globalSubjectDetailVC = [[SubjDetailsVC alloc]init];
@@ -337,6 +336,7 @@
         globalSbuSetupVC.isFromEdit = NO;
         [self.navigationController pushViewController:globalSbuSetupVC animated:true];
     }
+    
     NSLog(@"selected index=%ld %ld", (long)indexPath.item, (long)indexPath.row);
 }
 #pragma mark - Tableview Methods

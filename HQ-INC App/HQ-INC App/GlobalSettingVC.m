@@ -282,19 +282,39 @@
     [self setLabelProperties:lblPersentage withText:@"%" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:25];
     [viewBgAddsetng addSubview:lblPersentage];
     
-    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"isCelsicusSelect"] isEqualToString:@"Yes"])
+//    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"isCelsicusSelect"] isEqualToString:@"Yes"])
+//    {
+//        isCClicked = YES;
+//        btnSwitchC.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
+//        btnSwitchF.backgroundColor = UIColor.clearColor;
+//    }
+//     else
+//     {
+//         isCClicked = NO;
+//         btnSwitchF.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
+//         btnSwitchC.backgroundColor = UIColor.clearColor;
+//    }
+    
+    
+   NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
+    NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
+    [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
+    
+    if (arrAlarm.count > 0)
     {
-        isCClicked = YES;
-        btnSwitchC.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
-        btnSwitchF.backgroundColor = UIColor.clearColor;
-    }
-     else
-     {
-         isCClicked = NO;
-         btnSwitchF.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
-         btnSwitchC.backgroundColor = UIColor.clearColor;
+        if ([[[arrAlarm objectAtIndex:0] valueForKey:@"celciusSelect"] isEqual:@"1"])
+        {
+            btnSwitchC.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
+            btnSwitchF.backgroundColor = UIColor.clearColor;
+        }
+        else
+        {
+            btnSwitchF.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
+            btnSwitchC.backgroundColor = UIColor.clearColor;
+        }
     }
 }
+    
 #pragma mark-Global sensor chek
 -(void)setupGlobalSeneorCheck
 {
@@ -371,6 +391,7 @@
     txtLowTmpIngst.text = [NSString stringWithFormat:@"%@ºC" ,[NSString stringWithFormat:@"%.02f", lowIngestC]];
     txtHighTmpDerml.text = [NSString stringWithFormat:@"%@ºC" ,[NSString stringWithFormat:@"%.02f", highDermalC]];
     txtLowTmpDerml.text = [NSString stringWithFormat:@"%@ºC" ,[NSString stringWithFormat:@"%.02f", lowDermalC]];
+    
 }
 -(void)btnOKClick
 {
@@ -395,7 +416,8 @@
                 andButtons:nil];
     [alert doneActionBlock:^{
         [self.navigationController popViewControllerAnimated:true];
-        [self UpdatedToAlarmTable];
+        
+        [self UpdatedToAlarmTable:self->isCClicked];
     }];
 }
 -(void)btnReadStoreSessionClick
@@ -419,7 +441,7 @@
     [self.navigationController pushViewController:firmWUpdate animated:true];
 }
 #pragma mark- To Update Alarm table
--(void)UpdatedToAlarmTable
+-(void)UpdatedToAlarmTable:(BOOL)isCliSelect
 {
     NSString * strHighIngstF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f",highIngstF]] ;
     NSString * strLowIngstF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f",lowIngestF]];
@@ -432,8 +454,9 @@
     NSString * strLowDrmlC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f",lowDermalC]];
     NSString * strBateyAlrm = [APP_DELEGATE checkforValidString:txtbatteryAlarm.text];
     NSString * strQuantity = [APP_DELEGATE checkforValidString:txtQuantitySnrChk.text];
+    NSString * strCSelected = [NSString stringWithFormat:@"%d",isCliSelect];
     
-     NSString * requestStr =  [NSString stringWithFormat:@"update Alarm_Table set high_ingest_F = \"%@\", low_ingest_F = \"%@\", high_dermal_F = \"%@\", low_dermal_F = \"%@\", high_ingest_C = \"%@\", low_ingest_C = \"%@\", high_dermal_C = \"%@\", low_dermal_C = \"%@\", battery_alarm = \"%@\", quantity = \"%@\" ",strHighIngstF,strLowIngstF,strHigDermlF,strLowDrmlF,strHighIngstC,strLowIngstC,strHigDermlC,strLowDrmlC,strBateyAlrm,strQuantity];
+     NSString * requestStr =  [NSString stringWithFormat:@"update Alarm_Table set high_ingest_F = \"%@\", low_ingest_F = \"%@\", high_dermal_F = \"%@\", low_dermal_F = \"%@\", high_ingest_C = \"%@\", low_ingest_C = \"%@\", high_dermal_C = \"%@\", low_dermal_C = \"%@\", battery_alarm = \"%@\", quantity = \"%@\", celciusSelect = \"%@\" ",strHighIngstF,strLowIngstF,strHigDermlF,strLowDrmlF,strHighIngstC,strLowIngstC,strHigDermlC,strLowDrmlC,strBateyAlrm,strQuantity,strCSelected];
     
     [[DataBaseManager dataBaseManager] executeSw:requestStr];
 }
@@ -464,7 +487,8 @@
     {
         [txtQuantitySnrChk resignFirstResponder];
     }
-  return true;
+    
+    return true;
 }
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
@@ -482,7 +506,7 @@
     if (!string.length)
         return YES;
 
- if (textField == txtHighTmpIngest || textField == txtLowTmpIngst || textField == txtHighTmpDerml || textField == txtLowTmpDerml || textField == txtbatteryAlarm || textField == txtQuantitySnrChk)
+ if (textField == txtHighTmpIngest || textField == txtLowTmpIngst || textField == txtHighTmpDerml || textField == txtLowTmpDerml || textField == txtQuantitySnrChk)
     {
         NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
         NSString *expression = @"^([0-9]+)?(\\.([0-9]{1,2})?)?$";
@@ -496,21 +520,26 @@
         if (numberOfMatches == 0)
             return NO;
     }
+
     //   in tis formate  100.00˚F
-    NSUInteger decimalPlacesLimit = 2;
+    NSUInteger decimalPlacesLimit = 2; // 2
     NSRange rangeDot = [textField.text rangeOfString:@"." options:NSCaseInsensitiveSearch];
     NSRange rangeComma = [textField.text rangeOfString:@"," options:NSCaseInsensitiveSearch];
-    if (rangeDot.length > 0 || rangeComma.length > 0){
-        if([string isEqualToString:@"."]) {
+    if (rangeDot.length > 0 || rangeComma.length > 0)
+    {
+        if([string isEqualToString:@"."])
+        {
             NSLog(@"textField already contains a separator");
             return NO;
-        } else {
+        }
+        else
+        {
             NSArray *explodedString = [textField.text componentsSeparatedByString:@"."];
             NSString *decimalPart = explodedString[1];
             if (decimalPart.length >= decimalPlacesLimit && ![string isEqualToString:@""])
             {
                 NSLog(@"textField already contains %lu decimal places", (unsigned long)decimalPlacesLimit);
-                        return NO;
+                return NO;
             }
         }
     }
@@ -585,7 +614,7 @@
         else if (valF < 97)
         {
             isValidValue = NO;
-           [self AlertViewFCTypeCaution:@"Temperature can't be less than 97 ºF"] ;
+//           [self AlertViewFCTypeCaution:@"Temperature can't be less than 97 ºF"] ;
         }
         isValidValue = YES;
         [self checkBattryAndQuantity:txtfld];
@@ -603,13 +632,13 @@
         if (EnterdValue > 100.1)
         {
            [self AlertViewFCTypeCaution:@"battery alarm within 100 only"] ;
+            txtbatteryAlarm.text = @"20";
         }
     }
     return txtlield;
 }
 -(void)showAlertForEmptyTextField:(UITextField *)txtfild
 {
-    
         if(txtfild == txtHighTmpIngest)
         {
             [self AlertViewFCTypeCaution:@"Please enater High Ingest value."];
@@ -626,14 +655,52 @@
         {
             [self AlertViewFCTypeCaution: @"Please enter Low Dermal value."];
         }
-    else if (txtfild == txtbatteryAlarm)
+        else if (txtfild == txtbatteryAlarm)
+        {
+            [self AlertViewFCTypeCaution:@"Please enter battery alarm."] ;
+        }
+        else if (txtfild == txtQuantitySnrChk)
+        {
+            [self AlertViewFCTypeCaution:@"Pleasse enter Quantity."] ;
+        }
+    else
     {
-        [self AlertViewFCTypeCaution:@"Please enter battery alarm."] ;
+        NSArray * arrVal = [self getFarnhitefromCelcius:txtfild.text];
+        if (arrVal.count == 2)
+        {
+            float tmpff = [[arrVal objectAtIndex:0] floatValue];
+            float tmpcc = [[arrVal objectAtIndex:1] floatValue];
+            
+            if([self ChecktemperatureValues:tmpcc withfernhite:tmpff withTextfield:txtfild] == YES)
+            {
+                if (txtfild == txtHighTmpIngest)
+                {
+                    highIngstF = [[arrVal objectAtIndex:0] floatValue];
+                    highIngstC = [[arrVal objectAtIndex:1] floatValue];
+                    txtHighTmpIngest.text = [NSString stringWithFormat:@"%.f ºF",highIngstF];
+                }
+                else  if (txtfild == txtLowTmpIngst)
+                {
+                    lowIngestF = [[arrVal objectAtIndex:0] floatValue];
+                    lowIngestC = [[arrVal objectAtIndex:1] floatValue];
+                    txtLowTmpIngst.text = [NSString stringWithFormat:@"%.f ºF",lowIngestF];
+                }
+                else  if (txtfild == txtHighTmpDerml)
+                {
+                    highDermalF = [[arrVal objectAtIndex:0] floatValue];
+                    highDermalC = [[arrVal objectAtIndex:1] floatValue];
+                    txtHighTmpDerml.text = [NSString stringWithFormat:@"%.f ºF",highDermalF];
+                }
+                else  if (txtfild == txtLowTmpDerml)
+                {
+                    lowDermalF = [[arrVal objectAtIndex:0] floatValue];
+                    lowDermalC = [[arrVal objectAtIndex:1] floatValue];
+                    txtLowTmpDerml.text = [NSString stringWithFormat:@"%.f ºF",lowDermalF];
+                }
+            }
+         }
     }
-    else if (txtfild == txtQuantitySnrChk)
-    {
-        [self AlertViewFCTypeCaution:@"Pleasse enter Quantity."] ;
-    }
+    
 }
 #pragma mark-Get F From C
 -(NSArray *)getFarnhitefromCelcius:(NSString *)strVal

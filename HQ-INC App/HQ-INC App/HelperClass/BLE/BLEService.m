@@ -200,17 +200,20 @@ static BLEService    *sharedInstance    = nil;
                         else if ([strOpcode isEqualToString:@"0e"]) //Live readings of Device
                         {
                             NSMutableArray * arrSensorData = [[NSMutableArray alloc] init];
-                            if ([strDecrypted length] >= 8)
+                            long totalPacketCount = strDecrypted.length / 8;
+                            for (int i = 0; i < totalPacketCount; i++)
                             {
-                                NSString * strSensorId = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(0, 4)]];
-                                NSString * strSensorTemp = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(4, 4)]];
-                                int divValue =  [strSensorTemp doubleValue];
-                                double fPointData = divValue / 100.0;
-                                NSString *StrFloating = [NSString stringWithFormat:@"%.2f", fPointData];
-                                                        
-                                NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorId,@"sensor_id",StrFloating,@"temp", nil];
-                                [arrSensorData addObject:dict];
-
+                                if (strDecrypted.length >= (i*8) + 8)
+                                {
+                                    NSString * strSensorId = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(i * 8, 4)]];
+                                    NSString * strSensorTemp = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange((i * 8) + 4, 4)]];
+                                    int divValue =  [strSensorTemp doubleValue];
+                                    double fPointData = divValue / 100.0;
+                                    NSString *StrFloating = [NSString stringWithFormat:@"%.2f", fPointData];
+                                                            
+                                    NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strSensorId,@"sensor_id",StrFloating,@"temp", nil];
+                                    [arrSensorData addObject:dict];
+                                }
                             }
                             if ([arrSensorData count]>0)
                             {
@@ -243,7 +246,7 @@ static BLEService    *sharedInstance    = nil;
                                 NSString * strSensorType = [self stringFroHex:[strDecrypted substringWithRange:NSMakeRange(4, 2)]];//3-Ingestible, 4-Dermal
                                 NSString * strFinalType = @"Ingestible";
                                 
-//                                NSLog(@"For Ocpde 15 ====>%@",strSensorType);
+                                NSLog(@"For Ocpde 15 ====>%@",strSensorType);
 
                                 if ([strSensorType isEqualToString:@"4"])
                                 {

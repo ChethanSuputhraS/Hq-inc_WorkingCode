@@ -701,8 +701,8 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
     
     for (int i = 0; i < [arrSensorsofSessions count]; i++)
     {
-       NSString *  strSensorId = [[arrSensorsofSessions objectAtIndex:i] valueForKey:@"sensor_id"];
-       NSString *  strSensorType = [[arrSensorsofSessions objectAtIndex:i] valueForKey:@"sensor_type"];
+       NSString *  strSensorId = [[arrSensorsofSessions objectAtIndex:sensorCount] valueForKey:@"sensor_id"];
+       NSString *  strSensorType = [[arrSensorsofSessions objectAtIndex:sensorCount] valueForKey:@"sensor_type"];
 
         NSString * requestStr =  [NSString stringWithFormat:@"insert into 'Sensor_Table'('session_id',sensor_id,'sensor_type') values(\"%@\",\"%@\",\"%@\")",strSessionId,strSensorId,strSensorType];
         [[DataBaseManager dataBaseManager] executeSw:requestStr];
@@ -722,7 +722,7 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
         NSString * strPacket = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"packetdata"]];
         
         NSString * strFinalType = @"Ingestible";
-        if ([strSensorType isEqualToString:@"04"])
+        if ([strSensorType isEqualToString:@"4"])
         {
             strFinalType = @"Dermal";
         }

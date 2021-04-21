@@ -94,24 +94,16 @@
     txtPlayerName.frame = CGRectMake(0, 0, aa, 60);
     [self setTextfieldProperties:txtPlayerName withPlaceHolderText:@"Player Name" withTextSize:textSize+2];
     [APP_DELEGATE getPlaceholderText:txtPlayerName andColor:UIColor.lightGrayColor];
-    txtPlayerName.text = [APP_DELEGATE checkforValidString:[sessionDict valueForKey:@"player_name"]];
+    txtPlayerName.text = @"Jithi";
     [viewFortxtFld addSubview:txtPlayerName];
     
     txtSensorTime = [[UIFloatLabelTextField alloc]init];
     txtSensorTime.frame = CGRectMake(aa+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorTime withPlaceHolderText:@"Session Time" withTextSize:textSize];
     [APP_DELEGATE getPlaceholderText:txtSensorTime andColor:UIColor.lightGrayColor];
+    txtSensorTime.text = @"04/02/2021 04:44 PM";
     [viewFortxtFld addSubview:txtSensorTime];
     
-    double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
-    NSTimeInterval unixTimeStamp = timeStamp ;
-    NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"dd/MM/yyy hh:mm a";
-    NSString  *finalate = [dateFormatter stringFromDate:exactDate];
-    txtSensorTime.text = finalate;
-
-
     txtSensorType = [[UIFloatLabelTextField alloc]init];
     txtSensorType.frame = CGRectMake(aa*2+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorType withPlaceHolderText:@"Sensor Type" withTextSize:textSize+2];
@@ -123,7 +115,7 @@
     txtSensorNumber.frame = CGRectMake(aa*3+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorNumber withPlaceHolderText:@"Number of Sensors " withTextSize:textSize];
     [APP_DELEGATE getPlaceholderText:txtSensorNumber andColor:UIColor.lightGrayColor];
-    txtSensorNumber.text = [APP_DELEGATE checkforValidString:[sessionDict valueForKey:@"no_of_sensor"]];
+    txtSensorNumber.text = @"1";
     [viewFortxtFld addSubview:txtSensorNumber];
 
     [self SetupGraphView];
@@ -137,7 +129,7 @@
     dataFetchSensorCount = 0;
     
     NSInteger readInterval = [[sessionDict valueForKey:@"read_interval"] integerValue];
-    NSInteger totalMaxCount = 300 / [arrSessionSensors count];
+    NSInteger totalMaxCount = 300 / readInterval;
     if (totalMaxCount > 100)
     {
         totalMaxCount = 100;
@@ -405,23 +397,15 @@
 }
 -(void)btnPreviousClick
 {
-    NSInteger sesstionTime = [[sessionDict valueForKey:@"timeStamp"] integerValue];
+    dataFetchSensorCount = 0;
     
     NSInteger readInterval = [[sessionDict valueForKey:@"read_interval"] integerValue];
     NSInteger tmpStartTime = 0, tmpEndTime = 0;
     NSInteger storedStart = startTime;
     tmpStartTime = startTime - ( readInterval * maxDataCount);
     tmpEndTime = storedStart;
-    if (sesstionTime == tmpEndTime)
-    {
-        
-    }
-    else
-    {
-        dataFetchSensorCount = 0;
-        [self FetchSensorDataQuery:1 start:tmpStartTime end:tmpEndTime];
-    }
 
+    [self FetchSensorDataQuery:1 start:tmpStartTime end:tmpEndTime];
 }
 -(void)btnNextClick
 {
@@ -510,7 +494,7 @@
             NSString * strType = @"Ingestible";
             UIColor * colorSet = [UIColor colorWithRed:51/255.f green:181/255.f blue:229/255.f alpha:1.f];
             UIColor * colorFill = UIColor.blueColor;
-            if ([[dict valueForKey:@"sensor_type"] isEqualToString:@"04"])//3-Ingestible (Core), 4-Dermal (Skin)
+            if ([[dict valueForKey:@"sensor_type"] isEqualToString:@"4"])//3-Ingestible (Core), 4-Dermal (Skin)
             {
                 strType = @"Dermal";
                 colorSet = [UIColor redColor];
