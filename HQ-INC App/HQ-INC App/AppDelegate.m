@@ -112,7 +112,7 @@
         NSString * strBattry = @"20";
         NSString * strQuantity = @"20";
            
-        NSString * requestStr =  [NSString stringWithFormat:@"insert into 'Alarm_Table' ('high_ingest_F', 'low_ingest_F', 'high_dermal_F', 'low_dermal_F', 'high_ingest_C', 'low_ingest_C', 'high_dermal_C',  'low_dermal_C', 'battery_alarm', 'quantity') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strHigIngF,strLowIngF,strHigDrmlF,strLowDermlF,strHigIngC,strLowIngC,strHighDermlC,strLowDermlC,strBattry,strQuantity];
+        NSString * requestStr =  [NSString stringWithFormat:@"insert into 'Alarm_Table' ('high_ingest_F', 'low_ingest_F', 'high_dermal_F', 'low_dermal_F', 'high_ingest_C', 'low_ingest_C', 'high_dermal_C',  'low_dermal_C', 'battery_alarm', 'quantity','celciusSelect') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strHigIngF,strLowIngF,strHigDrmlF,strLowDermlF,strHigIngC,strLowIngC,strHighDermlC,strLowDermlC,strBattry,strQuantity,@"0"];
            
         [[DataBaseManager dataBaseManager] executeSw:requestStr];
     }

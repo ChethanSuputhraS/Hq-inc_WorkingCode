@@ -51,7 +51,7 @@
     [self.view addSubview:btnDone];
 
     
-    [APP_DELEGATE startHudProcess:@"Loking for sensor..."];
+    [APP_DELEGATE startHudProcess:@"Looking for sensor..."];
     
     tmScan = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(timeOutAddSensor) userInfo:nil repeats:NO];
 
@@ -568,7 +568,7 @@
 #pragma mark - BLE Methods
 -(void)StartSensorsScanning
 {
-    [APP_DELEGATE startHudProcess:@"Loking for sensor..."];
+    [APP_DELEGATE startHudProcess:@"Looking for sensor..."];
     
     NSInteger intMsg = [@"0" integerValue];
     NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];

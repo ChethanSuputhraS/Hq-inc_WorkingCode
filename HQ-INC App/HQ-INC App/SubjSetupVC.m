@@ -86,6 +86,9 @@ NSInteger selectedIndex;
 
     [super viewDidLoad];
     dict = [NSMutableDictionary dictionary];
+    
+    globalSubjectDetailVC = [[SubjDetailsVC alloc]init];
+    tmpArrySensor = [[NSMutableArray alloc] init];
 }
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -358,7 +361,6 @@ NSInteger selectedIndex;
             [self setTextfieldProperties:txtDemalTmpHigh withPlaceHolderText:@" 36.0ºC" withTextSize:25.0];
         }
     }
-
 }
 #pragma mark - Buttons
 -(void)BtnCameraClick
@@ -517,6 +519,7 @@ NSInteger selectedIndex;
 //        {
 //            strMsg = @"Low Dermal enter valid Temp.";
 //        }
+        
         if([self isNumberUnique:txtHash.text] == NO)
         {
             strMsg =@"Player number alredy exits. Please enter diffrent number.";
@@ -530,6 +533,11 @@ NSInteger selectedIndex;
            {
                strImagePath =  [self saveImagetoDocumentDirectoryIsforthumbNail:NO];
                strThumbNail = [self saveImagetoDocumentDirectoryIsforthumbNail:YES];
+           }
+           else
+           {
+               strImagePath =  @"nil";
+               strThumbNail = @"nil";
            }
            NSString * strName = [APP_DELEGATE checkforValidString:txtFullName.text];
            NSString * strNum = [APP_DELEGATE checkforValidString:txtHash.text];
@@ -554,6 +562,11 @@ NSInteger selectedIndex;
                    {
                        strImagePath =  [self saveImagetoDocumentDirectoryIsforthumbNail:NO];
                        strThumbNail = [self saveImagetoDocumentDirectoryIsforthumbNail:YES];
+                   }
+                   else
+                   {
+                       strImagePath =  @"nil";
+                       strThumbNail = @"nil";
                    }
                }
                requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHigh,strIngLow,strDrmlHigh,strDrmlLow,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,[dataDict valueForKey:@"id"]];
@@ -766,34 +779,34 @@ NSInteger selectedIndex;
                          txtDermalLowTmp.text = [NSString stringWithFormat:@"%.f ºC",lowDermalF];
                      }
                  }
-                 else
-                 {
-                     if (textField == txtIngesTmpHigh)
-                     {
-                         highIngstF = [[arrVal objectAtIndex:0] floatValue];
-                         highIngstC = [[arrVal objectAtIndex:1] floatValue];
-                         txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.f ºF",highIngstF];
-                     }
-                     else  if (textField == txtlngeslowTmpAl)
-                     {
-                         lowIngestF = [[arrVal objectAtIndex:0] floatValue];
-                         lowIngestC = [[arrVal objectAtIndex:1] floatValue];
-                         txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.f ºF",lowIngestF];
-                     }
-                     else  if (textField == txtDemalTmpHigh)
-                     {
-                         highDermalF = [[arrVal objectAtIndex:0] floatValue];
-                         highDermalC = [[arrVal objectAtIndex:1] floatValue];
-                         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.f ºF",highDermalF];
-                     }
-                     else  if (textField == txtDermalLowTmp)
-                     {
-                         lowDermalF = [[arrVal objectAtIndex:0] floatValue];
-                         lowDermalC = [[arrVal objectAtIndex:1] floatValue];
-                         txtDermalLowTmp.text = [NSString stringWithFormat:@"%.f ºF",lowDermalF];
-                     }
-                 }
              }
+            
+            
+                if (textField == txtIngesTmpHigh)
+                {
+                    highIngstF = [[arrVal objectAtIndex:0] floatValue];
+                    highIngstC = [[arrVal objectAtIndex:1] floatValue];
+                    txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.f ºF",highIngstF];
+                }
+                else  if (textField == txtlngeslowTmpAl)
+                {
+                    lowIngestF = [[arrVal objectAtIndex:0] floatValue];
+                    lowIngestC = [[arrVal objectAtIndex:1] floatValue];
+                    txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.f ºF",lowIngestF];
+                }
+                else  if (textField == txtDemalTmpHigh)
+                {
+                    highDermalF = [[arrVal objectAtIndex:0] floatValue];
+                    highDermalC = [[arrVal objectAtIndex:1] floatValue];
+                    txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.f ºF",highDermalF];
+                }
+                else  if (textField == txtDermalLowTmp)
+                {
+                    lowDermalF = [[arrVal objectAtIndex:0] floatValue];
+                    lowDermalC = [[arrVal objectAtIndex:1] floatValue];
+                    txtDermalLowTmp.text = [NSString stringWithFormat:@"%.f ºF",lowDermalF];
+                }
+            
         }
      }
    }

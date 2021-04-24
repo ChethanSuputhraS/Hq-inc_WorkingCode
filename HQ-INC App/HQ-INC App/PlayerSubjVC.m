@@ -207,13 +207,19 @@
 
     for (int i=0; i<arrSubjects.count; i++)
     {
+        if (![[[arrSubjects objectAtIndex:i] valueForKey:@"photo_URLThumbNail"] isEqual:@"nil"])
+        {
+            
         NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@",[[arrSubjects objectAtIndex:i] valueForKey:@"photo_URL"]]];
         NSData *pngData = [NSData dataWithContentsOfFile:filePath];
         UIImage * mainImage = [UIImage imageWithData:pngData];
         UIImage * imgCollect = [self scaleMyImage:mainImage withNewWidth:800 newHeight:800];
         UIImage * imgTable = [self scaleMyImage:mainImage withNewWidth:300 newHeight:300];
-        [[arrSubjects objectAtIndex:i] setObject:imgCollect forKey:@"profileImageCollection"];
-        [[arrSubjects objectAtIndex:i] setObject:imgTable forKey:@"profileImageTable"];
+        
+    
+            [[arrSubjects objectAtIndex:i] setObject:imgCollect forKey:@"profileImageCollection"];
+            [[arrSubjects objectAtIndex:i] setObject:imgTable forKey:@"profileImageTable"];
+        }
     
         NSNumber * intnum = [NSNumber numberWithInt:[[[arrSubjects objectAtIndex:i] valueForKey:@"number"] intValue]];
         [[arrSubjects objectAtIndex:i] setObject:intnum forKey:@"IntNumber"];
@@ -258,6 +264,7 @@
         cell.lblType1Tmp.text = [NSString stringWithFormat:@"%dºF\nCore",intConvCore];//ºF\nSkin Temp
 
         UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageCollection"];
+        
         if (imgProf != nil)
         {
             cell.imgViewpProfile.image = imgProf;
