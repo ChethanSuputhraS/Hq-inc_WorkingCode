@@ -379,7 +379,7 @@ NSInteger selectedIndex;
             [self presentViewController:picker animated:YES completion:nil];
 
         }];
-        UIAlertAction* defau = [UIAlertAction actionWithTitle:@"Photo Albumb" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action)
+        UIAlertAction* defau = [UIAlertAction actionWithTitle:@"Photo Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action)
         {
             self->pickerImg = [[UIImagePickerController alloc]init];
             self-> pickerImg.delegate = self;
@@ -820,7 +820,7 @@ NSInteger selectedIndex;
         if(valC > 38.1)
         {
             isValidValue = NO;
-            strErrMsg = @"Maximum value Exceed for temprature in ºC";
+            strErrMsg = @"Maximum value Exceed for temperature in ºC";
         }
         else if (valC < 36.1)
         {
@@ -833,7 +833,7 @@ NSInteger selectedIndex;
         if(valF > 100.5)
         {
             isValidValue = NO;
-            strErrMsg = @"Maximum value Exceed for temprature in ºF";
+            strErrMsg = @"Maximum value Exceed for temperature in ºF";
         }
         else if (valF < 97)
         {

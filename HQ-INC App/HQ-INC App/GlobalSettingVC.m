@@ -598,7 +598,7 @@
         if(valC > 38.1)
         {
             isValidValue = NO;
-           [self AlertViewFCTypeCaution:@"Maximum value Exceed for temprature in ºC"] ;
+           [self AlertViewFCTypeCaution:@"Maximum value Exceed for Temperature in ºC"] ;
         }
         else if (valC < 36.1)
         {
