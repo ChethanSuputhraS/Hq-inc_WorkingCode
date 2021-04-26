@@ -276,6 +276,7 @@
     txtbatteryAlarm.returnKeyType = UIReturnKeyNext;
     txtbatteryAlarm.keyboardType = UIKeyboardTypeNumberPad;
     txtbatteryAlarm.textAlignment = NSTextAlignmentCenter;
+    txtbatteryAlarm.tag = 300;
     [viewBgAddsetng addSubview:txtbatteryAlarm];
         
     UILabel *lblPersentage = [[UILabel alloc]initWithFrame:CGRectMake(280, 100, 60, 50)];
@@ -314,7 +315,7 @@
         }
     }
 }
-    
+
 #pragma mark-Global sensor chek
 -(void)setupGlobalSeneorCheck
 {
@@ -341,6 +342,7 @@
     txtQuantitySnrChk.returnKeyType = UIReturnKeyDone;
     txtQuantitySnrChk.keyboardType = UIKeyboardTypeNumberPad;
     txtQuantitySnrChk.textAlignment = NSTextAlignmentCenter;
+    txtQuantitySnrChk.tag = 200;
     [globalSnrCheckView addSubview:txtQuantitySnrChk];
     
     UIColor* btnBGC = [UIColor colorWithRed:27.0/255 green:157.0/255 blue:25.0/255 alpha:1];
@@ -551,7 +553,7 @@
 
     if ([[APP_DELEGATE checkforValidString:textField.text] isEqualToString:@"NA"])
     {
-        [self showAlertForEmptyTextField:textField];
+            [self showAlertForEmptyTextField:textField];
     }
     else
     {
@@ -606,16 +608,28 @@
     }
     else
     {
-        if(valF > 100.5)
-        {
-            isValidValue = NO;
-            [self AlertViewFCTypeCaution:@"Maximum value Exceed for temprature in ºF"] ;
-        }
-        else if (valF < 97)
-        {
-            isValidValue = NO;
-//           [self AlertViewFCTypeCaution:@"Temperature can't be less than 97 ºF"] ;
-        }
+//        if (txtfld.tag == 200)
+//        {
+//
+//        }
+//        else if (txtfld.tag == 300)
+//        {
+//
+//        }
+//        else
+//        {
+            if(valF > 100.5)
+            {
+                isValidValue = NO;
+//                [self AlertViewFCTypeCaution:@"Maximum value Exceed for temprature in ºF"] ;
+            }
+            else if (valF < 97)
+            {
+                isValidValue = NO;
+    //           [self AlertViewFCTypeCaution:@"Temperature can't be less than 97 ºF"] ;
+            }
+//        }
+ 
         isValidValue = YES;
         [self checkBattryAndQuantity:txtfld];
     }
@@ -696,6 +710,10 @@
                     lowDermalF = [[arrVal objectAtIndex:0] floatValue];
                     lowDermalC = [[arrVal objectAtIndex:1] floatValue];
                     txtLowTmpDerml.text = [NSString stringWithFormat:@"%.f ºF",lowDermalF];
+                }
+                else if (txtfild == txtQuantitySnrChk)
+                {
+                    
                 }
             }
          }

@@ -23,32 +23,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "63BCFD16-88AC-45D3-BD4A-7545EA6CFF61"
+            uuid = "5DF94E0C-30C2-4AB5-A611-80CA80F82FE7"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HQ-INC App/PlayerSubjVC.m"
+            filePath = "HQ-INC App/GlobalSettingVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4FFAC1E3-852F-40AA-BAE8-C4477EAD6F93"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HQ-INC App/PlayerSubjVC.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "208"
-            endingLineNumber = "208"
-            landmarkName = "-SetupForViewWillApeear"
+            startingLineNumber = "688"
+            endingLineNumber = "688"
+            landmarkName = "-showAlertForEmptyTextField:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
