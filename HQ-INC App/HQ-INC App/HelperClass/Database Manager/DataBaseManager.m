@@ -246,7 +246,7 @@ static DataBaseManager * dataBaseManager = nil;
     int rc;
     
     // SQL to create new database
-    NSArray* queries = [NSArray arrayWithObjects:@"CREATE TABLE 'Notes_Table' ('id' INTEGER PRIMARY KEY  NOT NULL, 'name' VARCHAR, 'notes' VARCHAR, 'date' VARCHAR, 'time' VARCHAR)",nil];
+    NSArray* queries = [NSArray arrayWithObjects:@"CREATE TABLE 'Notes_Table' ('id' INTEGER PRIMARY KEY  NOT NULL, 'name' VARCHAR, 'notes' VARCHAR, 'date' VARCHAR)",nil];
     
     if(queries != nil)
     {

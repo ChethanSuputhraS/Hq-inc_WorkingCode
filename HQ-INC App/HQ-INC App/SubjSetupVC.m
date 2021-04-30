@@ -141,8 +141,8 @@ NSInteger selectedIndex;
 #pragma mark - Setup for for SensorView
 -(void)setupforSensorView
 {
-    addSensorView = [[UIView alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-addSetUpView.frame.size.width - 40 , 100, (addSetUpView.frame.size.width), 450)];
-    addSensorView.frame = CGRectMake(DEVICE_WIDTH - addSetUpView.frame.size.width - 40 , 100, (addSetUpView.frame.size.width), 450);
+    addSensorView = [[UIView alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-addSetUpView.frame.size.width - 40 , 100, (addSetUpView.frame.size.width), 350)];
+    addSensorView.frame = CGRectMake(DEVICE_WIDTH - addSetUpView.frame.size.width - 40 , 100, (addSetUpView.frame.size.width), 350);
     addSensorView.layer.cornerRadius = 6;
     addSensorView.layer.borderWidth = 2;
     addSensorView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
@@ -162,12 +162,12 @@ NSInteger selectedIndex;
     btnAddMonitor.backgroundColor = UIColor.whiteColor;
     [addSensorView addSubview:btnAddMonitor];
     
-    lblAddmonitorConnect = [[UILabel alloc]initWithFrame:CGRectMake(10, 50, addSensorView.frame.size.width-40, 30)];
+    lblAddmonitorConnect = [[UILabel alloc]initWithFrame:CGRectMake(10, 40, addSensorView.frame.size.width-40, 30)];
     [self setLabelProperties:lblAddmonitorConnect withText:@"Monitor not added" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:20];
     lblAddmonitorConnect.textAlignment = NSTextAlignmentLeft;
     [addSensorView addSubview:lblAddmonitorConnect];
 
-          int btnyy = 90;
+          int btnyy = 80;
     UIButton * btnAddSensor = [[UIButton alloc]initWithFrame:CGRectMake(200, btnyy, 50, 45)];
     [btnAddSensor setImage:[UIImage imageNamed:@"addBlack.png"] forState:normal];
     [btnAddSensor addTarget:self action:@selector(btnAddSensorClick) forControlEvents:UIControlEventTouchUpInside];
@@ -186,15 +186,15 @@ NSInteger selectedIndex;
     lblNosensor.textAlignment = NSTextAlignmentLeft;
     [addSensorView addSubview:lblNosensor];
     
-    btnyy = btnyy +100;
-    UIButton * btnViewAllSnr = [[UIButton alloc]initWithFrame:CGRectMake(10, btnyy, addSensorView.frame.size.width-20 , 60)];
+    btnyy = btnyy +80;
+    UIButton * btnViewAllSnr = [[UIButton alloc]initWithFrame:CGRectMake(10, btnyy, addSensorView.frame.size.width-20 , 50)];
     [self setButtonProperties:btnViewAllSnr withTitle:@"View sensors" backColor:typeColor textColor:UIColor.whiteColor txtSize:20];
     [btnViewAllSnr addTarget:self action:@selector(btnViewAlSnrClick) forControlEvents:UIControlEventTouchUpInside];
     btnViewAllSnr.layer.cornerRadius = 5;
     btnViewAllSnr.titleLabel.numberOfLines = 2;
     [addSensorView addSubview:btnViewAllSnr];
     
-    UIButton * btnRemoveSensors = [[UIButton alloc]initWithFrame:CGRectMake(10 , btnyy+80, addSensorView.frame.size.width-20, 60)];
+    UIButton * btnRemoveSensors = [[UIButton alloc]initWithFrame:CGRectMake(10 , btnyy+60, addSensorView.frame.size.width-20, 50)];
     [self setButtonProperties:btnRemoveSensors withTitle:@"Remove sensors" backColor:typeColor textColor:UIColor.whiteColor txtSize:20];
     [btnRemoveSensors addTarget:self action:@selector(btnRemoveSnrClick) forControlEvents:UIControlEventTouchUpInside];
     btnRemoveSensors.layer.cornerRadius = 5;
@@ -203,16 +203,16 @@ NSInteger selectedIndex;
 
     
     UILabel *lblSensorCheck = [[UILabel alloc]init];
-    lblSensorCheck.frame = CGRectMake(15, btnyy+170, addSensorView.frame.size.width-100, 50);
+    lblSensorCheck.frame = CGRectMake(15, btnyy+120, addSensorView.frame.size.width-100, 40);
     [self setLabelProperties:lblSensorCheck withText:@"Sensor Check" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:25];
     lblSensorCheck.textAlignment = NSTextAlignmentLeft;
     lblSensorCheck.font  = [UIFont boldSystemFontOfSize:25];
     [addSensorView addSubview:lblSensorCheck];
     
     UIColor * btOkBGC = [UIColor colorWithRed:27.0/255 green:157.0/255 blue:25.0/255 alpha:1];
-    UIButton *  btnOk = [[UIButton alloc]initWithFrame:CGRectMake(190, btnyy+170, 50, 50)];
+    UIButton *  btnOk = [[UIButton alloc]initWithFrame:CGRectMake(190, btnyy+120, 40, 40)];
     [self setButtonProperties:btnOk withTitle:@"OK" backColor:btOkBGC textColor:UIColor.whiteColor txtSize:20];
-    btnOk.layer.cornerRadius = 25;
+    btnOk.layer.cornerRadius = 20;
     [addSensorView addSubview:btnOk];
     
     lblType1 = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy, 150, 45)];
@@ -255,23 +255,24 @@ NSInteger selectedIndex;
     lblIndividulsettng.font = [UIFont fontWithName:CGBold size:30];
     [self.view addSubview:lblIndividulsettng];
 
-    UIView*indiVisualView = [[UIView alloc] initWithFrame:CGRectMake(40, addSensorView.frame.size.height+105, DEVICE_WIDTH-80, DEVICE_HEIGHT-addSensorView.frame.size.height-180)];
-    indiVisualView.backgroundColor = UIColor.blackColor;
+    indiVisualView = [[UIView alloc] initWithFrame:CGRectMake(40, addSensorView.frame.size.height+105, DEVICE_WIDTH-80, DEVICE_HEIGHT-addSensorView.frame.size.height-170)];
+    indiVisualView.backgroundColor = UIColor.clearColor;
     indiVisualView.clipsToBounds = true;
     indiVisualView.layer.cornerRadius = 6;
     [self.view addSubview:indiVisualView];
         
-    addAlarmsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH-80, indiVisualView.frame.size.height/1.6)];
+    addAlarmsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH-80, indiVisualView.frame.size.height/1.7)];
     addAlarmsView.layer.cornerRadius = 6;
     addAlarmsView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
+//    addAlarmsView.backgroundColor = UIColor.purpleColor;
     [indiVisualView addSubview:addAlarmsView];
         
-    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, DEVICE_WIDTH, 50)];
+    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, DEVICE_WIDTH, 40)];
     [self setLabelProperties:lblAddAlarms withText:@"Add Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:30];
     lblAddAlarms.textAlignment = NSTextAlignmentLeft;
     [addAlarmsView addSubview:lblAddAlarms];
           
-    int y = 50;
+    int y = 40;
     lblType2iblSenAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y, DEVICE_WIDTH, 50)];
     [self setLabelProperties:lblType2iblSenAlarm withText:@"Ingestible Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20.0];
     lblType2iblSenAlarm.textAlignment = NSTextAlignmentLeft;
@@ -302,7 +303,7 @@ NSInteger selectedIndex;
          
     //1 Dermal
     
-    int yy = addAlarmsView.frame.size.height-110 ;
+    int yy = addAlarmsView.frame.size.height-130 ;
     lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(20, yy+10, DEVICE_WIDTH, 30)];
     [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20.0];
     lblDermalSensorAlram.textAlignment = NSTextAlignmentLeft;
@@ -332,13 +333,35 @@ NSInteger selectedIndex;
     txtDermalLowTmp.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtDermalLowTmp];
 
-    lblNote = [[UILabel alloc]initWithFrame:CGRectMake(10, indiVisualView.frame.size.height/1.5, DEVICE_WIDTH, 35)];
+    // set time interval
+    
+    UIView * timeIntervalView = [[UIView alloc] initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+10, indiVisualView.frame.size.width, 60)];
+    timeIntervalView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
+    timeIntervalView.clipsToBounds = true;
+    timeIntervalView.layer.cornerRadius = 6;
+    [indiVisualView addSubview:timeIntervalView];
+    
+    UILabel * lblTimeDuration = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, timeIntervalView.frame.size.width/2-20, 60)];
+    [self setLabelProperties:lblTimeDuration withText:@"Set reading time interval" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
+    lblTimeDuration.textAlignment = NSTextAlignmentLeft;
+    [timeIntervalView addSubview:lblTimeDuration];
+    
+    txtTimeInterval = [[UITextField alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
+    [self setTextfieldProperties:txtTimeInterval withPlaceHolderText:@"10" withTextSize:20.0];
+    txtTimeInterval.keyboardType = UIKeyboardTypeNumberPad;
+    txtTimeInterval.returnKeyType = UIReturnKeyDone;
+    [timeIntervalView addSubview:txtTimeInterval];
+
+    // note view
+    
+    lblNote = [[UILabel alloc]initWithFrame:CGRectMake(10, addAlarmsView.frame.size.height+70, DEVICE_WIDTH, 35)];
     [self setLabelProperties:lblNote withText:@"Notes" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:30];
     lblNote.textAlignment = NSTextAlignmentLeft;
-    lblNote.font = [UIFont fontWithName:CGBold size:30];
+    lblNote.font = [UIFont fontWithName:CGBold size:25];
     [indiVisualView addSubview:lblNote];
+    
         
-    txtViewNote = [[UITextView alloc]initWithFrame:CGRectMake(0, indiVisualView.frame.size.height/1.5+35, indiVisualView.frame.size.width, indiVisualView.frame.size.height)];
+    txtViewNote = [[UITextView alloc]initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+110, indiVisualView.frame.size.width, indiVisualView.frame.size.height-addAlarmsView.frame.size.height-115)];
     txtViewNote.clipsToBounds = true;
     txtViewNote.layer.cornerRadius = 6;
     txtViewNote.font = [UIFont fontWithName:CGRegular size:26.0];
@@ -362,6 +385,7 @@ NSInteger selectedIndex;
         }
     }
 }
+
 #pragma mark - Buttons
 -(void)BtnCameraClick
 {
@@ -552,6 +576,21 @@ NSInteger selectedIndex;
            NSString * strDermlLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",lowDermalC]];
            NSString * strUserId = [NSString stringWithFormat:@"%.0f",[[NSDate date] timeIntervalSince1970]];
            NSString * requestStr1 = @"NA";
+           
+           NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+           [dateFormatter setDateFormat:@"dd-MM-yyy hh:mm aa"];
+           NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
+
+      
+           NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+           [[NSUserDefaults standardUserDefaults] setValue:[APP_DELEGATE checkforValidString:txtViewNote.text] forKey:@"Notes"];
+
+           NSMutableArray* mutableAccounts = [[defaults objectForKey:@"Notes"] mutableCopy];
+           // Add or remove accounts:
+      
+           [defaults setObject:mutableAccounts forKey:@"Notes"];
+           
+           
            if (isFromEdit == YES)
            {
                strImagePath = [dataDict valueForKey:@"photo_URL"];
@@ -570,10 +609,19 @@ NSInteger selectedIndex;
                    }
                }
                requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHigh,strIngLow,strDrmlHigh,strDrmlLow,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,[dataDict valueForKey:@"id"]];
+               
+               
+               
+               NSString * requestStr2 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@' , date = '%@'  where id = \"%@\"",strName,strNotes,strTimeHour,[dataDict valueForKey:@"id"]];
+//               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
+               
            }
            else
            {
                requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId];
+               
+               NSString * requestStr2 =  [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,strNotes,strTimeHour];
+//               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
            }
            
            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
@@ -696,7 +744,12 @@ NSInteger selectedIndex;
     }
     else if (textField == txtNumberSnr)
     {
-        [txtNumberSnr resignFirstResponder];
+        [txtNumberSnr becomeFirstResponder];
+        [txtTimeInterval resignFirstResponder];
+    }
+    else if (textField ==  txtTimeInterval)
+    {
+        [txtTimeInterval resignFirstResponder];
     }
     return true;
 }
@@ -721,6 +774,10 @@ NSInteger selectedIndex;
      if (textField == txtNameSnr || txtNumberSnr)
     {
         self.view.frame = CGRectMake(0, -60, DEVICE_WIDTH, DEVICE_HEIGHT);
+    }
+    if (textField == txtTimeInterval)
+    {
+        self.view.frame = CGRectMake(0, -120, DEVICE_WIDTH, DEVICE_HEIGHT);
     }
 }
 - (void)textFieldDidEndEditing:(UITextField *)textField

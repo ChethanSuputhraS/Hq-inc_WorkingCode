@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
     UIButton  *btnCancel, *btnDone,*btnCamera,*btnSave,*btnCancelSnr,*btnIngsetAddSnr,* btnSkinAddSnr;
     UITextView *txtViewNote;
     UIImageView *imgViewProPic;
-    UITextField *txtFullName,*txtIngesTmpHigh,*txtlngeslowTmpAl;
+    UITextField *txtFullName,*txtIngesTmpHigh,*txtlngeslowTmpAl,* txtTimeInterval;
     UIImagePickerController *pickerImg;
     UITextField * txtDermalLowTmp , * txtDemalTmpHigh, * txtHash,*txtNameSnr,*txtNumberSnr;
     NSMutableDictionary * dict;
@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
     
         float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
     BOOL isCClicked;
+    UIView *indiVisualView;
 }
 @property (nonatomic) BOOL isFromEdit;
 @property(nonatomic, strong) NSMutableDictionary * dataDict;

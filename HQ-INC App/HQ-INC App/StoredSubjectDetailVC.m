@@ -355,45 +355,35 @@
     NSArray * arrTemp = [arrSessionGraphData valueForKey:@"temp"];
     NSArray * arrTimeStamp = [arrSessionGraphData valueForKey:@"timestamp"];
     
+    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
     NSString *documentsDir = [paths objectAtIndex:0];
     NSString *root = [documentsDir stringByAppendingPathComponent:@"PlayerData.csv"];
-    
-    NSMutableString *csv = [[NSMutableString alloc] initWithCapacity:0];
-    for (int i=0; i<[arrSessionGraphData count]; i++)
-    {
-     if (i == 0)
-     {
-         [csv appendFormat:@"Sensor ID , Sensor Type , Session ID , Temperature , Timestamp  \n"];
-     }
-    [csv appendFormat:@"%@,%@,%@,%@,%@\n", arrSensorId[i], arrSensor_type[i], arrSession_id[i], arrTemp[i],arrTimeStamp[i]];
-    }
-    [csv writeToFile:root atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-
-    NSLog(@"%@",csv);
-    NSString * strMsg =  @"file attached";
-    // To address
-    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
-    mc.mailComposeDelegate = self;
-    [mc setSubject:strMsg];
-    [mc setMessageBody:strMsg isHTML:NO];
-    [mc setToRecipients:nil];
-    
-    if (mc == nil)
-    {}
-        else
+        
+        NSMutableString *csv = [[NSMutableString alloc] initWithCapacity:0];
+        for (int i=0; i<1; i++)
         {
-            double timeStamp = [[sessionDict valueForKey:@"timeStamp"] doubleValue];
-            NSTimeInterval unixTimeStamp = timeStamp ;
-            NSDate *exactDate = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-            NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.dateFormat = @"ddMMyyyhh:mm a";
-            NSString  *finalate = [dateFormatter stringFromDate:exactDate];
-            NSString * strFileName = [NSString stringWithFormat:@"%@_%@.csv",[sessionDict valueForKey:@"player_name"], finalate];
-            NSData *noteData = [NSData dataWithContentsOfFile:root];
-            [mc addAttachmentData:noteData mimeType:@"csv" fileName:strFileName];
-            [self.navigationController presentViewController:mc animated:YES completion:nil];
+         if (i == 0)
+         {
+             [csv appendFormat:@"Sensor ID , Sensor Type , Session ID , Temp , Timestamp ,\n"];
+         }
+            
+        [csv appendFormat:@"%@,%@,%@,%@,%@\n", arrSensorId[i], arrSensor_type[i], arrSession_id[i], arrTemp[i],arrTimeStamp[i]];
         }
+        [csv writeToFile:root atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+
+        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:root]] applicationActivities:nil];
+        
+        
+        if ([activityController respondsToSelector:@selector(popoverPresentationController)] )
+        {
+            activityController.popoverPresentationController.sourceRect = CGRectMake(UIScreen.mainScreen.bounds.size.width / 2, UIScreen.mainScreen.bounds.size.height / 2, 00, 0);//
+            activityController.popoverPresentationController.sourceView = self.view;
+            activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
+        }
+    
+        [self.navigationController presentViewController:activityController animated:YES completion:nil];
+
 }
 -(void)btnPreviousClick
 {

@@ -69,7 +69,7 @@
             
     int yyBottom = 76;
     btnGlobalRead = [[UIButton alloc]initWithFrame:CGRectMake(10, yyBottom, 150, 44)];
-    [self setButtonProperties:btnGlobalRead withTitle:@"Global Read"  backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
+    [self setButtonProperties:btnGlobalRead withTitle:@"Settings"  backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnGlobalRead addTarget:self action:@selector(btnGlobalReadClick) forControlEvents:UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnGlobalRead];
              
@@ -229,6 +229,7 @@
 
     }
     
+
     [self DataFromnDatabase];
 //    [self getOutSideTempAndHumidity];
 }
@@ -631,40 +632,36 @@
     NSArray *low_Ingest = [arrSubjects valueForKey:@"ing_lowF"];
     NSArray *high_drml = [arrSubjects valueForKey:@"drml_highF"];
     NSArray *low_drml = [arrSubjects valueForKey:@"drml_lowF"];
-    
-    
+
+
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
     NSString *documentsDir = [paths objectAtIndex:0];
     NSString *root = [documentsDir stringByAppendingPathComponent:@"PlayerData.csv"];
-    
-    NSMutableString *csv = [[NSMutableString alloc] initWithCapacity:0];
-    for (int i=0; i<[arrSubjects count]; i++)
-    {
-     if (i == 0)
-     {
-         [csv appendFormat:@"Name , Number , High_ingest , Low_Ingest , high_dermal , Low_dermal \n"];
-     }
-    [csv appendFormat:@"%@,%@,%@,%@,%@,%@\n", Name[i], Number[i], high_Ingest[i], low_Ingest[i],high_drml[i],low_drml[i]];
-    }
-    [csv writeToFile:root atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-
-    NSLog(@"%@",csv);
-    NSString * strMsg =  @"file attached";
-    // To address
-    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
-    mc.mailComposeDelegate = self;
-    [mc setSubject:strMsg];
-    [mc setMessageBody:strMsg isHTML:NO];
-    [mc setToRecipients:nil];
-    
-    if (mc == nil)
-    {}
-        else
+        
+        NSMutableString *csv = [[NSMutableString alloc] initWithCapacity:0];
+        for (int i=0; i<1; i++)
         {
-            NSData *noteData = [NSData dataWithContentsOfFile:root];
-            [mc addAttachmentData:noteData mimeType:@"csv" fileName:@"PlayerData.csv"];
-            [self.navigationController presentViewController:mc animated:YES completion:nil];
+         if (i == 0)
+         {
+             [csv appendFormat:@"Name , Number , High_ingest , Low_Ingest , high_dermal , Low_dermal \n"];
+         }
+        [csv appendFormat:@"%@,%@,%@,%@,%@,%@\n", Name[i], Number[i], high_Ingest[i], low_Ingest[i],high_drml[i],low_drml[i]];
         }
+        [csv writeToFile:root atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+
+        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:root]] applicationActivities:nil];
+        
+        
+        if ([activityController respondsToSelector:@selector(popoverPresentationController)] )
+        {
+            activityController.popoverPresentationController.sourceRect = CGRectMake(UIScreen.mainScreen.bounds.size.width / 2, UIScreen.mainScreen.bounds.size.height / 2, 00, 0);//
+            activityController.popoverPresentationController.sourceView = self.view;
+            activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
+        }
+    
+        [self.navigationController presentViewController:activityController animated:YES completion:nil];
+  
+    
 }
 - (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
 {
@@ -819,11 +816,16 @@
                             andButtons:nil];
                 if (self->arrSubjects.count > 0)
                 {
+                    NSString * strDeleteNote = [NSString stringWithFormat:@"Delete from Notes_Table where id = '%@'",[[self->arrSubjects objectAtIndex:indexPath.row] valueForKey:@"id"]];
+                    [[DataBaseManager dataBaseManager] execute:strDeleteNote];
+
+                    
                     NSString * strDelete = [NSString stringWithFormat:@"Delete from Subject_Table where id = '%@'",[[self->arrSubjects objectAtIndex:indexPath.row] valueForKey:@"id"]];
                     [[DataBaseManager dataBaseManager] execute:strDelete];
                     [self->arrSubjects removeObjectAtIndex:indexPath.row];
                     [self->tblPlayerList reloadData];
                     [self -> _collectionView reloadData];
+                                        
                 }
             }];
             [alert showAlertInView:self
@@ -864,6 +866,9 @@
                             andButtons:nil];
                 if (self->arrSubjects.count > 0)
                 {
+                    NSString * strDeleteNote = [NSString stringWithFormat:@"Delete from Notes_Table where id = '%@'",[[self->arrSubjects objectAtIndex:indexP.row] valueForKey:@"id"]];
+                    [[DataBaseManager dataBaseManager] execute:strDeleteNote];
+                    
                     NSString * strDelete = [NSString stringWithFormat:@"Delete from Subject_Table where id = '%@'",[[self->arrSubjects objectAtIndex:indexP.row] valueForKey:@"id"]];
                     [[DataBaseManager dataBaseManager] execute:strDelete];
                     [self->arrSubjects removeObjectAtIndex:indexP.row];
@@ -1031,7 +1036,7 @@
     UIButton *btnNoteDone = [[UIButton alloc]initWithFrame:CGRectMake(viewforShowNotes.frame.size.width-100, 0, 100, 70)];
     [self setButtonProperties:btnNoteDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnNoteDone addTarget:self action:@selector(btnNoteDoneClick) forControlEvents:UIControlEventTouchUpInside];
-    [viewBgNote addSubview:btnNoteDone];
+//    [viewBgNote addSubview:btnNoteDone];
        
     txtViewNotes = [[UITextView alloc] initWithFrame:CGRectMake(0, 70, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70)];
     txtViewNotes.delegate = self;
@@ -1039,12 +1044,28 @@
     txtViewNotes.autocorrectionType = UITextAutocorrectionTypeNo;
     txtViewNotes.backgroundColor = [UIColor colorWithRed:240.0/255 green:240.0/255 blue:240.0/255 alpha:0.6];
     txtViewNotes.font = [UIFont fontWithName:CGRegular size:30];
+    txtViewNotes.editable = NO;
     [viewforShowNotes addSubview:txtViewNotes];
     
     lblPlceholdNote = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, txtViewNotes.frame.size.width, 50)];
-    [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
     lblPlceholdNote.font = [UIFont fontWithName:CGRegular size:26];
+    [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
     [txtViewNotes addSubview:lblPlceholdNote];
+    
+   NSMutableArray * arrNotes = [[NSMutableArray alloc] init];
+    NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
+    [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes]; // from database data
+
+//    if (![[arrNotes valueForKey:@"notes"] isEqual:@""])
+//    {
+       txtViewNotes.text =  [[NSUserDefaults standardUserDefaults] valueForKey:@"Notes"];;
+        lblPlceholdNote.text = @"";
+//    }
+//    else
+//    {
+//        [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
+//    }
+
 
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
         {
@@ -1069,13 +1090,33 @@
         [dict setObject:txtViewNotes.text forKey:@"notes"];
 //        NSLog(@"%@", dict);
         
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"dd-MM-yyy hh:mm aa"];
+        NSLog(@"%@",[dateFormatter stringFromDate:[NSDate date]]);
+        
+        NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
+
+        
         NSString * strName = [APP_DELEGATE checkforValidString:[dict valueForKey:@"name"]];
         NSString * strNote = [APP_DELEGATE checkforValidString:[dict valueForKey:@"notes"]];
-        NSString * strDate = [APP_DELEGATE checkforValidString:[dict valueForKey:@"NA"]];
-        NSString * strTime = [APP_DELEGATE checkforValidString:[dict valueForKey:@"NA"]];
+        
           
-        NSString * requestStr1 =    [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date','time') values(\"%@\",\"%@\",\"%@\",\"%@\")",strName,strNote,strDate,strTime];
-        [[DataBaseManager dataBaseManager] executeSw:requestStr1];
+        NSMutableArray * arrNotes = [[NSMutableArray alloc] init];
+         NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
+         [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes];
+        
+//
+//        if ([arrNotes count] > 0)
+//        {
+//            NSString * requestStr1 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@', date = '%@' where id = \"%@\" ",strName,strNote,strTimeHour,];
+//            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
+//        }
+//        else
+//        {
+//            NSString * requestStr1 =    [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,strNote,strTimeHour];
+//            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
+//        }
+  
 //        NSLog(@"%@", requestStr1);
         
         FCAlertView *alert = [[FCAlertView alloc] init];

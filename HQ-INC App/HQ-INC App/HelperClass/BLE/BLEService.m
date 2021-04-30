@@ -463,7 +463,7 @@ static BLEService    *sharedInstance    = nil;
         NSString * strKeyUnsigned = [self getStringConvertedinUnsigned:strKey];
         NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
         NSNumber *timeStampObj = [NSNumber numberWithInteger: timeStamp];
-        NSString * strUserData = [NSString stringWithFormat:@"HQINCA%@",timeStampObj];//HolditWrite1597731984
+        NSString * strUserData = [NSString stringWithFormat:@"HQINCA%@",timeStampObj];//1597731984
 
         if (![[self checkforValidString:[[NSUserDefaults standardUserDefaults] valueForKey:@"UserUniqueData"]] isEqualToString:@"NA"])
         {
