@@ -14,8 +14,8 @@
             filePath = "HQ-INC App/SubjSetupVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "421"
-            endingLineNumber = "421"
+            startingLineNumber = "442"
+            endingLineNumber = "442"
             landmarkName = "-imagePickerController:didFinishPickingImage:editingInfo:"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "817"
-            endingLineNumber = "817"
+            startingLineNumber = "829"
+            endingLineNumber = "829"
             landmarkName = "-handleLongPress:"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "807"
-            endingLineNumber = "807"
+            startingLineNumber = "819"
+            endingLineNumber = "819"
             landmarkName = "-handleLongPress:"
             landmarkType = "7">
             <Locations>
@@ -110,8 +110,8 @@
             filePath = "HQ-INC App/SubjSetupVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "623"
-            endingLineNumber = "623"
+            startingLineNumber = "644"
+            endingLineNumber = "644"
             landmarkName = "-btnDoneClick"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +126,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1104"
-            endingLineNumber = "1104"
+            startingLineNumber = "1116"
+            endingLineNumber = "1116"
             landmarkName = "-btnNoteDoneClick"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1109"
-            endingLineNumber = "1109"
+            startingLineNumber = "1121"
+            endingLineNumber = "1121"
             landmarkName = "-btnNoteDoneClick"
             landmarkType = "7">
          </BreakpointContent>

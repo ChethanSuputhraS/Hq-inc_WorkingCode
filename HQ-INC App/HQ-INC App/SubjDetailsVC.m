@@ -184,7 +184,7 @@
     zz = zz+100;
     UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     btnRead = [[UIButton alloc]initWithFrame:CGRectMake(zz, ProfileView.frame.size.height-50, 150, 50)];
-    [self setButtonProperties:btnRead withTitle:@"Start Reading" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:25];
+    [self setButtonProperties:btnRead withTitle:@"Start Reading" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:18];
     [btnRead addTarget:self action:@selector(btnReadClick) forControlEvents:UIControlEventTouchUpInside];
     btnRead.layer.cornerRadius = 6;
     [ProfileView addSubview:btnRead];

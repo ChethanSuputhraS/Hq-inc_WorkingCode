@@ -12,19 +12,24 @@
 #import "HomeVC.h"
 #import "AddSensorVC.h"
 
-@interface SubjSetupVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UIScrollViewDelegate,UITextViewDelegate,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface SubjSetupVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UIScrollViewDelegate,UITextViewDelegate,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource,UIPickerViewDataSource>
 
 @end
 
 @implementation SubjSetupVC  
 @synthesize dataDict,isFromEdit;
 
-UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor;
+UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor,*lblTimeInterval;
 NSString * strMsg;
 bool isBtnSkinSelected;
 bool isRemoveSnrSelect;
-NSMutableArray *tmpArryMonitor,*arrPlayers,*tmpArrySensor;
+NSMutableArray *tmpArryMonitor,*arrPlayers,*tmpArrySensor,*arrayPiker;
 NSInteger selectedIndex;
+
+UIView *showPickerView,*viewForPiker;
+UIPickerView *pikerViewIntervalSelect;
+NSString *selectedFromPicker;
+
 
 - (void)viewDidLoad
 {
@@ -78,6 +83,8 @@ NSInteger selectedIndex;
 //         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.02f",highDermalF];
 //     }
     
+     arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10",@"20",@"30",@"40",@"50", nil];
+
     [self setupProfileImageView];
     [self setupforSensorView];
     [self setupAlarmView];
@@ -346,11 +353,25 @@ NSInteger selectedIndex;
     lblTimeDuration.textAlignment = NSTextAlignmentLeft;
     [timeIntervalView addSubview:lblTimeDuration];
     
-    txtTimeInterval = [[UITextField alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
-    [self setTextfieldProperties:txtTimeInterval withPlaceHolderText:@"10" withTextSize:20.0];
-    txtTimeInterval.keyboardType = UIKeyboardTypeNumberPad;
-    txtTimeInterval.returnKeyType = UIReturnKeyDone;
-    [timeIntervalView addSubview:txtTimeInterval];
+//    txtTimeInterval = [[UITextField alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
+//    [self setTextfieldProperties:txtTimeInterval withPlaceHolderText:@"10" withTextSize:20.0];
+//    txtTimeInterval.keyboardType = UIKeyboardTypeNumberPad;
+//    txtTimeInterval.returnKeyType = UIReturnKeyDone;
+//    [timeIntervalView addSubview:txtTimeInterval];
+    
+    lblTimeInterval = [[UILabel alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
+    [self setLabelProperties:lblTimeInterval withText:@"10" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
+//    lblTimeInterval.textAlignment = NSTextAlignmentLeft;
+    lblTimeInterval.font = [UIFont fontWithName:CGRegular size:25];
+    lblTimeInterval.backgroundColor= UIColor.whiteColor;
+    lblTimeInterval.layer.cornerRadius = 6;
+    [timeIntervalView addSubview:lblTimeInterval];
+    
+    
+    UIButton * btnTimeInterval = [[UIButton alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
+    [self setButtonProperties:btnTimeInterval withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize];
+    [btnTimeInterval addTarget:self action:@selector(btnTiemIntervalClick) forControlEvents:UIControlEventTouchUpInside];
+    [timeIntervalView addSubview:btnTimeInterval];
 
     // note view
     
@@ -613,7 +634,7 @@ NSInteger selectedIndex;
                
                
                NSString * requestStr2 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@' , date = '%@'  where id = \"%@\"",strName,strNotes,strTimeHour,[dataDict valueForKey:@"id"]];
-//               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
+               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
                
            }
            else
@@ -621,7 +642,7 @@ NSInteger selectedIndex;
                requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId];
                
                NSString * requestStr2 =  [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,strNotes,strTimeHour];
-//               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
+               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
            }
            
            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
@@ -744,13 +765,13 @@ NSInteger selectedIndex;
     }
     else if (textField == txtNumberSnr)
     {
-        [txtNumberSnr becomeFirstResponder];
-        [txtTimeInterval resignFirstResponder];
+        [txtNumberSnr resignFirstResponder];
+//        [txtTimeInterval resignFirstResponder];
     }
-    else if (textField ==  txtTimeInterval)
-    {
-        [txtTimeInterval resignFirstResponder];
-    }
+//    else if (textField ==  txtTimeInterval)
+//    {
+//        [txtTimeInterval resignFirstResponder];
+//    }
     return true;
 }
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -775,10 +796,10 @@ NSInteger selectedIndex;
     {
         self.view.frame = CGRectMake(0, -60, DEVICE_WIDTH, DEVICE_HEIGHT);
     }
-    if (textField == txtTimeInterval)
-    {
-        self.view.frame = CGRectMake(0, -120, DEVICE_WIDTH, DEVICE_HEIGHT);
-    }
+//    if (textField == txtTimeInterval)
+//    {
+//        self.view.frame = CGRectMake(0, -120, DEVICE_WIDTH, DEVICE_HEIGHT);
+//    }
 }
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
@@ -1714,6 +1735,133 @@ NSInteger selectedIndex;
     if (arryTmp.count > 0)
     {
         lblNosensor.text = [NSString stringWithFormat:@"%d Sensor added",addedMonitor];
+    }
+}
+#pragma mark- Picker view for set time interval
+-(void)SettimeInterval
+{
+    viewForPiker = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT)];
+    viewForPiker.backgroundColor = [UIColor colorWithRed:0 green:(CGFloat)0 blue:0 alpha:0.9];
+    [self.view addSubview:viewForPiker];
+
+    showPickerView  = [[UIView alloc]initWithFrame:CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400)];
+    showPickerView.backgroundColor = UIColor.whiteColor;
+    showPickerView.layer.cornerRadius = 6;
+    showPickerView.clipsToBounds = true;
+    [viewForPiker addSubview:showPickerView];
+    
+    UIView * bgView = [[UIView alloc]init];
+    bgView.frame  = CGRectMake(0, 0, showPickerView.frame.size.width, 70);
+    bgView.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
+    [showPickerView addSubview:bgView];
+        
+    UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, showPickerView.frame.size.width , 70)];
+    lblHeader.text = @"Time interval";
+    lblHeader.textColor = UIColor.whiteColor;
+    lblHeader.textAlignment = NSTextAlignmentCenter;
+    lblHeader.font = [UIFont fontWithName:CGRegular size:30];
+    [bgView addSubview:lblHeader];
+    
+    UIButton *btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 100, 70)];
+    [self setButtonProperties:btnCancel withTitle:@"Cancel" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
+    [btnCancel addTarget:self action:@selector(btnTimeCancelClick) forControlEvents:UIControlEventTouchUpInside];
+    [bgView addSubview:btnCancel];
+        
+    UIButton *btnDone = [[UIButton alloc]initWithFrame:CGRectMake(showPickerView.frame.size.width-100, 0, 100, 70)];
+    [self setButtonProperties:btnDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
+    [btnDone addTarget:self action:@selector(btnTimeDoneClick) forControlEvents:UIControlEventTouchUpInside];
+    [bgView addSubview:btnDone];
+        
+    pikerViewIntervalSelect = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 60, showPickerView.frame.size.width, 300)];
+    pikerViewIntervalSelect.delegate = self;
+    pikerViewIntervalSelect.dataSource = self;
+    pikerViewIntervalSelect.backgroundColor = UIColor.whiteColor;
+    NSInteger indexSelctTemp = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectIndexTempr"];
+    [pikerViewIntervalSelect selectRow:indexSelctTemp inComponent:0 animated:YES];
+    [showPickerView addSubview:pikerViewIntervalSelect];
+
+      [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+         {
+         showPickerView.frame = CGRectMake(150, (DEVICE_HEIGHT-400)/2, DEVICE_WIDTH-300, 400);
+         }
+         completion:(^(BOOL finished)
+         {
+        })];
+}
+-(void)btnTiemIntervalClick
+{
+    [self SettimeInterval];
+}
+-(void)btnTimeCancelClick
+{
+    
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+     {
+      showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
+     }
+                 completion:(^(BOOL finished)
+                             {
+     [viewForPiker removeFromSuperview];
+    })];
+}
+-(void)btnTimeDoneClick
+{
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+     {
+      showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
+     }
+                    completion:(^(BOOL finished)
+    {
+        [viewForPiker removeFromSuperview];
+    })];
+    
+    lblTimeInterval.text = selectedFromPicker;
+    [self PickerViweIndex:selectedFromPicker];
+}
+-(void)PickerViweIndex:(NSString *)strTempSelect
+{
+        if ([strTempSelect isEqual:@"10"])
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"selectIndexTempr"];
+        }
+        else if ([strTempSelect isEqual:@"20"])
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"selectIndexTempr"];
+        }
+        else if ([strTempSelect isEqual:@"30"])
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"selectIndexTempr"];
+        }
+        else if ([strTempSelect isEqual:@"40"])
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:3 forKey:@"selectIndexTempr"];
+        }
+        else if ([strTempSelect isEqual:@"50"])
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:4 forKey:@"selectIndexTempr"];
+        }
+    
+        [[NSUserDefaults standardUserDefaults] synchronize];
+}
+//MARK: piker view
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView;
+{
+    return 1;
+}
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+        return arrayPiker.count;
+}
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return [arrayPiker objectAtIndex:row];
+
+}
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if (pickerView == pikerViewIntervalSelect)
+    {
+        selectedFromPicker = [arrayPiker objectAtIndex:row];
     }
 }
 @end

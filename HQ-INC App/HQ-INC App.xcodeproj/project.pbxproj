@@ -157,6 +157,9 @@
 		FA6DA7DB25CE7B2E00F76581 /* User_Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6DA7D825CE7B2E00F76581 /* User_Default@2x.png */; };
 		FA6DA7DC25CE7B2E00F76581 /* User_Default@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6DA7D925CE7B2E00F76581 /* User_Default@3x.png */; };
 		FA6DA7DD25CE7B2E00F76581 /* User_Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6DA7DA25CE7B2E00F76581 /* User_Default.png */; };
+		FA7A6CF9266F373F0087E07B /* floatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7A6CF6266F373F0087E07B /* floatTableViewCell.m */; };
+		FA7A6CFA266F373F0087E07B /* floatTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA7A6CF7266F373F0087E07B /* floatTableViewCell.xib */; };
+		FA7A6CFB266F373F0087E07B /* VCFloatingActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7A6CF8266F373F0087E07B /* VCFloatingActionButton.m */; };
 		FA913F96246FF23200E99777 /* FSide.png in Resources */ = {isa = PBXBuildFile; fileRef = FA913F94246FF23200E99777 /* FSide.png */; };
 		FA913F97246FF23200E99777 /* CSide.png in Resources */ = {isa = PBXBuildFile; fileRef = FA913F95246FF23200E99777 /* CSide.png */; };
 		FA9DB1F025CD706B003D40D2 /* SessionListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9DB1EF25CD706B003D40D2 /* SessionListVC.m */; };
@@ -506,6 +509,11 @@
 		FA6DA7D825CE7B2E00F76581 /* User_Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "User_Default@2x.png"; sourceTree = "<group>"; };
 		FA6DA7D925CE7B2E00F76581 /* User_Default@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "User_Default@3x.png"; sourceTree = "<group>"; };
 		FA6DA7DA25CE7B2E00F76581 /* User_Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = User_Default.png; sourceTree = "<group>"; };
+		FA7A6CF4266F373F0087E07B /* floatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floatTableViewCell.h; sourceTree = "<group>"; };
+		FA7A6CF5266F373F0087E07B /* VCFloatingActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCFloatingActionButton.h; sourceTree = "<group>"; };
+		FA7A6CF6266F373F0087E07B /* floatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = floatTableViewCell.m; sourceTree = "<group>"; };
+		FA7A6CF7266F373F0087E07B /* floatTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = floatTableViewCell.xib; sourceTree = "<group>"; };
+		FA7A6CF8266F373F0087E07B /* VCFloatingActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCFloatingActionButton.m; sourceTree = "<group>"; };
 		FA913F94246FF23200E99777 /* FSide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FSide.png; sourceTree = "<group>"; };
 		FA913F95246FF23200E99777 /* CSide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CSide.png; sourceTree = "<group>"; };
 		FA9DB1EE25CD706B003D40D2 /* SessionListVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionListVC.h; sourceTree = "<group>"; };
@@ -753,6 +761,7 @@
 		CF9C29AE2431C6E2004E32DB /* HelperClass */ = {
 			isa = PBXGroup;
 			children = (
+				FA7A6CF3266F373F0087E07B /* VCFloatingActionButton */,
 				FA3B34BC2604AD4500C53E27 /* UIfloatbleTextField */,
 				CF19152B24EE566A00E05C5C /* FCAlertView */,
 				CF19152A24EE53A500E05C5C /* Header.h */,
@@ -1621,6 +1630,18 @@
 			path = UIfloatbleTextField;
 			sourceTree = "<group>";
 		};
+		FA7A6CF3266F373F0087E07B /* VCFloatingActionButton */ = {
+			isa = PBXGroup;
+			children = (
+				FA7A6CF4266F373F0087E07B /* floatTableViewCell.h */,
+				FA7A6CF5266F373F0087E07B /* VCFloatingActionButton.h */,
+				FA7A6CF6266F373F0087E07B /* floatTableViewCell.m */,
+				FA7A6CF7266F373F0087E07B /* floatTableViewCell.xib */,
+				FA7A6CF8266F373F0087E07B /* VCFloatingActionButton.m */,
+			);
+			path = VCFloatingActionButton;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1767,6 +1788,7 @@
 				FA01E72E2546E18900F8F213 /* CGItalic.TTF in Resources */,
 				CF9E543C246AB3020011A323 /* battery-1@3x.png in Resources */,
 				CFABF5E1246FFBD600584B4E /* addBlack.png in Resources */,
+				FA7A6CFA266F373F0087E07B /* floatTableViewCell.xib in Resources */,
 				CF9E543D246AB3020011A323 /* battery-1.png in Resources */,
 				CFFFFD1124A4A79A0092290F /* battery-5.png in Resources */,
 				FA6DA7DC25CE7B2E00F76581 /* User_Default@3x.png in Resources */,
@@ -1851,6 +1873,7 @@
 				CF0473C7254A896D00D8ABB0 /* ViewSessionVC.m in Sources */,
 				CFABF5C7246FAF7F00584B4E /* CollectionCustomCell.m in Sources */,
 				0444DEEC2601CD20005BE1E6 /* StoredSubjectDetailVC.m in Sources */,
+				FA7A6CF9266F373F0087E07B /* floatTableViewCell.m in Sources */,
 				CF0473BB25497CF800D8ABB0 /* SessionReadVC.m in Sources */,
 				FA3B34BF2604AD4500C53E27 /* UIFloatLabelTextField.m in Sources */,
 				CFA4BF51242E5683006B5928 /* LinkingVC.m in Sources */,
@@ -1866,6 +1889,7 @@
 				CFA4C4B9242B92690051B215 /* GlobalSettingVC.m in Sources */,
 				CFFD1584242C975A0076CE97 /* PlayerSubjCELL.m in Sources */,
 				CF9FE4B924765D120086D977 /* MBProgressHUD.m in Sources */,
+				FA7A6CFB266F373F0087E07B /* VCFloatingActionButton.m in Sources */,
 				CF19151524EE506600E05C5C /* BLEService.m in Sources */,
 				CF5359B124A08D2400B0906B /* URLManager.m in Sources */,
 				CFA3265524F7A9C7006C4D64 /* AddMonitorVC.m in Sources */,
@@ -2041,7 +2065,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				INFOPLIST_FILE = "HQ-INC App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2075,7 +2099,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				INFOPLIST_FILE = "HQ-INC App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

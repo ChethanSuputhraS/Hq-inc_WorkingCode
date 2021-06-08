@@ -15,6 +15,7 @@
 #import "CollectionCustomCell.h"
 #import "URLManager.h"
 #import <MessageUI/MessageUI.h>
+#import "VCFloatingActionButton.h"
 
 
 @interface PlayerSubjVC ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UIGestureRecognizerDelegate,UITextViewDelegate,URLManagerDelegate,MFMailComposeViewControllerDelegate,FCAlertViewDelegate>
@@ -36,7 +37,8 @@
     NSString *orderSelected;
     NSNumber *intTemp;
         float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
-    
+    VCFloatingActionButton *addFloatButton;
+
 }
 
 @end
@@ -47,15 +49,18 @@
 {
     [self setNeedsStatusBarAppearanceUpdate];
     isGridSelected = YES;
-    
+
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
+    
+    UIColor * lbltxtclr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
+
+
     
     navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 130)];
     navigViewTop.backgroundColor = UIColor.clearColor;
     [self.view addSubview:navigViewTop];
             
-    UIColor * lbltxtclr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
     lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 48)];
     [self setLabelProperties:lblPLayerSubject withText: @"Player / Subject" backColor:UIColor.clearColor textColor:lbltxtclr textSize:25];
     lblPLayerSubject.textAlignment = NSTextAlignmentCenter;
@@ -182,6 +187,13 @@
     longPCollection.delegate = self;
     [_collectionView addGestureRecognizer:longPCollection];
 
+    
+
+        navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 64)];
+        navigViewTop.backgroundColor = UIColor.greenColor;
+        lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 44)];
+        
+        lblPLayerSubject.font = [UIFont fontWithName:@"" size:textSize];
 
     
     [_collectionView reloadData];
