@@ -603,13 +603,13 @@ NSString *selectedFromPicker;
            NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
 
       
-           NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-           [[NSUserDefaults standardUserDefaults] setValue:[APP_DELEGATE checkforValidString:txtViewNote.text] forKey:@"Notes"];
-
-           NSMutableArray* mutableAccounts = [[defaults objectForKey:@"Notes"] mutableCopy];
-           // Add or remove accounts:
-      
-           [defaults setObject:mutableAccounts forKey:@"Notes"];
+//           NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+//           [[NSUserDefaults standardUserDefaults] setValue:[APP_DELEGATE checkforValidString:txtViewNote.text] forKey:@"Notes"];
+//
+//           NSMutableArray* mutableAccounts = [[defaults objectForKey:@"Notes"] mutableCopy];
+////            Add or remove accounts:
+//      
+//           [defaults setObject:mutableAccounts forKey:@"Notes"];
            
            
            if (isFromEdit == YES)
@@ -632,8 +632,7 @@ NSString *selectedFromPicker;
                requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHigh,strIngLow,strDrmlHigh,strDrmlLow,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,[dataDict valueForKey:@"id"]];
                
                
-               
-               NSString * requestStr2 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@' , date = '%@'  where id = \"%@\"",strName,strNotes,strTimeHour,[dataDict valueForKey:@"id"]];
+               NSString * requestStr2 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@' , date = '%@'  where id = \"%@\"",strName,[NSString stringWithFormat:@"This is Second comment : %@",strNotes],strTimeHour,[dataDict valueForKey:@"id"]];
                [[DataBaseManager dataBaseManager] executeSw:requestStr2];
                
            }
@@ -641,7 +640,7 @@ NSString *selectedFromPicker;
            {
                requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId];
                
-               NSString * requestStr2 =  [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,strNotes,strTimeHour];
+               NSString * requestStr2 =  [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,[NSString stringWithFormat:@"This is First comment : %@",strNotes],strTimeHour];
                [[DataBaseManager dataBaseManager] executeSw:requestStr2];
            }
            
