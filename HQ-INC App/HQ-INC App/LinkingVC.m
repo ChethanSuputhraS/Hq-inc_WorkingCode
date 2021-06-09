@@ -28,6 +28,7 @@
     NSMutableArray * arrSessionData, * arrSensorsofSessions, * arrSessions;
     NSString * strCurrentSequence;
     int indexofSession;
+    NSString * strLatestCore, * strLatestSkin;
 
 }
 @end
@@ -725,8 +726,14 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
         if ([strSensorType isEqualToString:@"4"])
         {
             strFinalType = @"Dermal";
+            strLatestSkin = strTemp;
         }
-
+        else
+        {
+            strLatestCore = strTemp;
+        }
+        
+        
         if (![strTemp isEqualToString:@"NA"])
         {
             if (indexofData == totalSensors)
@@ -750,7 +757,14 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
     
     [arrSessionData removeAllObjects];
     [arrSensorsofSessions removeAllObjects];
+    
+//    core = 3 skin =4
+    
+    NSString * strSkin = [self checkforValidString:strLatestSkin];
+    NSString * strCore = [self checkforValidString:strLatestCore];
 
+    NSString * strUpdateLatestTemp = [NSString stringWithFormat:@"update Subject_Table set latestSkintempF = \"%@\", latestCoretempF = \"%@\" where user_id = '%@'",strSkin,strCore,strPlayerId];
+    [[DataBaseManager dataBaseManager] execute:strUpdateLatestTemp];
 }
 -(void)SendRecievedDataAcknowledgement
 {

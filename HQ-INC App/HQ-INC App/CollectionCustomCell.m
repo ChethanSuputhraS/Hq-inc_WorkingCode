@@ -9,7 +9,7 @@
 #import "CollectionCustomCell.h"
 
 @implementation CollectionCustomCell
-@synthesize lblName,lblTransView,lblCoreTmp,lblType1Tmp, lblBack , lblNo, lblBorder;
+@synthesize lblName,lblTransView,lblCoreTmp,lblSkinTmp, lblBack , lblNo, lblBorder;
 @synthesize imgViewpProfile;
 @synthesize viewpProfileRed;
 - (id)initWithFrame:(CGRect)frame
@@ -51,12 +51,12 @@
         lblCoreTmp.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:lblCoreTmp];
 
-        lblType1Tmp = [[UILabel alloc ]initWithFrame:CGRectMake(self.contentView.frame.size.width - 100, 100, 100, 80)];
-        lblType1Tmp.font = [UIFont fontWithName:CGRegular size:20];
-        lblType1Tmp.textColor = UIColor.blackColor;
-        lblType1Tmp.numberOfLines = 0;
-        lblType1Tmp.textAlignment = NSTextAlignmentCenter;
-        [self.contentView addSubview:lblType1Tmp];
+        lblSkinTmp = [[UILabel alloc ]initWithFrame:CGRectMake(self.contentView.frame.size.width - 100, 100, 100, 80)];
+        lblSkinTmp.font = [UIFont fontWithName:CGRegular size:20];
+        lblSkinTmp.textColor = UIColor.blackColor;
+        lblSkinTmp.numberOfLines = 0;
+        lblSkinTmp.textAlignment = NSTextAlignmentCenter;
+        [self.contentView addSubview:lblSkinTmp];
 
         lblBorder = [[UILabel alloc ]initWithFrame:CGRectMake(0, self.contentView.frame.size.height - 1, self.contentView.frame.size.width,1)];
         lblBorder.backgroundColor = [UIColor whiteColor];
@@ -65,11 +65,11 @@
         lblName.text = @"Name";
         lblNo.text = @"#";
         lblCoreTmp.text = @"-NA-\nCore Temp";
-        lblType1Tmp.text = @"-NA-\nSkin Temp";
+        lblSkinTmp.text = @"-NA-\nSkin Temp";
         imgViewpProfile.image = [UIImage imageNamed:@"add.png"];
         
         lblCoreTmp.hidden = true;
-        lblType1Tmp.hidden = true;
+        lblSkinTmp.hidden = true;
         
 //        viewpProfileRed = [[UIView alloc] initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT)];
 //        [self.contentView addSubview:viewpProfileRed];

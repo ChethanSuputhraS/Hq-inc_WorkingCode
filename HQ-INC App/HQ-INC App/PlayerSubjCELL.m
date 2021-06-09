@@ -9,7 +9,7 @@
 #import "PlayerSubjCELL.h"
 
 @implementation PlayerSubjCELL
-@synthesize lblName,lblPlayer,lblCoreTmp,lblType1Tmp,lblDate,lblTemp,lblConncet,lblLine;
+@synthesize lblName,lblPlayer,lblCoreTmp,lblSkinTmp,lblDate,lblTemp,lblConncet,lblLine;
 @synthesize imageView, imgViewpProfile;
 @synthesize btnDelete;
 
@@ -49,11 +49,11 @@
         lblCoreTmp.font = [UIFont fontWithName:CGRegular size:20];
         [self.contentView addSubview:lblCoreTmp];
         
-        lblType1Tmp = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*4-100, 0,(DEVICE_WIDTH-70)/4, 80)];
-        lblType1Tmp.textColor = UIColor.blackColor;
-        lblType1Tmp.textAlignment = NSTextAlignmentCenter;
-        lblType1Tmp.font = [UIFont fontWithName:CGRegular size:20];
-        [self.contentView addSubview:lblType1Tmp];
+        lblSkinTmp = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*4-100, 0,(DEVICE_WIDTH-70)/4, 80)];
+        lblSkinTmp.textColor = UIColor.blackColor;
+        lblSkinTmp.textAlignment = NSTextAlignmentCenter;
+        lblSkinTmp.font = [UIFont fontWithName:CGRegular size:20];
+        [self.contentView addSubview:lblSkinTmp];
         
         lblDate = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, DEVICE_WIDTH, 40)];
         lblDate.backgroundColor = UIColor.clearColor;

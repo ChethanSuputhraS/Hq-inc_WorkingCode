@@ -102,8 +102,13 @@ static BLEService    *sharedInstance    = nil;
                 {
                     if ([[valueStr substringWithRange:NSMakeRange(0, 6)] isEqualToString:@"020101"])
                     {
+                        [[BLEManager sharedManager] SetDeviceforAutoConnection:[NSString stringWithFormat:@"%@",peripheral.identifier]];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"AuthenticationCompleted" object:nil];
                         
+                        if (globalSbuSetupVC)
+                        {
+                            [globalSbuSetupVC SetNameforConnectedMonitor:peripheral.name];
+                        }
 //                        //To Check whether device is running live session or not...
 //                        NSInteger interval = [@"0" integerValue];
 //                        NSData * dataInterval = [[NSData alloc] initWithBytes:&interval length:2];

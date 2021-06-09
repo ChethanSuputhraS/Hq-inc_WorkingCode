@@ -15,7 +15,6 @@
 #import "CollectionCustomCell.h"
 #import "URLManager.h"
 #import <MessageUI/MessageUI.h>
-#import "VCFloatingActionButton.h"
 
 
 @interface PlayerSubjVC ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UIGestureRecognizerDelegate,UITextViewDelegate,URLManagerDelegate,MFMailComposeViewControllerDelegate,FCAlertViewDelegate>
@@ -37,10 +36,7 @@
     NSString *orderSelected;
     NSNumber *intTemp;
         float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
-    VCFloatingActionButton *addFloatButton;
-    
-    UITableView * tblNotesView;
-
+    BOOL isCClicked;
 }
 
 @end
@@ -51,18 +47,15 @@
 {
     [self setNeedsStatusBarAppearanceUpdate];
     isGridSelected = YES;
-
+    
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
-    
-    UIColor * lbltxtclr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-
-
     
     navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 130)];
     navigViewTop.backgroundColor = UIColor.clearColor;
     [self.view addSubview:navigViewTop];
             
+    UIColor * lbltxtclr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
     lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 48)];
     [self setLabelProperties:lblPLayerSubject withText: @"Player / Subject" backColor:UIColor.clearColor textColor:lbltxtclr textSize:25];
     lblPLayerSubject.textAlignment = NSTextAlignmentCenter;
@@ -189,18 +182,26 @@
     longPCollection.delegate = self;
     [_collectionView addGestureRecognizer:longPCollection];
 
-    
-
-        navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 64)];
-        navigViewTop.backgroundColor = UIColor.greenColor;
-        lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 44)];
-        
-        lblPLayerSubject.font = [UIFont fontWithName:@"" size:textSize];
 
     
     [_collectionView reloadData];
     [tblPlayerList reloadData];
     [super viewDidLoad];
+    
+    NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
+    NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
+    [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
+     
+     if ([arrAlarm count] > 0)
+     {
+         if ([arrAlarm objectAtIndex:0])
+         {
+             if ([[[arrAlarm objectAtIndex:0] valueForKey:@"celciusSelect"] isEqual:@"1"])
+             {
+                 isCClicked = YES;
+             }
+         }
+     }
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -221,16 +222,22 @@
 
     for (int i=0; i<arrSubjects.count; i++)
     {
-        if (![[[arrSubjects objectAtIndex:i] valueForKey:@"photo_URLThumbNail"] isEqual:@"nil"])
+        if (![[[arrSubjects objectAtIndex:i] valueForKey:@"photo_URLThumbNail"] isEqual:@"NA"])
         {
-            
-        NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@",[[arrSubjects objectAtIndex:i] valueForKey:@"photo_URL"]]];
-        NSData *pngData = [NSData dataWithContentsOfFile:filePath];
-        UIImage * mainImage = [UIImage imageWithData:pngData];
-        UIImage * imgCollect = [self scaleMyImage:mainImage withNewWidth:800 newHeight:800];
-        UIImage * imgTable = [self scaleMyImage:mainImage withNewWidth:300 newHeight:300];
-        
+            NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@",[[arrSubjects objectAtIndex:i] valueForKey:@"photo_URL"]]];
+            NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+            UIImage * mainImage = [UIImage imageWithData:pngData];
+            UIImage * imgCollect = [self scaleMyImage:mainImage withNewWidth:800 newHeight:800];
+            UIImage * imgTable = [self scaleMyImage:mainImage withNewWidth:300 newHeight:300];
     
+            [[arrSubjects objectAtIndex:i] setObject:imgCollect forKey:@"profileImageCollection"];
+            [[arrSubjects objectAtIndex:i] setObject:imgTable forKey:@"profileImageTable"];
+        }
+        else
+        {
+            UIImage * mainImage = [UIImage imageNamed:@"User_Default.png"];
+            UIImage * imgCollect = [self scaleMyImage:mainImage withNewWidth:800 newHeight:800];
+            UIImage * imgTable = [self scaleMyImage:mainImage withNewWidth:300 newHeight:300];
             [[arrSubjects objectAtIndex:i] setObject:imgCollect forKey:@"profileImageCollection"];
             [[arrSubjects objectAtIndex:i] setObject:imgTable forKey:@"profileImageTable"];
         }
@@ -269,14 +276,39 @@
         cell.lblTransView.hidden = NO;
         cell.lblName.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"name"];
         cell.lblNo.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"number"];
-        NSString * strHigtmp = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"drml_highF"];
-        int intConv = [[NSString stringWithFormat:@"%@0.2f",strHigtmp] intValue];
         
-        NSString * strHigCore = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"ing_highF"];
-               int intConvCore = [[NSString stringWithFormat:@"%@",strHigCore] intValue];
         
-        cell.lblCoreTmp.text = [NSString stringWithFormat:@"%dºF\nSkin",intConv];
-        cell.lblType1Tmp.text = [NSString stringWithFormat:@"%dºF\nCore",intConvCore];//ºF\nSkin Temp
+        if ([[APP_DELEGATE checkforValidString:[[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempF"]] isEqualToString:@"NA"])
+        {
+            cell.lblCoreTmp.text = @"-NA-";
+            cell.lblSkinTmp.text = @"-NA-";//ºF\nSkin Temp
+
+        }
+        else
+        {
+            NSString * strSkin = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempF"];
+            float floatSkin = [[NSString stringWithFormat:@"%@",strSkin] floatValue];
+            
+            NSString * strCore = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestCoretempF"];
+            float floatCore = [[NSString stringWithFormat:@"%@",strCore] floatValue];
+
+            cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºF\nSkin",floatCore];//@"%.02f ºF"
+            cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºF\nCore",floatSkin];//ºF\nSkin Temp
+
+            if (isCClicked == YES)
+            {
+                strSkin = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempC"];
+                floatSkin = [[NSString stringWithFormat:@"%@",strSkin] floatValue];
+                
+                strCore = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"ing_highF"];
+                floatCore = [[NSString stringWithFormat:@"%@",strCore] floatValue];
+                
+                cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºC\nSkin",floatCore];
+                cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºC\nCore",floatSkin];//ºF\nSkin Temp
+            }
+
+        }
+
 
         UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageCollection"];
         
@@ -296,30 +328,30 @@
         {
             cell.lblTransView.backgroundColor = [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:0.8];
             cell.lblCoreTmp.textColor = UIColor.whiteColor;
-            cell.lblType1Tmp.textColor = UIColor.whiteColor;
+            cell.lblSkinTmp.textColor = UIColor.whiteColor;
             cell.lblName.backgroundColor = [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:1];
             cell.lblNo.backgroundColor =  [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:1];
             cell.lblNo.layer.borderWidth = 1;
             cell.lblName.layer.borderWidth = 1;
             cell.lblCoreTmp.hidden = false;
-            cell.lblType1Tmp.hidden = false;
+            cell.lblSkinTmp.hidden = false;
         }
         else if (ii >= 100)
         {
             cell.lblTransView.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:0.8];
             cell.lblCoreTmp.textColor = UIColor.whiteColor;
-            cell.lblType1Tmp.textColor = UIColor.whiteColor;
+            cell.lblSkinTmp.textColor = UIColor.whiteColor;
             cell.lblName.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:1];
             cell.lblNo.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:1];
             cell.lblNo.layer.borderWidth = 1;
             cell.lblName.layer.borderWidth = 1;
             cell.lblCoreTmp.hidden = false;
-            cell.lblType1Tmp.hidden = false;
+            cell.lblSkinTmp.hidden = false;
         }
         else
         {
             cell.lblCoreTmp.hidden = false;
-            cell.lblType1Tmp.hidden = false;
+            cell.lblSkinTmp.hidden = false;
         }
     }
     else
@@ -333,7 +365,7 @@
         cell.lblNo.backgroundColor = UIColor.darkGrayColor;
         cell.lblTransView.hidden = true;
         cell.lblCoreTmp.hidden = true;
-        cell.lblType1Tmp.hidden = true;
+        cell.lblSkinTmp.hidden = true;
     }
     return cell;
 }
@@ -364,27 +396,11 @@
 #pragma mark - Tableview Methods
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == tblPlayerList)
-    {
-        return 80;;
-    }
-    else if (tableView == tblNotesView)
-    {
-        return 100;
-    }
-    return 0;
+    return 80;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == tblPlayerList)
-    {
-        return arrSubjects.count+1;
-    }
-    else if (tableView == tblNotesView)
-    {
-        return arrSubjects.count;
-    }
-    return 0;
+    return arrSubjects.count+1;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -393,112 +409,110 @@
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
 //    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-
+    cell.lblName.text = @"---";
+    cell.lblPlayer.text = @"---";
+    cell.lblCoreTmp.text = @"---";
+    cell.lblSkinTmp.text = @"---";
     
-    if (tableView == tblPlayerList)
+    if (arrSubjects.count > indexPath.row)
     {
-        cell.lblName.text = @"---";
-        cell.lblPlayer.text = @"---";
-        cell.lblCoreTmp.text = @"---";
-        cell.lblType1Tmp.text = @"---";
+        cell.lblName.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"name"];
+        cell.lblPlayer.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"number"];
         
-        if (arrSubjects.count > indexPath.row)
+        if ([[APP_DELEGATE checkforValidString:[[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempF"]] isEqualToString:@"NA"])
         {
-            cell.lblName.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"name"];
-            cell.lblPlayer.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"number"];
-            NSString * strHigtmp = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"drml_highF"];
-            int intConv = [[NSString stringWithFormat:@"%@0.2f",strHigtmp] intValue];
-            
-            NSString * strHigCore = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"ing_highF"];
-                   int intConvCore = [[NSString stringWithFormat:@"%@",strHigCore] intValue];
-            
-            cell.lblCoreTmp.text = [NSString stringWithFormat:@"%dºF\nSkin",intConv];
-            cell.lblType1Tmp.text = [NSString stringWithFormat:@"%dºF\nCore",intConvCore];//ºF\nSkin Temp
-            
-            cell.imgViewpProfile.frame = CGRectMake(40, 5, 70, 70);
-            cell.imgViewpProfile.contentMode = UIViewContentModeScaleAspectFill;
-            cell.imgViewpProfile.layer.masksToBounds = YES;
+            cell.lblCoreTmp.text = @"-NA-";
+            cell.lblSkinTmp.text = @"-NA-";//ºF\nSkin Temp
 
-            UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageTable"];
-            if (imgProf != nil)
-            {
-                cell.imgViewpProfile.image = imgProf;
-            }
-            else
-            {
-                cell.imgViewpProfile.image = imgProf;//Here Default Profile Photo will disply
-            }
-            
-         
         }
         else
         {
-            cell.imgViewpProfile.image = [UIImage imageNamed:@"add.png"];
-            cell.imgViewpProfile.frame = CGRectMake(49, 5, 45, 70);
-        }
-        
-        if (indexPath.row % 2)
-           {
-               cell.backgroundColor = [UIColor colorWithRed:230.0/255.0f green:230.0/255.0f blue:230.0/255.0f alpha:1];
-           }
-           else
-           {
-               cell.backgroundColor = UIColor.whiteColor;
-           }
-        // above code css commeted
-        cell.lblLine.frame = CGRectMake(0, 79, self.view.frame.size.width, 1);
-        int i ;
-        i =  cell.lblCoreTmp.text.intValue;
-        
-         if (i<=99 && i>96)
-        {
-            cell.backgroundColor = [UIColor blueColor];
-            cell.lblName.textColor = UIColor.whiteColor;
-            cell.lblPlayer.textColor = UIColor.whiteColor;
-            cell.lblCoreTmp.textColor = UIColor.whiteColor;
-            cell.lblType1Tmp.textColor = UIColor.whiteColor;
-            cell.lblLine.hidden = false;
-        }
-        else if (i >= 100)
-        {
-            cell.backgroundColor = [UIColor redColor];
-            cell.lblName.textColor = UIColor.whiteColor;
-            cell.lblPlayer.textColor = UIColor.whiteColor;
-            cell.lblCoreTmp.textColor = UIColor.whiteColor;
-            cell.lblType1Tmp.textColor = UIColor.whiteColor;
-            cell.lblLine.hidden = false;
-        }
-        else
-        {
-            cell.backgroundColor = UIColor.whiteColor;
-            cell.lblName.textColor = UIColor.blackColor;
-            cell.lblPlayer.textColor = UIColor.blackColor;
-            cell.lblCoreTmp.textColor = UIColor.blackColor;
-            cell.lblType1Tmp.textColor = UIColor.blackColor;
-            cell.lblLine.hidden = false;
-        }
-        
-    }
-    else if (tableView == tblNotesView)
-    {
-        cell.lblName.frame = CGRectMake(5, 0, tblNotesView.frame.size.width-10, 50);
-        cell.lblName.textAlignment = NSTextAlignmentLeft;
-        cell.lblPlayer.frame = CGRectMake(5, 50, tblNotesView.frame.size.width-10, 50);
-        cell.lblPlayer.textAlignment = NSTextAlignmentLeft;
+            NSString * strSkin = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempF"];
+            float floatSkin = [[NSString stringWithFormat:@"%@",strSkin] floatValue];
+            
+            NSString * strCore = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestCoretempF"];
+            float floatCore = [[NSString stringWithFormat:@"%@",strCore] floatValue];
 
-        if (arrSubjects.count > indexPath.row)
-        {
-            if (tableView == tblNotesView)
+            cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºF\nSkin",floatCore];//@"%.02f ºF"
+            cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºF\nCore",floatSkin];//ºF\nSkin Temp
+
+            if (isCClicked == YES)
             {
+                strSkin = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempC"];
+                floatSkin = [[NSString stringWithFormat:@"%@",strSkin] floatValue];
                 
-                cell.lblName.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"name"];
-                cell.lblPlayer.text = [[arrayNotes objectAtIndex:indexPath.row] objectForKey:@"Notes"];
-
+                strCore = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"ing_highF"];
+                floatCore = [[NSString stringWithFormat:@"%@",strCore] floatValue];
+                
+                cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºC\nSkin",floatCore];
+                cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºC\nCore",floatSkin];//ºF\nSkin Temp
             }
+
         }
         
-    }
+        cell.imgViewpProfile.frame = CGRectMake(40, 5, 70, 70);
+        cell.imgViewpProfile.contentMode = UIViewContentModeScaleAspectFill;
+        cell.imgViewpProfile.layer.masksToBounds = YES;
 
+        UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageTable"];
+        if (imgProf != nil)
+        {
+            cell.imgViewpProfile.image = imgProf;
+        }
+        else
+        {
+            cell.imgViewpProfile.image = imgProf;//Here Default Profile Photo will disply
+        }
+    }
+    else
+    {
+        cell.imgViewpProfile.image = [UIImage imageNamed:@"add.png"];
+        cell.imgViewpProfile.frame = CGRectMake(49, 5, 45, 70);
+    }
+    
+    if (indexPath.row % 2)
+       {
+           cell.backgroundColor = [UIColor colorWithRed:230.0/255.0f green:230.0/255.0f blue:230.0/255.0f alpha:1];
+       }
+       else
+       {
+           cell.backgroundColor = UIColor.whiteColor;
+       }
+    // above code css commeted
+    cell.lblLine.frame = CGRectMake(0, 79, self.view.frame.size.width, 1);
+    int i ;
+    i =  cell.lblCoreTmp.text.intValue;
+    
+     if (i<=99 && i>96)
+    {
+        cell.backgroundColor = [UIColor blueColor];
+        cell.lblName.textColor = UIColor.whiteColor;
+        cell.lblPlayer.textColor = UIColor.whiteColor;
+        cell.lblCoreTmp.textColor = UIColor.whiteColor;
+        cell.lblSkinTmp.textColor = UIColor.whiteColor;
+        cell.lblLine.hidden = false;
+    }
+    else if (i >= 100)
+    {
+        cell.backgroundColor = [UIColor redColor];
+        cell.lblName.textColor = UIColor.whiteColor;
+        cell.lblPlayer.textColor = UIColor.whiteColor;
+        cell.lblCoreTmp.textColor = UIColor.whiteColor;
+        cell.lblSkinTmp.textColor = UIColor.whiteColor;
+        cell.lblLine.hidden = false;
+    }
+    else
+    {
+        cell.backgroundColor = UIColor.whiteColor;
+        cell.lblName.textColor = UIColor.blackColor;
+        cell.lblPlayer.textColor = UIColor.blackColor;
+        cell.lblCoreTmp.textColor = UIColor.blackColor;
+        cell.lblSkinTmp.textColor = UIColor.blackColor;
+        cell.lblLine.hidden = false;
+    }
+    
+    
+    
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -523,36 +537,26 @@
     UIView*viewHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tblPlayerList.frame.size.width, 50)];
     viewHeader.backgroundColor = [UIColor colorWithRed:77.0/255 green:(CGFloat)77.0/255 blue:77.0/255 alpha:1];
     
-    if (tableView == tblPlayerList)
-    {
-        UILabel *lblName= [[UILabel alloc] initWithFrame:CGRectMake(100, 0, (DEVICE_WIDTH-70)/4, 50)];
-        [self setLabelProperties:lblName withText: @"Name" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-        lblName.textAlignment = NSTextAlignmentCenter;
-        [viewHeader addSubview:lblName];
-        
-        UILabel *lblPlayerH = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*2-80, 0, (DEVICE_WIDTH-70)/4, 50)];
-        [self setLabelProperties:lblPlayerH withText:@"Player #" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-        lblPlayerH.textAlignment = NSTextAlignmentCenter;
-        [viewHeader addSubview:lblPlayerH];
-           
-        UILabel *lblCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*3-80, 0, (DEVICE_WIDTH-70)/4, 50)];
-        [self setLabelProperties:lblCoreTmp withText:@"Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-        lblCoreTmp.textAlignment = NSTextAlignmentCenter;
-        [viewHeader addSubview:lblCoreTmp];
-        
-        UILabel *lblType1Tmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*4-110, 0,(DEVICE_WIDTH-70)/4, 50)];
-        [self setLabelProperties:lblType1Tmp withText:@"Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-        lblType1Tmp.textAlignment = NSTextAlignmentCenter;
-        [viewHeader addSubview:lblType1Tmp];
-    }
-    else if (tableView == tblNotesView)
-    {
-        UILabel *lblName= [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tblNotesView.frame.size.width , 50)];
-        [self setLabelProperties:lblName withText: @"Tap on player to edit notes" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
-        lblName.textAlignment = NSTextAlignmentCenter;
-        [viewHeader addSubview:lblName];
-    }
+    UILabel *lblName= [[UILabel alloc] initWithFrame:CGRectMake(100, 0, (DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblName withText: @"Name" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
+    lblName.textAlignment = NSTextAlignmentCenter;
+    [viewHeader addSubview:lblName];
     
+    UILabel *lblPlayerH = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*2-80, 0, (DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblPlayerH withText:@"Player #" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
+    lblPlayerH.textAlignment = NSTextAlignmentCenter;
+    [viewHeader addSubview:lblPlayerH];
+       
+    UILabel *lblCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*3-80, 0, (DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblCoreTmp withText:@"Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
+    lblCoreTmp.textAlignment = NSTextAlignmentCenter;
+    [viewHeader addSubview:lblCoreTmp];
+    
+    UILabel *lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*4-110, 0,(DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblSkinTmp withText:@"Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
+    lblSkinTmp.textAlignment = NSTextAlignmentCenter;
+    [viewHeader addSubview:lblSkinTmp];
+
     return viewHeader;
     }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -1098,19 +1102,19 @@
     btnNoteCancel.layer.cornerRadius = 5;
     [viewBgNote addSubview:btnNoteCancel];
     
-    tblNotesView = [[UITableView alloc]init];
-    tblNotesView.frame = CGRectMake(0, 70, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70);
-    tblNotesView.backgroundColor = UIColor.greenColor;
-    tblNotesView.delegate = self;
-    tblNotesView.dataSource = self;
-    tblNotesView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//    tblNotesView = [[UITableView alloc]init];
+//    tblNotesView.frame = CGRectMake(0, 70, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70);
+//    tblNotesView.backgroundColor = UIColor.greenColor;
+//    tblNotesView.delegate = self;
+//    tblNotesView.dataSource = self;
+//    tblNotesView.separatorStyle = UITableViewCellSeparatorStyleNone;
 //    [viewforShowNotes addSubview:tblNotesView];
     
         
     UIButton *btnNoteDone = [[UIButton alloc]initWithFrame:CGRectMake(viewforShowNotes.frame.size.width-100, 0, 100, 70)];
     [self setButtonProperties:btnNoteDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnNoteDone addTarget:self action:@selector(btnNoteDoneClick) forControlEvents:UIControlEventTouchUpInside];
-//    [viewBgNote addSubview:btnNoteDone];
+    [viewBgNote addSubview:btnNoteDone];
        
     txtViewNotes = [[UITextView alloc] initWithFrame:CGRectMake(0, 70, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70)];
     txtViewNotes.delegate = self;
@@ -1118,7 +1122,7 @@
     txtViewNotes.autocorrectionType = UITextAutocorrectionTypeNo;
     txtViewNotes.backgroundColor = [UIColor colorWithRed:240.0/255 green:240.0/255 blue:240.0/255 alpha:0.6];
     txtViewNotes.font = [UIFont fontWithName:CGRegular size:30];
-    txtViewNotes.editable = NO;
+    txtViewNotes.editable = YES;
     [viewforShowNotes addSubview:txtViewNotes];
     
     lblPlceholdNote = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, txtViewNotes.frame.size.width, 50)];
@@ -1132,12 +1136,15 @@
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes]; // from database data
 
+    if ([arrNotes count] >0)
+    {
+        txtViewNotes.text =  [[arrNotes objectAtIndex:0] valueForKey:@"notes"];
+
+            lblPlceholdNote.text = @"";
+    }
 //    if (![[arrNotes valueForKey:@"notes"] isEqual:@""])
 //    {
 //       txtViewNotes.text =  [[NSUserDefaults standardUserDefaults] valueForKey:@"Notes"];;
-    txtViewNotes.text =  [[arrNotes objectAtIndex:selectedIndex] valueForKey:@"notes"];
-
-        lblPlceholdNote.text = @"";
 //    }
 //    else
 //    {
@@ -1183,17 +1190,17 @@
          NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
          [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes];
         
-//
-//        if ([arrNotes count] > 0)
-//        {
-//            NSString * requestStr1 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@', date = '%@' where id = \"%@\" ",strName,strNote,strTimeHour,];
-//            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
-//        }
-//        else
-//        {
-//            NSString * requestStr1 =    [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,strNote,strTimeHour];
-//            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
-//        }
+
+        if ([arrNotes count] > 0)
+        {
+            NSString * requestStr1 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@', date = '%@' ",strName,strNote,strTimeHour];
+            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
+        }
+        else
+        {
+            NSString * requestStr1 =    [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,strNote,strTimeHour];
+            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
+        }
   
 //        NSLog(@"%@", requestStr1);
         
@@ -1240,6 +1247,11 @@
     {
         lblPlceholdNote.text = @"";
     }
+}
+-(void)textViewDidBeginEditing:(UITextView *)textView
+{
+//    txtViewNotes.frame = CGRectMake(0, 70-50, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70);
+
 }
 -(void)getOutSideTempAndHumidity
 {

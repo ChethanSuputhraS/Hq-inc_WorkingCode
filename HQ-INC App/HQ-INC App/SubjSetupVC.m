@@ -12,24 +12,23 @@
 #import "HomeVC.h"
 #import "AddSensorVC.h"
 
-@interface SubjSetupVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UIScrollViewDelegate,UITextViewDelegate,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource,UIPickerViewDataSource>
+@interface SubjSetupVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UIScrollViewDelegate,UITextViewDelegate,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @end
 
 @implementation SubjSetupVC  
 @synthesize dataDict,isFromEdit;
 
-UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor,*lblTimeInterval;
+UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor, * lblTimeInterval;
 NSString * strMsg;
 bool isBtnSkinSelected;
 bool isRemoveSnrSelect;
-NSMutableArray *tmpArryMonitor,*arrPlayers,*tmpArrySensor,*arrayPiker;
+NSMutableArray *tmpArryMonitor,*arrPlayers,*tmpArrySensor, *arrayPiker;
 NSInteger selectedIndex;
 
 UIView *showPickerView,*viewForPiker;
 UIPickerView *pikerViewIntervalSelect;
 NSString *selectedFromPicker;
-
 
 - (void)viewDidLoad
 {
@@ -68,22 +67,22 @@ NSString *selectedFromPicker;
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Subject_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrPlayers];
     
-//    if (isCClicked == YES)
-//     {
-//         txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.02f",highIngstC];
-//         txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.02f",lowIngestC];
-//         txtDermalLowTmp.text = [NSString stringWithFormat:@"%.02f",highDermalC];
-//         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.02f",lowDermalC];
-//     }
-//     else
-//     {
-//         txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.02f",highIngstF];
-//         txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.02f",lowIngestF];
-//         txtDermalLowTmp.text = [NSString stringWithFormat:@"%.02f",lowDermalF];
-//         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.02f",highDermalF];
-//     }
+    NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
+    sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
+    [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
+     
+     if ([arrAlarm count] > 0)
+     {
+         if ([arrAlarm objectAtIndex:0])
+         {
+             if ([[[arrAlarm objectAtIndex:0] valueForKey:@"celciusSelect"] isEqual:@"1"])
+             {
+                 isCClicked = YES;
+             }
+         }
+     }
     
-     arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10",@"20",@"30",@"40",@"50", nil];
+    arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10",@"20",@"30",@"40",@"50", nil];
 
     [self setupProfileImageView];
     [self setupforSensorView];
@@ -358,7 +357,7 @@ NSString *selectedFromPicker;
 //    txtTimeInterval.keyboardType = UIKeyboardTypeNumberPad;
 //    txtTimeInterval.returnKeyType = UIReturnKeyDone;
 //    [timeIntervalView addSubview:txtTimeInterval];
-    
+
     lblTimeInterval = [[UILabel alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
     [self setLabelProperties:lblTimeInterval withText:@"10" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
 //    lblTimeInterval.textAlignment = NSTextAlignmentLeft;
@@ -366,12 +365,12 @@ NSString *selectedFromPicker;
     lblTimeInterval.backgroundColor= UIColor.whiteColor;
     lblTimeInterval.layer.cornerRadius = 6;
     [timeIntervalView addSubview:lblTimeInterval];
-    
-    
+
     UIButton * btnTimeInterval = [[UIButton alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
     [self setButtonProperties:btnTimeInterval withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize];
     [btnTimeInterval addTarget:self action:@selector(btnTiemIntervalClick) forControlEvents:UIControlEventTouchUpInside];
     [timeIntervalView addSubview:btnTimeInterval];
+
 
     // note view
     
@@ -395,16 +394,21 @@ NSString *selectedFromPicker;
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
     
-    if ([arrAlarm objectAtIndex:selectedIndex])
+    if ([arrAlarm count] > 0)
     {
-        if ([[[arrAlarm objectAtIndex:selectedIndex] valueForKey:@"celciusSelect"] isEqual:@"1"])
+        if ([arrAlarm objectAtIndex:0])
         {
-            [self setTextfieldProperties:txtIngesTmpHigh withPlaceHolderText:@" 36.0ºC" withTextSize:25.0];
-            [self setTextfieldProperties:txtlngeslowTmpAl withPlaceHolderText:@"32.0ºC" withTextSize:25.0];
-            [self setTextfieldProperties:txtDermalLowTmp withPlaceHolderText:@" 32.0ºC" withTextSize:25.0];
-            [self setTextfieldProperties:txtDemalTmpHigh withPlaceHolderText:@" 36.0ºC" withTextSize:25.0];
+            if ([[[arrAlarm objectAtIndex:0] valueForKey:@"celciusSelect"] isEqual:@"1"])
+            {
+                isCClicked = YES;
+                [self setTextfieldProperties:txtIngesTmpHigh withPlaceHolderText:@" 36.0ºC" withTextSize:25.0];
+                [self setTextfieldProperties:txtlngeslowTmpAl withPlaceHolderText:@"32.0ºC" withTextSize:25.0];
+                [self setTextfieldProperties:txtDermalLowTmp withPlaceHolderText:@" 32.0ºC" withTextSize:25.0];
+                [self setTextfieldProperties:txtDemalTmpHigh withPlaceHolderText:@" 36.0ºC" withTextSize:25.0];
+            }
         }
     }
+    
 }
 
 #pragma mark - Buttons
@@ -581,8 +585,8 @@ NSString *selectedFromPicker;
            }
            else
            {
-               strImagePath =  @"nil";
-               strThumbNail = @"nil";
+               strImagePath =  @"NA";
+               strThumbNail = @"NA";
            }
            NSString * strName = [APP_DELEGATE checkforValidString:txtFullName.text];
            NSString * strNum = [APP_DELEGATE checkforValidString:txtHash.text];
@@ -603,13 +607,13 @@ NSString *selectedFromPicker;
            NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
 
       
-//           NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-//           [[NSUserDefaults standardUserDefaults] setValue:[APP_DELEGATE checkforValidString:txtViewNote.text] forKey:@"Notes"];
-//
-//           NSMutableArray* mutableAccounts = [[defaults objectForKey:@"Notes"] mutableCopy];
-////            Add or remove accounts:
-//      
-//           [defaults setObject:mutableAccounts forKey:@"Notes"];
+           NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+           [[NSUserDefaults standardUserDefaults] setValue:[APP_DELEGATE checkforValidString:txtViewNote.text] forKey:@"Notes"];
+
+           NSMutableArray* mutableAccounts = [[defaults objectForKey:@"Notes"] mutableCopy];
+           // Add or remove accounts:
+      
+           [defaults setObject:mutableAccounts forKey:@"Notes"];
            
            
            if (isFromEdit == YES)
@@ -625,23 +629,16 @@ NSString *selectedFromPicker;
                    }
                    else
                    {
-                       strImagePath =  @"nil";
-                       strThumbNail = @"nil";
+                       strImagePath =  @"NA";
+                       strThumbNail = @"NA";
                    }
                }
-               requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHigh,strIngLow,strDrmlHigh,strDrmlLow,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,[dataDict valueForKey:@"id"]];
-               
-               
-               NSString * requestStr2 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@' , date = '%@'  where id = \"%@\"",strName,[NSString stringWithFormat:@"This is Second comment : %@",strNotes],strTimeHour,[dataDict valueForKey:@"id"]];
-               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
+               requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@', timeInterval ='%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHigh,strIngLow,strDrmlHigh,strDrmlLow,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,selectedFromPicker,[dataDict valueForKey:@"id"]];
                
            }
            else
            {
-               requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId];
-               
-               NSString * requestStr2 =  [NSString stringWithFormat:@"insert into 'Notes_Table'('name','notes','date') values(\"%@\",\"%@\",\"%@\")",strName,[NSString stringWithFormat:@"This is First comment : %@",strNotes],strTimeHour];
-               [[DataBaseManager dataBaseManager] executeSw:requestStr2];
+               requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id', 'timeInterval') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId, selectedFromPicker];
            }
            
            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
@@ -764,13 +761,13 @@ NSString *selectedFromPicker;
     }
     else if (textField == txtNumberSnr)
     {
-        [txtNumberSnr resignFirstResponder];
-//        [txtTimeInterval resignFirstResponder];
+        [txtNumberSnr becomeFirstResponder];
+        [txtTimeInterval resignFirstResponder];
     }
-//    else if (textField ==  txtTimeInterval)
-//    {
-//        [txtTimeInterval resignFirstResponder];
-//    }
+    else if (textField ==  txtTimeInterval)
+    {
+        [txtTimeInterval resignFirstResponder];
+    }
     return true;
 }
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -795,23 +792,26 @@ NSString *selectedFromPicker;
     {
         self.view.frame = CGRectMake(0, -60, DEVICE_WIDTH, DEVICE_HEIGHT);
     }
-//    if (textField == txtTimeInterval)
-//    {
-//        self.view.frame = CGRectMake(0, -120, DEVICE_WIDTH, DEVICE_HEIGHT);
-//    }
+    if (textField == txtTimeInterval)
+    {
+        self.view.frame = CGRectMake(0, -120, DEVICE_WIDTH, DEVICE_HEIGHT);
+    }
 }
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+    self.view.frame = CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT);
+
     if (textField == txtHash)
     {
         int txtNo = [txtHash.text intValue];
         txtHash.text = [NSString stringWithFormat:@"%d",txtNo];
     }
-    self.view.frame = CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT);
-    
-    if ([[APP_DELEGATE checkforValidString:textField.text] isEqualToString:@"NA"])
+    else if (textField == txtFullName)
     {
-        strMsg = @"Please Enter values";
+        if ([[APP_DELEGATE checkforValidString:textField.text] isEqualToString:@"NA"])
+        {
+            strMsg = @"Please Enter values";
+        }
     }
     else
     {
@@ -835,55 +835,55 @@ NSString *selectedFromPicker;
                      {
                          highIngstF = [[arrVal objectAtIndex:0] floatValue];
                          highIngstC = [[arrVal objectAtIndex:1] floatValue];
-                         txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.f ºC",highIngstF];
+                         txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.2f ºC",highIngstC];
                      }
                      else  if (textField == txtlngeslowTmpAl)
                      {
                          lowIngestF = [[arrVal objectAtIndex:0] floatValue];
                          lowIngestC = [[arrVal objectAtIndex:1] floatValue];
-                         txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.f ºC",lowIngestF];
+                         txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.2f ºC",lowIngestC];
                      }
                      else  if (textField == txtDemalTmpHigh)
                      {
                          highDermalF = [[arrVal objectAtIndex:0] floatValue];
                          highDermalC = [[arrVal objectAtIndex:1] floatValue];
-                         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.f ºC",highDermalF];
+                         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.2f ºC",highDermalC];
                      }
                      else  if (textField == txtDermalLowTmp)
                      {
                          lowDermalF = [[arrVal objectAtIndex:0] floatValue];
                          lowDermalC = [[arrVal objectAtIndex:1] floatValue];
-                         txtDermalLowTmp.text = [NSString stringWithFormat:@"%.f ºC",lowDermalF];
+                         txtDermalLowTmp.text = [NSString stringWithFormat:@"%.2f ºC",lowDermalC];
+                     }
+                 }
+                 else
+                 {
+                     if (textField == txtIngesTmpHigh)
+                     {
+                         highIngstF = [[arrVal objectAtIndex:0] floatValue];
+                         highIngstC = [[arrVal objectAtIndex:1] floatValue];
+                         txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.2f ºF",highIngstF];
+                     }
+                     else  if (textField == txtlngeslowTmpAl)
+                     {
+                         lowIngestF = [[arrVal objectAtIndex:0] floatValue];
+                         lowIngestC = [[arrVal objectAtIndex:1] floatValue];
+                         txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.2f ºF",lowIngestF];
+                     }
+                     else  if (textField == txtDemalTmpHigh)
+                     {
+                         highDermalF = [[arrVal objectAtIndex:0] floatValue];
+                         highDermalC = [[arrVal objectAtIndex:1] floatValue];
+                         txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.2f ºF",highDermalF];
+                     }
+                     else  if (textField == txtDermalLowTmp)
+                     {
+                         lowDermalF = [[arrVal objectAtIndex:0] floatValue];
+                         lowDermalC = [[arrVal objectAtIndex:1] floatValue];
+                         txtDermalLowTmp.text = [NSString stringWithFormat:@"%.2f ºF",lowDermalF];
                      }
                  }
              }
-            
-            
-                if (textField == txtIngesTmpHigh)
-                {
-                    highIngstF = [[arrVal objectAtIndex:0] floatValue];
-                    highIngstC = [[arrVal objectAtIndex:1] floatValue];
-                    txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.f ºF",highIngstF];
-                }
-                else  if (textField == txtlngeslowTmpAl)
-                {
-                    lowIngestF = [[arrVal objectAtIndex:0] floatValue];
-                    lowIngestC = [[arrVal objectAtIndex:1] floatValue];
-                    txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.f ºF",lowIngestF];
-                }
-                else  if (textField == txtDemalTmpHigh)
-                {
-                    highDermalF = [[arrVal objectAtIndex:0] floatValue];
-                    highDermalC = [[arrVal objectAtIndex:1] floatValue];
-                    txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.f ºF",highDermalF];
-                }
-                else  if (textField == txtDermalLowTmp)
-                {
-                    lowDermalF = [[arrVal objectAtIndex:0] floatValue];
-                    lowDermalC = [[arrVal objectAtIndex:1] floatValue];
-                    txtDermalLowTmp.text = [NSString stringWithFormat:@"%.f ºF",lowDermalF];
-                }
-            
         }
      }
    }
@@ -897,12 +897,12 @@ NSString *selectedFromPicker;
         if(valC > 38.1)
         {
             isValidValue = NO;
-            strErrMsg = @"Maximum value Exceed for temperature in ºC";
+            strErrMsg = @"Maximum value exceed for temperature in ºC";
         }
-        else if (valC < 36.1)
+        else if (valC < 32.0)
         {
             isValidValue = NO;
-            strErrMsg = @"Temperature can't be less than 36.1 ºC";
+            strErrMsg = @"Temperature can't be less than 32 ºC";
         }
     }
     else
@@ -910,20 +910,17 @@ NSString *selectedFromPicker;
         if(valF > 100.5)
         {
             isValidValue = NO;
-            strErrMsg = @"Maximum value Exceed for temperature in ºF";
+            strErrMsg = @"Maximum value exceed for temperature in ºF";
         }
-        else if (valF < 97)
+        else if (valF < 94)
         {
             isValidValue = NO;
-            strErrMsg = @"Temperature can't be less than 97 ºF";
+            strErrMsg = @"Temperature can't be less than 94 ºF";
         }
-        isValidValue = YES;
     }
     if (isValidValue == NO)
     {
-         strErrMsg = @"Temperature can't be less than 97 ºF";
         [self AlertViewFCTypeCaution:strErrMsg];
-
     }
     return isValidValue;
 }
@@ -1566,50 +1563,62 @@ NSString *selectedFromPicker;
 #pragma mark- Assiging  fielsd from data dict
 -(void)fromDataDict
 {
+    selectedFromPicker = @"10";
     if (dataDict.count > 0)
     {
         NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
         tmpDict = [arrPlayers objectAtIndex:0];
             
-        highIngstF = [[tmpDict valueForKey:@"ing_highF"] floatValue];
-        lowIngestF = [[tmpDict valueForKey:@"ing_lowF"] floatValue];
-        highDermalF = [[tmpDict valueForKey:@"drml_highF"] floatValue];
-        lowDermalF = [[tmpDict valueForKey:@"drml_lowF"] floatValue];
-      
-        
         txtFullName.text = [dataDict valueForKey:@"name"];
         txtHash.text = [dataDict valueForKey:@"number"];
-        
+        txtViewNote.text = [dataDict valueForKey:@"notes"];
+
         highIngstF = [[dataDict valueForKey:@"ing_lowF"] floatValue];
         lowIngestF = [[dataDict valueForKey:@"ing_highF"] floatValue];
         highDermalF = [[dataDict valueForKey:@"drml_highF"] floatValue];
         lowDermalF = [[dataDict valueForKey:@"drml_lowF"] floatValue];
 
-//             highIngstF = [[tmpDict valueForKey:@"ing_highF"] floatValue];
-//             lowIngestF = [[tmpDict valueForKey:@"ing_lowF"] floatValue];
-//             highDermalF = [[tmpDict valueForKey:@"drml_highF"] floatValue];
-//             lowDermalF = [[tmpDict valueForKey:@"drml_lowF"] floatValue];
-        
         highIngstC = [[tmpDict valueForKey:@"ing_highC"] floatValue];
         lowIngestC = [[tmpDict valueForKey:@"ing_lowC"] floatValue];
         highDermalC = [[tmpDict valueForKey:@"drml_highC"] floatValue];
         lowDermalC = [[tmpDict valueForKey:@"drml_lowC"] floatValue];
-        txtViewNote.text = [dataDict valueForKey:@"notes"];
         
-        txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.02f",highIngstF];
-        txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.02f",lowIngestF];
-        txtDermalLowTmp.text = [NSString stringWithFormat:@"%.02f",lowDermalF];
-        txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.02f",highDermalF];
+        selectedFromPicker = [dataDict valueForKey:@"timeInterval"];
+        
+        if (isCClicked)
+        {
+            txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.02f ºC",highIngstC];
+            txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.02f ºC",lowIngestC];
+            txtDermalLowTmp.text = [NSString stringWithFormat:@"%.02f ºC",lowDermalC];
+            txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.02f ºC",highDermalC];
+        }
+        else
+        {
+            txtIngesTmpHigh.text = [NSString stringWithFormat:@"%.02f ºF",highIngstF];
+            txtlngeslowTmpAl.text = [NSString stringWithFormat:@"%.02f ºF",lowIngestF];
+            txtDermalLowTmp.text = [NSString stringWithFormat:@"%.02f ºF",lowDermalF];
+            txtDemalTmpHigh.text = [NSString stringWithFormat:@"%.02f ºF",highDermalF];
+        }
     }
 }
 #pragma mark- Img Scalling
 -(void)gettingImg
 {
-    NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
-    NSData *pngData = [NSData dataWithContentsOfFile:filePath];
-    UIImage * mainImage = [UIImage imageWithData:pngData];
-    UIImage * image = [self scaleMyImage:mainImage withNewWidth:300 newHeight:300];
-    imgViewProPic.image = image;
+    if ([[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"photo_URL"]] isEqualToString:@"NA"])
+    {
+        if (isFromEdit)
+        {
+            imgViewProPic.image = [UIImage imageNamed:@"User_Default.png"];
+        }
+    }
+    else
+    {
+        NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
+        NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+        UIImage * mainImage = [UIImage imageWithData:pngData];
+        UIImage * image = [self scaleMyImage:mainImage withNewWidth:300 newHeight:300];
+        imgViewProPic.image = image;
+    }
 }
 -(UIImage *)scaleMyImage:(UIImage *)newImg withNewWidth:(double)newWidth newHeight:(double)newHeight
 {
@@ -1706,6 +1715,14 @@ NSString *selectedFromPicker;
     }
     lblAddmonitorConnect.text = [NSString stringWithFormat:@"%@ Added",strDeviceName];
 }
+-(void)SetNameforConnectedMonitor:(NSString *)strDeviceName
+{
+    if ([[APP_DELEGATE checkforValidString:strDeviceName] isEqualToString:@"NA"])
+    {
+        strDeviceName = @"Monitor";
+    }
+    lblAddmonitorConnect.text = [NSString stringWithFormat:@"%@ Added",strDeviceName];
+}
 -(void)SetupDemoFromAddSensorData:(NSMutableArray *)arryData
 {
     NSLog(@"Subject Setup Sensor Data==%@",arryData);
@@ -1736,6 +1753,7 @@ NSString *selectedFromPicker;
         lblNosensor.text = [NSString stringWithFormat:@"%d Sensor added",addedMonitor];
     }
 }
+
 #pragma mark- Picker view for set time interval
 -(void)SettimeInterval
 {
@@ -1863,4 +1881,11 @@ NSString *selectedFromPicker;
         selectedFromPicker = [arrayPiker objectAtIndex:row];
     }
 }
+
 @end
+/*
+ Subject setup shows monitor and sensor as not connected.
+ After setting up a subject, connecting a monitor and a sensor, tapping Done and then re-entering Subject setup, the Monitor and Sensors say Not Connected.
+
+ ---- sensors needs to be added, it can not be auto connected
+ **/

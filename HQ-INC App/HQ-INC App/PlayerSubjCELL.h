@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-@property(nonatomic,strong) UILabel * lblName ,* lblPlayer, * lblCoreTmp, * lblType1Tmp,*lblDate,*lblTemp,*lblConncet,*lblLine;
+@property(nonatomic,strong) UILabel * lblName ,* lblPlayer, * lblCoreTmp, * lblSkinTmp,*lblDate,*lblTemp,*lblConncet,*lblLine;
 @property(nonatomic,strong)UIImageView *imgViewpProfile;
 @property(nonatomic,strong)UIButton *btnDelete;
 @end

@@ -92,9 +92,7 @@
     
     [self gettingImg];
 
-
     [super viewDidLoad];
-
 }
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
@@ -184,7 +182,7 @@
     zz = zz+100;
     UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     btnRead = [[UIButton alloc]initWithFrame:CGRectMake(zz, ProfileView.frame.size.height-50, 150, 50)];
-    [self setButtonProperties:btnRead withTitle:@"Start Reading" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:18];
+    [self setButtonProperties:btnRead withTitle:@"Start Readings" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:20];
     [btnRead addTarget:self action:@selector(btnReadClick) forControlEvents:UIControlEventTouchUpInside];
     btnRead.layer.cornerRadius = 6;
     [ProfileView addSubview:btnRead];
@@ -336,7 +334,6 @@
     lblLineRight.backgroundColor = UIColor.lightGrayColor;
     [viewlblTmp addSubview:lblLineRight];
     
-    
     ya = ya+50;
     lblSensor4 = [[UILabel alloc] initWithFrame:CGRectMake(5, ya, width/2-10, 45)];
     [self setLabelProperties:lblSensor4 withText:@"Sensor/Type" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
@@ -417,8 +414,6 @@
     UILabel * lblLineRight3 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
     lblLineRight3.backgroundColor = UIColor.lightGrayColor;
     [viewlblTmp addSubview:lblLineRight3];
-    
-    
 }
 -(NSString *)GetSensorIDandTypeForLableWithIndex:(NSInteger)i
 {
@@ -571,9 +566,32 @@
  }
  -(void)btnDoneClick
  {
+     if (isSessionStarted == YES)
+     {
+         [self AlertViewFCTypeCaution:@"Session is going on. Are you sure want to move back and Stop session. You can minimize the app and let session going on."];
+         
+         FCAlertView *alert = [[FCAlertView alloc] init];
+         alert.colorScheme = [UIColor blackColor];
+         [alert makeAlertTypeWarning];
+         [alert addButton:@"Move Back" withActionBlock:
+          ^{
+             
+             [self.navigationController popViewControllerAnimated:TRUE];
+             //Delete one by one all the Added Sensors
+         }];
+         [alert showAlertInView:self
+                      withTitle:@"HQ-Inc App"
+                   withSubtitle:@"Session is going on. Are you sure want to move back and Stop session. You can minimize the app and let session going on."
+                withCustomImage:[UIImage imageNamed:@"Subsea White 180.png"]
+            withDoneButtonTitle:@"Cancel" andButtons:nil];
+
+     }
+     else
+     {
+         [self.navigationController popViewControllerAnimated:true];
+     }
      // if sensor added successfully you need to check here
 //     [self AddSenssorCompleated];
-     [self.navigationController popViewControllerAnimated:true];
      
  }
 -(void)btnReadClick
@@ -607,7 +625,6 @@
 -(void)btnSpotCkClick
 {
     [self StopSessionCommandtoDevice];
-
 }
 -(void)btnSessionClick
 {
@@ -621,11 +638,18 @@
 #pragma mark- Img Scalling
 -(void)gettingImg
 {
-    NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
-    NSData *pngData = [NSData dataWithContentsOfFile:filePath];
-    UIImage * mainImage = [UIImage imageWithData:pngData];
-    UIImage * image = [self scaleMyImage:mainImage];
-    imgView.image = image;
+    if ([[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"photo_URL"]] isEqualToString:@"NA"])
+    {
+        imgView.image = [UIImage imageNamed:@"User_Default.png"];
+    }
+    else
+    {
+        NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
+        NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+        UIImage * mainImage = [UIImage imageWithData:pngData];
+        UIImage * image = [self scaleMyImage:mainImage];
+        imgView.image = image;
+    }
 }
 -(UIImage *)scaleMyImage:(UIImage *)newImg
 {

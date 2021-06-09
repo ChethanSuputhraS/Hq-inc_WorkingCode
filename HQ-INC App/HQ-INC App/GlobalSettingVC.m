@@ -76,6 +76,7 @@
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlrmResult];
     
+
     if (arrAlrmResult.count > 0)
     {
         NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
@@ -94,6 +95,11 @@
        
         txtbatteryAlarm.text = [tmpDict valueForKey:@"battery_alarm"];
         txtQuantitySnrChk.text = [tmpDict valueForKey:@"quantity"];
+        
+        if ([[tmpDict valueForKey:@"celciusSelect"] isEqual:@"1"])
+        {
+            isCClicked = YES;
+        }
     }
     [self setupIngestSensorAlarm];
     [self setupDermalSensorAlarm];
@@ -144,13 +150,13 @@
     
     if (isCClicked == YES)
     {
-        txtHighTmpIngest.text = [NSString stringWithFormat:@"%.02f",highIngstC];
-        txtLowTmpIngst.text = [NSString stringWithFormat:@"%.02f",lowIngestC];
+        txtHighTmpIngest.text = [NSString stringWithFormat:@"%.02fºC",highIngstC];
+        txtLowTmpIngst.text = [NSString stringWithFormat:@"%.02fºC",lowIngestC];
     }
     else
     {
-        txtHighTmpIngest.text = [NSString stringWithFormat:@"%.02f",highIngstF];
-        txtLowTmpIngst.text = [NSString stringWithFormat:@"%.02f",lowIngestF];
+        txtHighTmpIngest.text = [NSString stringWithFormat:@"%.02fºF",highIngstF];
+        txtLowTmpIngst.text = [NSString stringWithFormat:@"%.02fºF",lowIngestF];
     }
 }
 #pragma mark- Dermal Sensor Setting
@@ -197,13 +203,13 @@
     
     if (isCClicked == YES)
        {
-           txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02f",highDermalC];
-           txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02f",lowDermalC];
+           txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02fºC",highDermalC];
+           txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02fºC",lowDermalC];
        }
        else
        {
-           txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02f",highDermalF];
-           txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02f",lowDermalF];
+           txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02fºF",highDermalF];
+           txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02fºF",lowDermalF];
        }
 }
 #pragma mark- Additional Settings

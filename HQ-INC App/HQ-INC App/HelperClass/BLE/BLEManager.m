@@ -23,6 +23,8 @@ static BLEManager    *sharedManager    = nil;
     BLEService * blutoothService;
     BOOL isVitDeviceFound;
     NSTimer * checkDeviceTimer;
+    NSMutableDictionary * dictCheckAutoConnection;
+
 }
 @end
 
@@ -52,6 +54,8 @@ static BLEManager    *sharedManager    = nil;
     if(!nonConnectArr)nonConnectArr = [[NSMutableArray alloc] init];
     if(!connectedServices)connectedServices = [[NSMutableArray alloc] init];
     if(!disconnectedPeripherals)disconnectedPeripherals = [NSMutableArray new];
+    dictCheckAutoConnection = [[NSMutableDictionary alloc] init];
+
 }
 
 + (BLEManager*)sharedManager
@@ -127,6 +131,8 @@ static BLEManager    *sharedManager    = nil;
 #pragma mark - Disconenct Device
 - (void)disconnectDevice:(CBPeripheral*)device
 {
+    [dictCheckAutoConnection setValue:@"ManualDisconnect" forKey:[NSString stringWithFormat:@"%@",device.identifier]];
+
     if (device == nil) {
         return;
     }else{
@@ -347,6 +353,34 @@ static BLEManager    *sharedManager    = nil;
 }
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(nullable NSError *)error;
 {
+    NSString * strIdentifier = [NSString stringWithFormat:@"%@",peripheral.identifier];
+    if ([dictCheckAutoConnection count] > 0)
+    {
+        if ([[dictCheckAutoConnection valueForKey:strIdentifier] isEqualToString:@"ManualDisconnect"])
+        {
+            NSLog(@"Manual Disconnected==>%@",dictCheckAutoConnection);
+            [dictCheckAutoConnection setValue:@"NA" forKey:strIdentifier];
+        }
+        else
+        {
+            NSLog(@"Auto Disconnected==>%@",dictCheckAutoConnection);
+            if ([[arrGlobalDevices valueForKey:@"identifier"] containsObject:[NSString stringWithFormat:@"%@",peripheral.identifier]])
+            {
+                NSInteger indexID = [[arrGlobalDevices valueForKey:@"identifier"]indexOfObject:[NSString stringWithFormat:@"%@",peripheral.identifier]];
+                if (indexID != NSNotFound)
+                {
+                    if (arrGlobalDevices.count > indexID)
+                    {
+                        NSLog(@"Retrying");
+                        if (peripheral.state != CBPeripheralStateConnected)
+                        {
+                            [self.centralManager connectPeripheral:peripheral options:nil];
+                        }
+                    }
+                }
+            }
+        }
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"DeviceDidDisConnectNotification" object:peripheral];
     NSLog(@"Disconnected from peripheral");
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -456,4 +490,9 @@ static BLEManager    *sharedManager    = nil;
 //        NSLog(@"%@",updatedMFData);
     }
 }
+-(void)SetDeviceforAutoConnection:(NSString *)strIdentifier;
+{
+    [dictCheckAutoConnection setValue:@"AutoConnect" forKey:strIdentifier];
+}
+
 @end

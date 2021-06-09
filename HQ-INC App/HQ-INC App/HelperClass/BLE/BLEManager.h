@@ -162,6 +162,7 @@
 -(void) updateBluetoothState;
 -(void)initialize;
 -(NSArray *)getLastConnected;
+-(void)SetDeviceforAutoConnection:(NSString *)strIdentifier;
 
 @property (nonatomic)   float batteryLevel;
 @end

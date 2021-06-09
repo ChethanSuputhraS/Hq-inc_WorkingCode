@@ -355,7 +355,6 @@
     NSArray * arrTemp = [arrSessionGraphData valueForKey:@"temp"];
     NSArray * arrTimeStamp = [arrSessionGraphData valueForKey:@"timestamp"];
     
-    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
     NSString *documentsDir = [paths objectAtIndex:0];
     NSString *root = [documentsDir stringByAppendingPathComponent:@"PlayerData.csv"];
@@ -651,11 +650,23 @@
 #pragma mark- Img Scalling
 -(void)gettingImg
 {
-    NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [dataDict valueForKey:@"photo_URL"]]];
-    NSData *pngData = [NSData dataWithContentsOfFile:filePath];
-    UIImage * mainImage = [UIImage imageWithData:pngData];
-    UIImage * image = [self scaleMyImage:mainImage];
-    imgView.image = image;
+    if ([arrSessionSensors count] > 0)
+    {
+        if ([[APP_DELEGATE checkforValidString:[[arrSessionSensors objectAtIndex:0] valueForKey:@"photo_URL"]] isEqualToString:@"NA"])
+        {
+            imgView.image = [UIImage imageNamed:@"User_Default.png"];
+        }
+        else
+        {
+            NSString * filePath = [self documentsPathForFileName:[NSString stringWithFormat:@"PlayerPhoto/%@", [[arrSessionSensors objectAtIndex:0] valueForKey:@"photo_URL"]]];
+            NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+            UIImage * mainImage = [UIImage imageWithData:pngData];
+            UIImage * image = [self scaleMyImage:mainImage];
+            imgView.image = image;
+        }
+
+    }
+//        arrSessionSensors
 }
 -(UIImage *)scaleMyImage:(UIImage *)newImg
 {

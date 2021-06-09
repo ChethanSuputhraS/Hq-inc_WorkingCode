@@ -35,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)ConnectedMonitorDetail:(NSMutableDictionary *)arryFromAddMonitor;
 -(void)SetupDemoFromAddSensorData:(NSMutableArray *)arryData;
+-(void)SetNameforConnectedMonitor:(NSString *)strDeviceName;
 @end
 
 NS_ASSUME_NONNULL_END

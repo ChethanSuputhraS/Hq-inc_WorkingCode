@@ -14,8 +14,8 @@
             filePath = "HQ-INC App/SubjSetupVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "442"
-            endingLineNumber = "442"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
             landmarkName = "-imagePickerController:didFinishPickingImage:editingInfo:"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "882"
-            endingLineNumber = "882"
+            startingLineNumber = "817"
+            endingLineNumber = "817"
             landmarkName = "-handleLongPress:"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,42 +62,58 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "872"
-            endingLineNumber = "872"
+            startingLineNumber = "807"
+            endingLineNumber = "807"
             landmarkName = "-handleLongPress:"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "202A75B0-4736-493C-8289-CDFC7EC13116 - 81c0827e80ed53dd"
+                  uuid = "202A75B0-4736-493C-8289-CDFC7EC13116 - 3c2b3015e3cd26ff"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[PlayerSubjVC handleLongPress:]"
                   moduleName = "HQ-INC App"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chethan/HQ-Inc/june%202021/08-06-2021/ipad/HQ-INC%20App%20/HQ-INC%20App/PlayerSubjVC.m"
+                  urlString = "file:///Users/chethan/HQ-Inc/April2021/30-04-2021/HQ-INC%20App%20/HQ-INC%20App/PlayerSubjVC.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "872"
-                  endingLineNumber = "872"
+                  startingLineNumber = "807"
+                  endingLineNumber = "807"
                   offsetFromSymbolStart = "860">
                </Location>
                <Location
-                  uuid = "202A75B0-4736-493C-8289-CDFC7EC13116 - 29cef0262984c233"
+                  uuid = "202A75B0-4736-493C-8289-CDFC7EC13116 - 9425424d4aa4b751"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__32-[PlayerSubjVC handleLongPress:]_block_invoke"
                   moduleName = "HQ-INC App"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chethan/HQ-Inc/june%202021/08-06-2021/ipad/HQ-INC%20App%20/HQ-INC%20App/PlayerSubjVC.m"
+                  urlString = "file:///Users/chethan/HQ-Inc/April2021/30-04-2021/HQ-INC%20App%20/HQ-INC%20App/PlayerSubjVC.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "873"
-                  endingLineNumber = "873"
+                  startingLineNumber = "808"
+                  endingLineNumber = "808"
                   offsetFromSymbolStart = "68">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CDFA2B22-5D47-4BFF-9C4A-6CB300CC5F72"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HQ-INC App/SubjSetupVC.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "623"
+            endingLineNumber = "623"
+            landmarkName = "-btnDoneClick"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -110,8 +126,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1182"
-            endingLineNumber = "1182"
+            startingLineNumber = "1104"
+            endingLineNumber = "1104"
             landmarkName = "-btnNoteDoneClick"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +142,8 @@
             filePath = "HQ-INC App/PlayerSubjVC.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1187"
-            endingLineNumber = "1187"
+            startingLineNumber = "1109"
+            endingLineNumber = "1109"
             landmarkName = "-btnNoteDoneClick"
             landmarkType = "7">
          </BreakpointContent>
