@@ -28,12 +28,12 @@
     lblSensor = [[UILabel alloc]init];
     lblSensor.textColor = UIColor.blackColor;
     lblSensor.backgroundColor = UIColor.clearColor;
-    lblSensor.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblSensor.font = [UIFont fontWithName:CGRegular size:22];
     [self.contentView addSubview:lblSensor];
         
     lblNameSnr = [[UILabel alloc]init];
     lblNameSnr.textColor = UIColor.blackColor;
-    lblNameSnr.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblNameSnr.font = [UIFont fontWithName:CGRegular size:22];
     lblNameSnr.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:lblNameSnr];
 
@@ -41,6 +41,10 @@
     viewSelect.image = [UIImage imageNamed:@"radioUnselected.png"];
         viewSelect.hidden = true;
     [self.contentView addSubview:viewSelect];
+        
+        
+        
+        
     }
     return self;
     }

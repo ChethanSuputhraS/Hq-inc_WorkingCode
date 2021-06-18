@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionCustomCell : UICollectionViewCell
 
-@property(nonatomic,strong) UILabel * lblName ,* lblTransView, * lblCoreTmp,*lblType1Tmp, * lblSkinTmp, * lblBack, * lblNo , * lblBorder;
+@property(nonatomic,strong) UILabel * lblName ,* lblTransView, * lblCoreTmp, * lblBack, * lblNo , * lblBorder,*lblSkinTmp;
 @property(nonatomic,strong)UIImageView *imgViewpProfile;
 @property(nonatomic,strong)UIView *viewpProfileRed;
 

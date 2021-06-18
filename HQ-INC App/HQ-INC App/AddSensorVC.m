@@ -36,14 +36,14 @@
     
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     
-    btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-60, 60, 44)];
-    [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+    btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+    [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnCanceldown.layer.cornerRadius = 5;
     [btnCanceldown addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnCanceldown];
         
-    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-60, 60, 44)];
-    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnDone.layer.cornerRadius = 5;
     [btnDone setTitle:@"Done" forState:UIControlStateNormal];
     btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
@@ -88,13 +88,13 @@
     [self.view addSubview:viewHeader];
     
     UIColor * lbltxtClor = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    UILabel * lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(50, 10, DEVICE_WIDTH-100, 40)];
+    UILabel * lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, DEVICE_WIDTH-100, yy)];
     [lblTitle setBackgroundColor:[UIColor clearColor]];
-    [self setLabelProperties:lblTitle withText:@"ADD SENSOR" backColor:UIColor.clearColor textColor:lbltxtClor textSize:textSize-6];
+    [self setLabelProperties:lblTitle withText:@"ADD SENSOR" backColor:UIColor.clearColor textColor:lbltxtClor textSize:25];
     [viewHeader addSubview:lblTitle];
 
     UIButton * btnRefresh = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-50, globalStatusHeight-5, 40, 40)];
+    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-60, globalStatusHeight-5, 50, 50)];
     btnRefresh.backgroundColor = UIColor.clearColor;
     [btnRefresh setImage:[UIImage imageNamed:@"reload.png"] forState:UIControlStateNormal];
     [btnRefresh addTarget:self action:@selector(refreshBtnClick) forControlEvents:UIControlEventTouchUpInside];
@@ -109,11 +109,11 @@
     [lblheader setBackgroundColor:[UIColor clearColor]];
     [lblheader setText:@" Tap on add button to add with device"];
     [lblheader setTextAlignment:NSTextAlignmentCenter];
-    [lblheader setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+    [lblheader setFont:[UIFont fontWithName:CGRegular size:textSize+1]];
     [lblheader setTextColor:[UIColor whiteColor]];
     [viewHeader addSubview:lblheader];
     
-    tblDeviceList = [[UITableView alloc] initWithFrame:CGRectMake(0, yy, DEVICE_WIDTH, DEVICE_HEIGHT-yy)];
+    tblDeviceList = [[UITableView alloc] initWithFrame:CGRectMake(0, yy+51, DEVICE_WIDTH, DEVICE_HEIGHT-yy-152)];
     tblDeviceList.delegate = self;
     tblDeviceList.dataSource= self;
     tblDeviceList.backgroundColor = UIColor.clearColor;
@@ -141,21 +141,21 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section;
 {
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+    UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     headerView.backgroundColor = btnBgClor;
         
-    UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH/3-10, 40)];
+    UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH/3-10, 50)];
     lblmenu.text = @"Sensors ID (Type)";
     [lblmenu setTextColor:[UIColor whiteColor]];
-    lblmenu.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblmenu.font = [UIFont fontWithName:CGRegular size:textSize+2];
     lblmenu.backgroundColor = UIColor.clearColor;
     lblmenu.textAlignment = NSTextAlignmentLeft;
     [headerView addSubview:lblmenu];
     
-    UILabel *lblName =[[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH/3*2-10,0, DEVICE_WIDTH/3, 40)]; // overlapping
+    UILabel *lblName =[[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH/3*2-140,0, DEVICE_WIDTH/3, 50)]; // overlapping
     lblName.text = @"Name";
     [lblName setTextColor:[UIColor whiteColor]];
-    lblName.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblName.font = [UIFont fontWithName:CGRegular size:textSize+2];
     lblName.backgroundColor = UIColor.clearColor;
     lblName.textAlignment = NSTextAlignmentLeft;
     [headerView addSubview:lblName];
@@ -164,7 +164,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 50;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -176,7 +176,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 40;
+    return 70;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -268,6 +268,7 @@
     [APP_DELEGATE endHudProcess];
     [timeoutforAddSensor invalidate];
     timeoutforAddSensor = nil;
+   
 }
 #pragma mark- Button Click Events
 -(void)btnCancelClick
@@ -420,33 +421,33 @@
     [self.view addSubview:viewForAddSensor];
         
         viewForSensorNameNum = [[UIView alloc]init];
-        viewForSensorNameNum.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+        viewForSensorNameNum.frame = CGRectMake(150, (DEVICE_HEIGHT), DEVICE_WIDTH-300, 300);
         viewForSensorNameNum.backgroundColor = UIColor.whiteColor;
         viewForSensorNameNum.layer.cornerRadius = 6;
         viewForSensorNameNum.clipsToBounds = true;
         [viewForAddSensor addSubview:viewForSensorNameNum];
         
         UIView *bgView = [[UIView alloc]init];
-        bgView.frame = CGRectMake(0, 0, viewForSensorNameNum.frame.size.width+10, 70);
+        bgView.frame = CGRectMake(0, 0, viewForSensorNameNum.frame.size.width, 70);
         bgView.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
         [viewForSensorNameNum addSubview:bgView];
         
         btnCancel = [[UIButton alloc]init];
-        btnCancel.frame = CGRectMake(10, 0, 60, 40);
+        btnCancel.frame = CGRectMake(10, 0, 110, 70);
         [btnCancel addTarget:self action:@selector(btnCancelSensorView) forControlEvents:UIControlEventTouchUpInside];
         [btnCancel setTitle:@"Cancel" forState:normal];
         [btnCancel setTitleColor:UIColor.whiteColor forState:normal];
         btnCancel.backgroundColor = UIColor.clearColor;
-        btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:22];
         [bgView addSubview:btnCancel];
                
         btnSave = [[UIButton alloc]init];
-        btnSave.frame = CGRectMake(viewForSensorNameNum.frame.size.width-60, 0, 60, 40);
+        btnSave.frame = CGRectMake(viewForSensorNameNum.frame.size.width-100, 0, 100, 70);
         [btnSave addTarget:self action:@selector(btnSaveClick) forControlEvents:UIControlEventTouchUpInside];
         [btnSave setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         btnSave.backgroundColor = UIColor.clearColor;
         [btnSave setTitle:@"Save" forState:normal];
-        btnSave.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        btnSave.titleLabel.font = [UIFont fontWithName:CGRegular size:22];
         [bgView addSubview:btnSave];
         
         int yy = 80;

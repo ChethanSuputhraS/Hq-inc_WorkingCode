@@ -17,7 +17,7 @@
 @end
 
 @implementation SubjSetupVC  
-@synthesize dataDict,isFromEdit;
+@synthesize dataDict,isFromEdit, SubjectDelegate;
 
 UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor, * lblTimeInterval;
 NSString * strMsg;
@@ -32,33 +32,31 @@ NSString *selectedFromPicker;
 
 - (void)viewDidLoad
 {
+    selectedFromPicker = @"10 Seconds";
     [self setNeedsStatusBarAppearanceUpdate];
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
     
-    int textPhoneSize = 14;
-    
     UIColor * lbltxtClor = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    
     lblSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, DEVICE_WIDTH, 40)];
-    [self setLabelProperties:lblSubject withText:@"SUBJECT SETUP" backColor:UIColor.clearColor textColor:lbltxtClor textSize:textPhoneSize+2];
+    [self setLabelProperties:lblSubject withText:@"SUBJECT SETUP" backColor:UIColor.clearColor textColor:lbltxtClor textSize:25];
     [self.view addSubview:lblSubject];
       
-    lbladdsetup = [[UILabel alloc]initWithFrame:CGRectMake(10, 44, DEVICE_WIDTH, 45)];
-    [self setLabelProperties:lbladdsetup withText:@"Add Setup" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoneSize];
-    lbladdsetup.font = [UIFont fontWithName:CGBold size:textPhoneSize+2];
+    lbladdsetup = [[UILabel alloc]initWithFrame:CGRectMake(40, 60, DEVICE_WIDTH, 45)];
+    [self setLabelProperties:lbladdsetup withText:@"Add Setup" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:30];
+    lbladdsetup.font = [UIFont fontWithName:CGBold size:30];
     lbladdsetup.textAlignment = NSTextAlignmentLeft;
     [self.view addSubview:lbladdsetup];
     
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-60, 60, 45)];
-    [self setButtonProperties:btnCancel withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textPhoneSize];
+    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+    [self setButtonProperties:btnCancel withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnCancel.layer.cornerRadius = 5;
     [btnCancel addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnCancel];
         
-    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-60, 60, 45)];
-    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textPhoneSize];
+    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnDone.layer.cornerRadius = 5;
     [btnDone setTitle:@"Done" forState:UIControlStateNormal];
     btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
@@ -85,7 +83,8 @@ NSString *selectedFromPicker;
          }
      }
     
-    arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10",@"20",@"30",@"40",@"50", nil];
+//    10 seconds, 1 minute, 1 hour and 1 Day.
+    arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10 Seconds",@"1 Minute",@"1 Hour",@"1 Day", nil];
 
     [self setupProfileImageView];
     [self setupforSensorView];
@@ -93,11 +92,37 @@ NSString *selectedFromPicker;
     [self fromDataDict];
     [self gettingImg];
 
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblSubject.frame = CGRectMake(0, 20, DEVICE_WIDTH, 40);
+        lblSubject.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        lbladdsetup.frame = CGRectMake(10, 44, DEVICE_WIDTH, 45);
+        lbladdsetup.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnCancel.frame = CGRectMake(10, DEVICE_HEIGHT-40, 60, 35);
+        btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-40, 60, 35);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+    }
     [super viewDidLoad];
     dict = [NSMutableDictionary dictionary];
     
     globalSubjectDetailVC = [[SubjDetailsVC alloc]init];
     tmpArrySensor = [[NSMutableArray alloc] init];
+    
+//    NSMutableDictionary * dict1 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Dermal",@"sensor_type",@"1",@"sensor_id" ,@"nme",@"name",@"0",@"isSelected", nil];
+//    NSMutableDictionary * dict2 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Skin",@"sensor_type",@"2",@"sensor_id" ,@"name 2",@"name",@"0",@"isSelected", nil];
+//    NSMutableDictionary * dict3 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Skin",@"sensor_type",@"2",@"sensor_id" ,@"name 2",@"name",@"0",@"isSelected", nil];
+//
+//    [tmpArrySensor addObject:dict1];
+//    [tmpArrySensor addObject:dict2];
+//    [tmpArrySensor addObject:dict3];
+
+
 }
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -106,17 +131,17 @@ NSString *selectedFromPicker;
 #pragma mark - Setup for Profile Image View
 -(void)setupProfileImageView
 {
-    double setupW = (DEVICE_WIDTH)/ 2;
+    double setupW = (320 * DEVICE_WIDTH)/ 768;
     addSetUpView = [[UIView alloc]init];
-    addSetUpView.frame = CGRectMake(0, 80, setupW-10, 180);
+    addSetUpView.frame = CGRectMake(40, 100, setupW, (300 * setupW)/320);
     addSetUpView.layer.cornerRadius = 5;
     addSetUpView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     [self.view addSubview:addSetUpView];
     
-    double imgHeight = addSetUpView.frame.size.height-60;
+    double imgHeight = addSetUpView.frame.size.height-120;
     
     imgViewProPic = [[UIImageView alloc]init]; // UIImageView
-    imgViewProPic.frame = CGRectMake(10,10,addSetUpView.frame.size.width-20,imgHeight);
+    imgViewProPic.frame = CGRectMake((addSetUpView.frame.size.width - imgHeight)/2,20,imgHeight,imgHeight);
     imgViewProPic.backgroundColor = UIColor.whiteColor;
     imgViewProPic.userInteractionEnabled = YES;
     imgViewProPic.contentMode = UIViewContentModeScaleAspectFill;
@@ -135,23 +160,38 @@ NSString *selectedFromPicker;
         UIImage *btncmr = [UIImage imageNamed:@"camera.png"];
         [btnCamera setImage:btncmr forState:normal];
     }
-    txtFullName = [[UITextField alloc]initWithFrame:CGRectMake(5, addSetUpView.frame.size.height - 45, addSetUpView.frame.size.width-60, 40)];
-    [self setTextfieldProperties:txtFullName withPlaceHolderText:@"Full Name" withTextSize:20];
+    txtFullName = [[UITextField alloc]initWithFrame:CGRectMake(20, addSetUpView.frame.size.height - 70, addSetUpView.frame.size.width-130, 60)];
+    [self setTextfieldProperties:txtFullName withPlaceHolderText:@"Full Name" withTextSize:30];
     txtFullName.returnKeyType = UIReturnKeyNext;
     [addSetUpView addSubview:txtFullName];
 
-    txtHash = [[UITextField alloc]initWithFrame:CGRectMake(addSetUpView.frame.size.width-45, addSetUpView.frame.size.height - 45, 40, 40)];
+    txtHash = [[UITextField alloc]initWithFrame:CGRectMake(addSetUpView.frame.size.width-100, addSetUpView.frame.size.height - 70, 90, 60)];
     [self setTextfieldProperties:txtHash withPlaceHolderText:@"#" withTextSize:30];
     txtHash.layer.cornerRadius = 6;
     txtHash.keyboardType = UIKeyboardTypeNumberPad;
     txtHash.returnKeyType = UIReturnKeyNext;
     [addSetUpView addSubview:txtHash];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        setupW = (DEVICE_WIDTH)/ 2;
+        double imgHeight = addSetUpView.frame.size.height-20;
+
+        addSetUpView.frame = CGRectMake(0, 80, setupW-10, 180);
+        imgViewProPic.frame = CGRectMake(20,5,addSetUpView.frame.size.width-40,imgHeight);
+//        imgViewProPic.backgroundColor = UIColor.redColor;
+        btnCamera.frame = CGRectMake((imgViewProPic.frame.size.width-104)/2,(imgViewProPic.frame.size.height-104)/2,104,104);
+        txtFullName.frame = CGRectMake(5, addSetUpView.frame.size.height - 45, addSetUpView.frame.size.width-60, 40);
+        txtFullName.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        txtHash.frame = CGRectMake(addSetUpView.frame.size.width-45, addSetUpView.frame.size.height - 45, 40, 40);
+        txtHash.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    }
 }
 #pragma mark - Setup for for SensorView
 -(void)setupforSensorView
 {
-    addSensorView = [[UIView alloc]initWithFrame:CGRectMake(DEVICE_WIDTH/2 , 80, DEVICE_WIDTH/2, 260)];
-    addSensorView.frame = CGRectMake(DEVICE_WIDTH/2 , 80, DEVICE_WIDTH/2, 260);
+    addSensorView = [[UIView alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-addSetUpView.frame.size.width - 40 , 100, (addSetUpView.frame.size.width), 350)];
+    addSensorView.frame = CGRectMake(DEVICE_WIDTH - addSetUpView.frame.size.width - 40 , 100, (addSetUpView.frame.size.width), 350);
     addSensorView.layer.cornerRadius = 6;
     addSensorView.layer.borderWidth = 2;
     addSensorView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
@@ -159,66 +199,73 @@ NSString *selectedFromPicker;
         
     UIColor * typeColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
 
-    UILabel * lblAddmonitor = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, addSensorView.frame.size.width-30, 45)];
-    [self setLabelProperties:lblAddmonitor withText:@"Add monitor" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-2];
+    UILabel * lblAddmonitor = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, addSensorView.frame.size.width-40, 45)];
+    [self setLabelProperties:lblAddmonitor withText:@"Add monitor" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:30];
     lblAddmonitor.textAlignment = NSTextAlignmentLeft;
     [addSensorView addSubview:lblAddmonitor];
     
-    UIButton * btnAddMonitor = [[UIButton alloc]initWithFrame:CGRectMake(addSensorView.frame.size.width-45, 0, 44, 44)];
+    UIButton * btnAddMonitor = [[UIButton alloc]initWithFrame:CGRectMake(200, 5, 50, 45)];
     [btnAddMonitor setImage:[UIImage imageNamed:@"addBlack.png"] forState:normal];
     [btnAddMonitor addTarget:self action:@selector(btnMonitorClick) forControlEvents:UIControlEventTouchUpInside];
-    btnAddMonitor.layer.cornerRadius = 22;
-//    btnAddMonitor.backgroundColor = UIColor.whiteColor;
+    btnAddMonitor.layer.cornerRadius = 25;
+    btnAddMonitor.backgroundColor = UIColor.whiteColor;
     [addSensorView addSubview:btnAddMonitor];
     
-    lblAddmonitorConnect = [[UILabel alloc]initWithFrame:CGRectMake(5, 35, addSensorView.frame.size.width, 25)];
-    [self setLabelProperties:lblAddmonitorConnect withText:@"Monitor not added" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:textSize-4];
+    lblAddmonitorConnect = [[UILabel alloc]initWithFrame:CGRectMake(10, 40, addSensorView.frame.size.width-40, 30)];
+    [self setLabelProperties:lblAddmonitorConnect withText:@"Monitor not added" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:20];
     lblAddmonitorConnect.textAlignment = NSTextAlignmentLeft;
     [addSensorView addSubview:lblAddmonitorConnect];
+    
+    if (globalPeripheral.state == CBPeripheralStateConnected)
+    {
+        lblAddmonitorConnect.text = [NSString stringWithFormat:@"%@ Added",globalPeripheral.name];
+    }
 
-    int btnyy = 55;
-UIButton * btnAddSensor = [[UIButton alloc]initWithFrame:CGRectMake(addSensorView.frame.size.width-45, btnyy, 44, 44)];
-[btnAddSensor setImage:[UIImage imageNamed:@"addBlack.png"] forState:normal];
-[btnAddSensor addTarget:self action:@selector(btnAddSensorClick) forControlEvents:UIControlEventTouchUpInside];
-btnAddSensor.layer.cornerRadius = 22;
-//    btnAddSensor.backgroundColor = UIColor.whiteColor;
-[addSensorView addSubview:btnAddSensor];
+
+          int btnyy = 80;
+    UIButton * btnAddSensor = [[UIButton alloc]initWithFrame:CGRectMake(200, btnyy, 50, 45)];
+    [btnAddSensor setImage:[UIImage imageNamed:@"addBlack.png"] forState:normal];
+    [btnAddSensor addTarget:self action:@selector(btnAddSensorClick) forControlEvents:UIControlEventTouchUpInside];
+    btnAddSensor.layer.cornerRadius = 25;
+    btnAddSensor.backgroundColor = UIColor.whiteColor;
+    [addSensorView addSubview:btnAddSensor];
+
   
+    UILabel * lblAddSensor = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy, addSensorView.frame.size.width-40, 45)];
+    [self setLabelProperties:lblAddSensor withText:@"Add Sensor" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:30];
+    lblAddSensor.textAlignment = NSTextAlignmentLeft;
+    [addSensorView addSubview:lblAddSensor];
     
-      UILabel * lblAddSensor = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy, addSensorView.frame.size.width-40, 45)];
-      [self setLabelProperties:lblAddSensor withText:@"Add Sensor" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-2];
-      lblAddSensor.textAlignment = NSTextAlignmentLeft;
-      [addSensorView addSubview:lblAddSensor];
-    
-    lblNosensor = [[UILabel alloc]initWithFrame:CGRectMake(5, btnyy+30, addSensorView.frame.size.width, 25)];
-    [self setLabelProperties:lblNosensor withText:@"Sensor not added" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:textSize-4];
+    lblNosensor = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy+45, addSensorView.frame.size.width-40, 30)];
+    [self setLabelProperties:lblNosensor withText:@"Sensor not added" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:20];
     lblNosensor.textAlignment = NSTextAlignmentLeft;
     [addSensorView addSubview:lblNosensor];
     
-    btnyy = btnyy +60;
-    UIButton * btnViewAllSnr = [[UIButton alloc]initWithFrame:CGRectMake(5, btnyy, addSensorView.frame.size.width-10 , 44)];
-    [self setButtonProperties:btnViewAllSnr withTitle:@"View sensors" backColor:typeColor textColor:UIColor.whiteColor txtSize:textSize-2];
+    btnyy = btnyy +80;
+    UIButton * btnViewAllSnr = [[UIButton alloc]initWithFrame:CGRectMake(10, btnyy, addSensorView.frame.size.width-20 , 50)];
+    [self setButtonProperties:btnViewAllSnr withTitle:@"View sensors" backColor:typeColor textColor:UIColor.whiteColor txtSize:20];
     [btnViewAllSnr addTarget:self action:@selector(btnViewAlSnrClick) forControlEvents:UIControlEventTouchUpInside];
     btnViewAllSnr.layer.cornerRadius = 5;
     btnViewAllSnr.titleLabel.numberOfLines = 2;
     [addSensorView addSubview:btnViewAllSnr];
     
-    UIButton * btnRemoveSensors = [[UIButton alloc]initWithFrame:CGRectMake(5 , btnyy+50, addSensorView.frame.size.width-10, 44)];
-    [self setButtonProperties:btnRemoveSensors withTitle:@"Remove sensors" backColor:typeColor textColor:UIColor.whiteColor txtSize:textSize-2];
+    UIButton * btnRemoveSensors = [[UIButton alloc]initWithFrame:CGRectMake(10 , btnyy+60, addSensorView.frame.size.width-20, 50)];
+    [self setButtonProperties:btnRemoveSensors withTitle:@"Remove sensors" backColor:typeColor textColor:UIColor.whiteColor txtSize:20];
     [btnRemoveSensors addTarget:self action:@selector(btnRemoveSnrClick) forControlEvents:UIControlEventTouchUpInside];
     btnRemoveSensors.layer.cornerRadius = 5;
     btnRemoveSensors.titleLabel.numberOfLines = 2;
     [addSensorView addSubview:btnRemoveSensors];
 
+    
     UILabel *lblSensorCheck = [[UILabel alloc]init];
-    lblSensorCheck.frame = CGRectMake(5, btnyy+100, addSensorView.frame.size.width-10, 40);
-    [self setLabelProperties:lblSensorCheck withText:@"Sensor Check" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-4];
+    lblSensorCheck.frame = CGRectMake(15, btnyy+120, addSensorView.frame.size.width-100, 40);
+    [self setLabelProperties:lblSensorCheck withText:@"Sensor Check" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:25];
     lblSensorCheck.textAlignment = NSTextAlignmentLeft;
-    lblSensorCheck.font  = [UIFont boldSystemFontOfSize:textSize-4];
+    lblSensorCheck.font  = [UIFont boldSystemFontOfSize:25];
     [addSensorView addSubview:lblSensorCheck];
     
     UIColor * btOkBGC = [UIColor colorWithRed:27.0/255 green:157.0/255 blue:25.0/255 alpha:1];
-    UIButton *  btnOk = [[UIButton alloc]initWithFrame:CGRectMake(addSensorView.frame.size.width-45, btnyy+100, 40, 40)];
+    UIButton *  btnOk = [[UIButton alloc]initWithFrame:CGRectMake(190, btnyy+120, 40, 40)];
     [self setButtonProperties:btnOk withTitle:@"OK" backColor:btOkBGC textColor:UIColor.whiteColor txtSize:20];
     btnOk.layer.cornerRadius = 20;
     [addSensorView addSubview:btnOk];
@@ -252,136 +299,194 @@ btnAddSensor.layer.cornerRadius = 22;
     lblAddMonitor.text = @"Add Monitor";
     lblAddMonitor.font  = [UIFont boldSystemFontOfSize:20];
 //    [addSensorView addSubview:lblAddMonitor];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        addSensorView.frame = CGRectMake(DEVICE_WIDTH/2 , 80, DEVICE_WIDTH/2, 230);
+        lblAddmonitor.frame = CGRectMake(10, 0, addSensorView.frame.size.width-30, 45);
+        lblAddmonitor.font =[UIFont fontWithName:CGRegular size:textSize-6];
+        btnAddMonitor.frame = CGRectMake(addSensorView.frame.size.width-45, 5, 30, 30);
+        btnAddMonitor.layer.cornerRadius = 15;
 
+        lblAddmonitorConnect.frame = CGRectMake(5, 35, addSensorView.frame.size.width, 25);
+        lblAddmonitorConnect.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        
+        int btnyy = 45;
+        btnAddSensor.frame = CGRectMake(addSensorView.frame.size.width-45, btnyy+10, 30, 30);
+        btnAddSensor.layer.cornerRadius = 15;
+        lblAddSensor.frame = CGRectMake(10, btnyy, addSensorView.frame.size.width-40, 45);
+        lblAddSensor.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        lblNosensor.frame = CGRectMake(5, btnyy+30, addSensorView.frame.size.width, 25);
+        lblNosensor.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        btnyy = btnyy +60;
+        btnViewAllSnr.frame = CGRectMake(5, btnyy, addSensorView.frame.size.width-10 , 35);
+        btnViewAllSnr.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnRemoveSensors.frame = CGRectMake(5 , btnyy+40, addSensorView.frame.size.width-10, 35);
+        btnRemoveSensors.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        lblSensorCheck.frame = CGRectMake(5, btnyy+80, addSensorView.frame.size.width-10, 35);
+        lblSensorCheck.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+
+        btnOk.frame = CGRectMake(addSensorView.frame.size.width-45, btnyy+80, 30, 30);
+        btnOk.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        btnOk.layer.cornerRadius = 15;
+        
+        lblType1.frame = CGRectMake(10, btnyy, 150, 45);
+        lblType1.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        lblNameNo1.frame = CGRectMake(170, btnyy, addSensorView.frame.size.width-180, 45);
+        lblNameNo1.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblType2.frame = CGRectMake(10, btnyy+50, 150, 45);
+        lblNameNo1.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblNameNo2.frame = CGRectMake(170, btnyy+50, addSensorView.frame.size.width-180, 45);
+        lblNameNo2.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+
+    }
 }
 #pragma mark - Setup Alarm View
 -(void)setupAlarmView
 {
-    UILabel *lblIndividulsettng = [[UILabel alloc]initWithFrame:CGRectMake(5, addSensorView.frame.size.height+40, DEVICE_WIDTH/2, 50)];
-    [self setLabelProperties:lblIndividulsettng withText:@"Individual Settings" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize];
+    UILabel *lblIndividulsettng = [[UILabel alloc]initWithFrame:CGRectMake(40, addSensorView.frame.size.height+60, DEVICE_WIDTH, 50)];
+    [self setLabelProperties:lblIndividulsettng withText:@"Individual Settings" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:30];
     lblIndividulsettng.textAlignment = NSTextAlignmentLeft;
-    lblIndividulsettng.font = [UIFont fontWithName:CGBold size:textSize-2];
+    lblIndividulsettng.font = [UIFont fontWithName:CGBold size:30];
     [self.view addSubview:lblIndividulsettng];
 
-    indiVisualView = [[UIView alloc] initWithFrame:CGRectMake(0, addSensorView.frame.size.height+80, DEVICE_WIDTH, DEVICE_HEIGHT-addSensorView.frame.size.height-145)];
+    indiVisualView = [[UIView alloc] initWithFrame:CGRectMake(40, addSensorView.frame.size.height+105, DEVICE_WIDTH-80, DEVICE_HEIGHT-addSensorView.frame.size.height-170)];
     indiVisualView.backgroundColor = UIColor.clearColor;
     indiVisualView.clipsToBounds = true;
     indiVisualView.layer.cornerRadius = 6;
     [self.view addSubview:indiVisualView];
         
-    addAlarmsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, indiVisualView.frame.size.width, indiVisualView.frame.size.height/1.5)];
+    addAlarmsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH-80, indiVisualView.frame.size.height/1.7)];
     addAlarmsView.layer.cornerRadius = 6;
     addAlarmsView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
 //    addAlarmsView.backgroundColor = UIColor.purpleColor;
     [indiVisualView addSubview:addAlarmsView];
         
-    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, DEVICE_WIDTH, 20)];
-    [self setLabelProperties:lblAddAlarms withText:@"Add Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, DEVICE_WIDTH, 40)];
+    [self setLabelProperties:lblAddAlarms withText:@"Add Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:30];
     lblAddAlarms.textAlignment = NSTextAlignmentLeft;
     [addAlarmsView addSubview:lblAddAlarms];
           
-    int y = 25;
-    lblType2iblSenAlarm = [[UILabel alloc]initWithFrame:CGRectMake(10, y, DEVICE_WIDTH, 25)];
-    [self setLabelProperties:lblType2iblSenAlarm withText:@"Ingestible Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:8];
+    int y = 40;
+    lblType2iblSenAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y, DEVICE_WIDTH, 50)];
+    [self setLabelProperties:lblType2iblSenAlarm withText:@"Ingestible Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20.0];
     lblType2iblSenAlarm.textAlignment = NSTextAlignmentLeft;
-    lblType2iblSenAlarm.font = [UIFont boldSystemFontOfSize:12];
+    lblType2iblSenAlarm.font = [UIFont boldSystemFontOfSize:20.0];
     [addAlarmsView addSubview:lblType2iblSenAlarm];
         
-    y = y +25;
-    lblHighTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(5, y, 80, 40)];
-    [self setLabelProperties:lblHighTempAlarm withText:@"High Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    
+    lblHighTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y+40, 150, 55)];
+    [self setLabelProperties:lblHighTempAlarm withText:@"High Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:17];
     [addAlarmsView addSubview:lblHighTempAlarm];
          
-    
-    txtIngesTmpHigh = [[UITextField alloc]initWithFrame:CGRectMake(100, y, 70, 44)];
-    [self setTextfieldProperties:txtIngesTmpHigh withPlaceHolderText:@" 100.0ºF" withTextSize:textSize-3];
+    txtIngesTmpHigh = [[UITextField alloc]initWithFrame:CGRectMake(170, y+40, 150, 55)];
+    [self setTextfieldProperties:txtIngesTmpHigh withPlaceHolderText:@" 100.0ºF" withTextSize:25.0];
     txtIngesTmpHigh.placeholder = @" 100.0ºF";
     txtIngesTmpHigh.keyboardType = UIKeyboardTypeNumberPad;
     txtIngesTmpHigh.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtIngesTmpHigh];
 
-    lblLowTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width/2, y, 100, 44)];
-    [self setLabelProperties:lblLowTempAlarm withText:@"Low Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    lblLowTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-350, y+40, 200, 55)];
+    [self setLabelProperties:lblLowTempAlarm withText:@"Low Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:17];
     [addAlarmsView addSubview:lblLowTempAlarm];
          
-    txtlngeslowTmpAl = [[UITextField alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-80, y, 70, 44)];
-    [self setTextfieldProperties:txtlngeslowTmpAl withPlaceHolderText:@"94.0ºF" withTextSize:textSize-3];
+    txtlngeslowTmpAl = [[UITextField alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-170, y+40, 150, 55)];
+    [self setTextfieldProperties:txtlngeslowTmpAl withPlaceHolderText:@"94.0ºF" withTextSize:25.0];
     txtlngeslowTmpAl.keyboardType = UIKeyboardTypeNumberPad;
     txtlngeslowTmpAl.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtlngeslowTmpAl];
          
     //1 Dermal
     
-    int yy = addAlarmsView.frame.size.height-80 ;
-    lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(5, yy+5, DEVICE_WIDTH, 30)];
-    [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    int yy = addAlarmsView.frame.size.height-130 ;
+    lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(20, yy+10, DEVICE_WIDTH, 30)];
+    [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20.0];
     lblDermalSensorAlram.textAlignment = NSTextAlignmentLeft;
-    lblDermalSensorAlram.font = [UIFont boldSystemFontOfSize:12];
+    lblDermalSensorAlram.font = [UIFont boldSystemFontOfSize:20.0];
     [addAlarmsView addSubview:lblDermalSensorAlram];
         
-    yy = yy +30;
     UILabel * lblHighTempAlarm1;
-    lblHighTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(5, yy, 80, 55)];
-    [self setLabelProperties:lblHighTempAlarm1 withText:@"High Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    lblHighTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(20, yy+45, 150, 55)];
+    [self setLabelProperties:lblHighTempAlarm1 withText:@"High Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:17];
     [addAlarmsView addSubview:lblHighTempAlarm1];
         
-    txtDemalTmpHigh = [[UITextField alloc]initWithFrame:CGRectMake(100, yy, 70, 44)];
-    [self setTextfieldProperties:txtDemalTmpHigh withPlaceHolderText:@" 100.0ºF" withTextSize:textSize-3];
+    txtDemalTmpHigh = [[UITextField alloc]initWithFrame:CGRectMake(170, yy+45, 150, 55)];
+    [self setTextfieldProperties:txtDemalTmpHigh withPlaceHolderText:@" 100.0ºF" withTextSize:25.0];
 //    txtDemalTmpHigh.placeholder = @" 102.0ºF";
     txtDemalTmpHigh.keyboardType = UIKeyboardTypeNumberPad;
     txtDemalTmpHigh.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtDemalTmpHigh];
 
-    UILabel * lblLowTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width/2, yy, 100, 44)];
-    [self setLabelProperties:lblLowTempAlarm1 withText:@"Low Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    UILabel * lblLowTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-350, yy+45, 200, 55)];
+    [self setLabelProperties:lblLowTempAlarm1 withText:@"Low Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:17];
     [addAlarmsView addSubview:lblLowTempAlarm1];
          
-    txtDermalLowTmp = [[UITextField alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-80, yy, 70, 44)];
-    [self setTextfieldProperties:txtDermalLowTmp withPlaceHolderText:@" 94.0ºF" withTextSize:12];
+    txtDermalLowTmp = [[UITextField alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-170, yy+45, 150, 55)];
+    [self setTextfieldProperties:txtDermalLowTmp withPlaceHolderText:@" 94.0ºF" withTextSize:25.0];
 //    txtDermalLowTmp.placeholder = @" 92.0ºF";
     txtDermalLowTmp.keyboardType = UIKeyboardTypeNumberPad;
     txtDermalLowTmp.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtDermalLowTmp];
 
-
     // set time interval
     
-    UIView * timeIntervalView = [[UIView alloc] initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+2, indiVisualView.frame.size.width, 50)];
+    UIView * timeIntervalView = [[UIView alloc] initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+10, indiVisualView.frame.size.width, 60)];
     timeIntervalView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     timeIntervalView.clipsToBounds = true;
     timeIntervalView.layer.cornerRadius = 6;
     [indiVisualView addSubview:timeIntervalView];
     
-    UILabel * lblTimeDuration = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, timeIntervalView.frame.size.width/2-20, 50)];
-    [self setLabelProperties:lblTimeDuration withText:@"Set reading time interval" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:12];
+    UILabel * lblTimeDuration = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, timeIntervalView.frame.size.width/2-20, 60)];
+    [self setLabelProperties:lblTimeDuration withText:@"Set reading time interval" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
     lblTimeDuration.textAlignment = NSTextAlignmentLeft;
     [timeIntervalView addSubview:lblTimeDuration];
     
-    txtTimeInterval = [[UITextField alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 60, 40)];
-    [self setTextfieldProperties:txtTimeInterval withPlaceHolderText:@"10" withTextSize:10];
-    txtTimeInterval.keyboardType = UIKeyboardTypeNumberPad;
-    txtTimeInterval.returnKeyType = UIReturnKeyDone;
-    [timeIntervalView addSubview:txtTimeInterval];
+    lblTimeInterval = [[UILabel alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 200, 50)];
+    [self setLabelProperties:lblTimeInterval withText:@"10 Seconds" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
+//    lblTimeInterval.textAlignment = NSTextAlignmentLeft;
+    lblTimeInterval.font = [UIFont fontWithName:CGRegular size:23];
+    lblTimeInterval.backgroundColor= UIColor.whiteColor;
+    lblTimeInterval.layer.cornerRadius = 6;
+    [timeIntervalView addSubview:lblTimeInterval];
+    
+    if (![[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
+    {
+        lblTimeInterval.text = [dataDict valueForKey:@"timeInterval"];
+    }
+
+    UIButton * btnTimeInterval = [[UIButton alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 50)];
+    [self setButtonProperties:btnTimeInterval withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize];
+    [btnTimeInterval addTarget:self action:@selector(btnTiemIntervalClick) forControlEvents:UIControlEventTouchUpInside];
+    [timeIntervalView addSubview:btnTimeInterval];
+
 
     // note view
     
-    lblNote = [[UILabel alloc]initWithFrame:CGRectMake(10, addAlarmsView.frame.size.height+60, DEVICE_WIDTH, 25)];
-    [self setLabelProperties:lblNote withText:@"Notes" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:12];
+    lblNote = [[UILabel alloc]initWithFrame:CGRectMake(10, addAlarmsView.frame.size.height+70, DEVICE_WIDTH, 35)];
+    [self setLabelProperties:lblNote withText:@"Notes" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:30];
     lblNote.textAlignment = NSTextAlignmentLeft;
-    lblNote.font = [UIFont fontWithName:CGBold size:12];
-//    [indiVisualView addSubview:lblNote];
+    lblNote.font = [UIFont fontWithName:CGBold size:25];
+    [indiVisualView addSubview:lblNote];
     
         
-    txtViewNote = [[UITextView alloc]initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+55, indiVisualView.frame.size.width, indiVisualView.frame.size.height)];
+    txtViewNote = [[UITextView alloc]initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+110, indiVisualView.frame.size.width, indiVisualView.frame.size.height-addAlarmsView.frame.size.height-115)];
     txtViewNote.clipsToBounds = true;
     txtViewNote.layer.cornerRadius = 6;
-    txtViewNote.font = [UIFont fontWithName:CGRegular size:12];
+    txtViewNote.font = [UIFont fontWithName:CGRegular size:26.0];
     txtViewNote.textColor = [UIColor blackColor];
     txtViewNote.delegate = self;
     txtViewNote.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     [indiVisualView addSubview:txtViewNote];
     
-    NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
+   NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
     
@@ -399,7 +504,76 @@ btnAddSensor.layer.cornerRadius = 22;
             }
         }
     }
-    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblIndividulsettng.frame = CGRectMake(5, addSensorView.frame.size.height+40, DEVICE_WIDTH/2, 50);
+        lblIndividulsettng.font = [UIFont fontWithName:CGBold size:textSize-2];
+
+        indiVisualView.frame = CGRectMake(0, addSensorView.frame.size.height+80, DEVICE_WIDTH, DEVICE_HEIGHT-addSensorView.frame.size.height-125);
+        addAlarmsView.frame = CGRectMake(0, 0, indiVisualView.frame.size.width, indiVisualView.frame.size.height/1.7);
+        
+//        addAlarmsView.backgroundColor = UIColor.redColor;
+        
+        lblAddAlarms.frame = CGRectMake(10, 0, DEVICE_WIDTH, 20);
+        lblAddAlarms.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        int y = 25;
+        lblType2iblSenAlarm.frame = CGRectMake(5, y, DEVICE_WIDTH, 30);
+        lblType2iblSenAlarm.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        y = y +25;
+        lblHighTempAlarm.frame = CGRectMake(5, y, 100, 40);
+        lblHighTempAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtIngesTmpHigh.frame = CGRectMake(110, y, 70, 44);
+        txtIngesTmpHigh.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblLowTempAlarm.frame = CGRectMake(addAlarmsView.frame.size.width/2, y, 100, 44);
+        lblLowTempAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        txtlngeslowTmpAl.frame = CGRectMake(addAlarmsView.frame.size.width-80, y, 70, 44);
+        txtlngeslowTmpAl.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+    //Dermal
+
+        int yy = addAlarmsView.frame.size.height-80 ;
+        lblDermalSensorAlram.frame = CGRectMake(5, yy, DEVICE_WIDTH, 30);
+        lblDermalSensorAlram.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        yy = yy +30;
+        lblHighTempAlarm1.frame = CGRectMake(5, yy, 100, 44);
+        lblHighTempAlarm1.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtDemalTmpHigh.frame = CGRectMake(110, yy, 70, 44);
+        txtDemalTmpHigh.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblLowTempAlarm1.frame = CGRectMake(addAlarmsView.frame.size.width/2, yy, 100, 44);
+        lblLowTempAlarm1.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtDermalLowTmp.frame = CGRectMake(addAlarmsView.frame.size.width-80, yy, 70, 44);
+        txtDermalLowTmp.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        // set time interval
+        
+        timeIntervalView.frame = CGRectMake(0, addAlarmsView.frame.size.height+2, indiVisualView.frame.size.width, 40);
+        lblTimeInterval.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        lblTimeInterval.frame = CGRectMake(timeIntervalView.frame.size.width/2,5, 100, 30);
+        lblTimeDuration.frame = CGRectMake(10, 0, timeIntervalView.frame.size.width/2-20, 40);
+        lblTimeDuration.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtTimeInterval.frame = CGRectMake(timeIntervalView.frame.size.width/2,5, 60, 40);
+        txtTimeInterval.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        // note view
+        
+        lblNote.frame = CGRectMake(5, addAlarmsView.frame.size.height+40, DEVICE_WIDTH, 25);
+        lblNote.font = [UIFont fontWithName:CGBold size:textSize-6];
+
+        txtViewNote.frame = CGRectMake(0, addAlarmsView.frame.size.height+65, indiVisualView.frame.size.width, indiVisualView.frame.size.height);
+        txtViewNote.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        
+    }
 }
 
 #pragma mark - Buttons
@@ -527,38 +701,6 @@ btnAddSensor.layer.cornerRadius = 22;
         HighDermal = txtDemalTmpHigh.text.intValue;
         lowDermal = txtDermalLowTmp.text.intValue;
 
-//        if(higIngest > 100.4)
-//        {
-//            strMsg = @"Entered wrong Ingest High Tmp";
-//        }
-//        else if (lowIngest > 100.4)
-//        {
-//            strMsg = @"Entered wrong Ingest low Tmp";
-//        }
-//        else if (HighDermal > 100.4)
-//        {
-//            strMsg = @"Entered wrong Deraml High Tmp";
-//        }
-//        else if (lowDermal > 100.4)
-//        {
-//            strMsg = @"Entered wrong Deraml low Tmp";
-//        }
-//        else if (higIngest < 94)
-//        {
-//            strMsg = @"High Ingest enter valid Temp.";
-//        }
-//        else if (lowIngest < 94)
-//        {
-//            strMsg = @"Low Ingest enter valid Temp.";
-//        }
-//        else if (HighDermal < 94)
-//        {
-//            strMsg = @"High Dermal enter valid Temp.";
-//        }
-//        else if (lowDermal < 94)
-//        {
-//            strMsg = @"Low Dermal enter valid Temp.";
-//        }
         
         if([self isNumberUnique:txtHash.text] == NO)
         {
@@ -581,18 +723,22 @@ btnAddSensor.layer.cornerRadius = 22;
            }
            NSString * strName = [APP_DELEGATE checkforValidString:txtFullName.text];
            NSString * strNum = [APP_DELEGATE checkforValidString:txtHash.text];
-           NSString * strIngHigh = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",highIngstF]];
-           NSString * strIngLow = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",lowIngestF]];
-           NSString * strDrmlLow = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",highDermalF]];
-           NSString * strDrmlHigh = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",lowDermalF]];
-           NSString * strNotes = [APP_DELEGATE checkforValidString:txtViewNote.text];
-           NSString * strIngstHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",highIngstC]]; // text field entry or else calulation for c and insert to the data base.
-           NSString * strIngstLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",lowIngestC]];
-           NSString * strDermlHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",highDermalC]];
-           NSString * strDermlLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%f",lowDermalC]];
+//           @"%.02f ºC"
+           NSString * strIngHighF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",highIngstF]];
+           NSString * strIngLowF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",lowIngestF]];
+           NSString * strDrmlHighF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",highDermalF]];
+           NSString * strDrmlLowF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",lowDermalF]];
+          
+           // text field entry or else calulation for c and insert to the data base.
+           NSString * strIngstHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",highIngstC]];
+           NSString * strIngstLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",lowIngestC]];
+           NSString * strDermlHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",highDermalC]];
+           NSString * strDermlLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",lowDermalC]];
+
            NSString * strUserId = [NSString stringWithFormat:@"%.0f",[[NSDate date] timeIntervalSince1970]];
            NSString * requestStr1 = @"NA";
-           
+           NSString * strNotes = [APP_DELEGATE checkforValidString:txtViewNote.text];
+
            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
            [dateFormatter setDateFormat:@"dd-MM-yyy hh:mm aa"];
            NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
@@ -624,16 +770,39 @@ btnAddSensor.layer.cornerRadius = 22;
                        strThumbNail = @"NA";
                    }
                }
-               requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@', timeInterval ='%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHigh,strIngLow,strDrmlHigh,strDrmlLow,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,selectedFromPicker,[dataDict valueForKey:@"id"]];
+               requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@', timeInterval ='%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHighF,strIngLowF,strDrmlHighF,strDrmlLowF,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,selectedFromPicker,[dataDict valueForKey:@"id"]];
                
            }
            else
            {
-               requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id', 'timeInterval') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngLow,strIngHigh,strDrmlLow,strDrmlHigh,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId, selectedFromPicker];
+               requestStr1 =  [NSString stringWithFormat:@"insert into 'Subject_Table'('name','number','photo_URL','photo_URLThumbNail','ing_highF','ing_lowF','drml_highF','drml_lowF','ing_highC','ing_lowC','drml_highC','drml_lowC','notes', 'user_id', 'timeInterval') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\", \"%@\")",strName,strNum,strImagePath,strThumbNail,strIngHighF,strIngLowF,strDrmlHighF,strDrmlLowF,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes, strUserId, selectedFromPicker];
            }
+
+           [dataDict setValue:strName forKey:@"name"];
+           [dataDict setValue:strNum forKey:@"number"];
+           [dataDict setValue:strImagePath forKey:@"photo_URL"];
+           [dataDict setValue:strThumbNail forKey:@"photo_URLThumbNail"];
            
+           [dataDict setValue:strIngHighF forKey:@"ing_highF"];
+           [dataDict setValue:strIngLowF forKey:@"ing_lowF"];
+           [dataDict setValue:strDrmlHighF forKey:@"drml_highF"];
+           [dataDict setValue:strDrmlLowF forKey:@"drml_lowF"];
+           
+           [dataDict setValue:strIngstHighC forKey:@"ing_highC"];
+           [dataDict setValue:strIngstLowC forKey:@"ing_lowC"];
+           [dataDict setValue:strDermlHighC forKey:@"drml_highC"];
+           [dataDict setValue:strDermlLowC forKey:@"drml_lowC"];
+           
+           [dataDict setValue:strNotes forKey:@"notes"];
+           [dataDict setValue:selectedFromPicker forKey:@"timeInterval"];
+
+           
+//           -(void)UpdatePlayerDatafromSetup:(NSMutableDictionary *)updatedDataDict;
+
            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
            [self.navigationController popViewControllerAnimated:YES];
+           
+               [SubjectDelegate UpdatePlayerDatafromSetup:dataDict];
        }
     }
     if (isValidEntrys == NO)
@@ -698,7 +867,11 @@ btnAddSensor.layer.cornerRadius = 22;
 #pragma mark- Textview method
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
- self.view.frame = CGRectMake(0, -275, DEVICE_WIDTH, DEVICE_HEIGHT);
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        self.view.frame = CGRectMake(0, -200, DEVICE_WIDTH, DEVICE_HEIGHT);
+    }
+   self.view.frame = CGRectMake(0, -275, DEVICE_WIDTH, DEVICE_HEIGHT);
 }
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
@@ -763,6 +936,25 @@ btnAddSensor.layer.cornerRadius = 22;
 }
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    NSArray * arrDivide = [textField.text componentsSeparatedByString:@"º"];
+    if ([arrDivide count] >= 2)
+    {
+        NSString * strValue = [arrDivide objectAtIndex:0];
+        NSArray * arrDotsCheck = [strValue componentsSeparatedByString:@"."];
+        if ([arrDotsCheck count] >= 2)
+        {
+            if ([[arrDotsCheck objectAtIndex:1] intValue] == 0)
+            {
+                strValue = [arrDotsCheck objectAtIndex:0];
+            }
+            else
+            {
+            }
+            
+            strValue = [strValue stringByReplacingOccurrencesOfString:@" " withString:@""];
+            textField.text = strValue;
+        }
+    }
     if (textField == txtIngesTmpHigh)
     {
       self.view.frame = CGRectMake(0, -250, DEVICE_WIDTH, DEVICE_HEIGHT);
@@ -885,7 +1077,7 @@ btnAddSensor.layer.cornerRadius = 22;
     NSString * strErrMsg = @"NA";
     if(isCClicked == YES)
     {
-        if(valC > 38.1)
+        /*if(valC > 38.1)
         {
             isValidValue = NO;
             strErrMsg = @"Maximum value exceed for temperature in ºC";
@@ -894,11 +1086,11 @@ btnAddSensor.layer.cornerRadius = 22;
         {
             isValidValue = NO;
             strErrMsg = @"Temperature can't be less than 32 ºC";
-        }
+        }    */             //Temperature
     }
     else
     {
-        if(valF > 100.5)
+        /*if(valF > 100.5)
         {
             isValidValue = NO;
             strErrMsg = @"Maximum value exceed for temperature in ºF";
@@ -907,7 +1099,7 @@ btnAddSensor.layer.cornerRadius = 22;
         {
             isValidValue = NO;
             strErrMsg = @"Temperature can't be less than 94 ºF";
-        }
+        }*/
     }
     if (isValidValue == NO)
     {
@@ -931,32 +1123,38 @@ btnAddSensor.layer.cornerRadius = 22;
     }
    else if (textField == txtIngesTmpHigh || textField == txtlngeslowTmpAl || textField == txtDemalTmpHigh || textField == txtDermalLowTmp)
     {
-        NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-        NSString *expression = @"^([0-9]+)?(\\.([0-9]{1,2})?)?$";
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:expression
-        options:NSRegularExpressionCaseInsensitive error:nil];
-        NSUInteger numberOfMatches = [regex numberOfMatchesInString:newString options:0 range:NSMakeRange(0, [newString length] )];
-        if (numberOfMatches == 0)
-                return NO;
-        }
-    //   in tis formate  100.00˚F
-    NSUInteger decimalPlacesLimit = 2;
-    NSRange rangeDot = [textField.text rangeOfString:@"." options:NSCaseInsensitiveSearch];
-    NSRange rangeComma = [textField.text rangeOfString:@"," options:NSCaseInsensitiveSearch];
-    if (rangeDot.length > 0 || rangeComma.length > 0){
-        if([string isEqualToString:@"."]) {
-            NSLog(@"textField already contains a separator");
-            return NO;
-        }
-        else
-        {
-            NSArray *explodedString = [textField.text componentsSeparatedByString:@"."];
-            NSString *decimalPart = explodedString[1];
-            if (decimalPart.length >= decimalPlacesLimit && ![string isEqualToString:@""]) {
-                NSLog(@"textField already contains %lu decimal places", (unsigned long)decimalPlacesLimit);
-                return NO;
-            }
-        }
+        NSCharacterSet *numbersOnly = [NSCharacterSet characterSetWithCharactersInString:@".0123456789"];
+           NSCharacterSet *characterSetFromTextField = [NSCharacterSet characterSetWithCharactersInString:textField.text];
+
+           BOOL stringIsValid = [numbersOnly isSupersetOfSet:characterSetFromTextField];
+           return stringIsValid;
+        
+//        NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+//        NSString *expression = @"^([0-9]+)?(\\.([0-9]{1,2})?)?$";
+//        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:expression
+//        options:NSRegularExpressionCaseInsensitive error:nil];
+//        NSUInteger numberOfMatches = [regex numberOfMatchesInString:newString options:0 range:NSMakeRange(0, [newString length] )];
+//        if (numberOfMatches == 0)
+//                return NO;
+//        }
+//    //   in tis formate  100.00˚F
+//    NSUInteger decimalPlacesLimit = 2;
+//    NSRange rangeDot = [textField.text rangeOfString:@"." options:NSCaseInsensitiveSearch];
+//    NSRange rangeComma = [textField.text rangeOfString:@"," options:NSCaseInsensitiveSearch];
+//    if (rangeDot.length > 0 || rangeComma.length > 0){
+//        if([string isEqualToString:@"."]) {
+//            NSLog(@"textField already contains a separator");
+//            return NO;
+//        }
+//        else
+//        {
+//            NSArray *explodedString = [textField.text componentsSeparatedByString:@"."];
+//            NSString *decimalPart = explodedString[1];
+//            if (decimalPart.length >= decimalPlacesLimit && ![string isEqualToString:@""]) {
+//                NSLog(@"textField already contains %lu decimal places", (unsigned long)decimalPlacesLimit);
+//                return NO;
+//            }
+//        }
     }
     return YES;
 }
@@ -1096,11 +1294,22 @@ btnAddSensor.layer.cornerRadius = 22;
     btnIngsetAddSnr.layer.borderWidth = 1;
     [viewForSensorNameNum addSubview:btnIngsetAddSnr];
 
+    
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
     {
         self->viewForSensorNameNum.frame = CGRectMake(150, (DEVICE_HEIGHT/2)-200, DEVICE_WIDTH-300, 450);
     }
         completion:NULL];
+    
+    
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        viewForSensorNameNum.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+
+        
+    }
+    
     }
 -(void)btnSaveClick
 {
@@ -1188,18 +1397,18 @@ btnAddSensor.layer.cornerRadius = 22;
     viewAllSensor.backgroundColor = [UIColor colorWithRed:0 green:(CGFloat)0 blue:0 alpha:0.8];
     [self.view addSubview:viewAllSensor];
 
-    viewForListOfSensor = [[UIView alloc]initWithFrame:CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, DEVICE_HEIGHT-40)];
+    viewForListOfSensor = [[UIView alloc]initWithFrame:CGRectMake(40, (DEVICE_HEIGHT), DEVICE_WIDTH-80, DEVICE_HEIGHT-40)];
     viewForListOfSensor.backgroundColor = UIColor.whiteColor;
     viewForListOfSensor.layer.cornerRadius = 6;
     viewForListOfSensor.clipsToBounds = true;
     [viewAllSensor addSubview:viewForListOfSensor];
 
-    UIView * viewForBgAllSnr = [[UIView alloc]initWithFrame:CGRectMake(0, 0, viewAllSensor.frame.size.width, 40)];
+    UIView * viewForBgAllSnr = [[UIView alloc]initWithFrame:CGRectMake(0, 0, viewAllSensor.frame.size.width, 60)];
     viewForBgAllSnr.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [viewForListOfSensor addSubview:viewForBgAllSnr];
     
-    lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, viewAllSensor.frame.size.width-100, 40)];
-    [self setLabelProperties:lblHeader withText:@"Please select any  sensors" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-6];
+    lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, viewAllSensor.frame.size.width-100, 60)];
+    [self setLabelProperties:lblHeader withText:@"Please select any  sensors" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblHeader.textAlignment = NSTextAlignmentCenter;
 //    [viewForBgAllSnr addSubview:lblHeader];
 
@@ -1208,25 +1417,36 @@ btnAddSensor.layer.cornerRadius = 22;
 //         lblHeader.text = @"Select to Remove sensor";
 //    }
 
-    UIButton *btnCancelSlSnr = [[UIButton alloc]initWithFrame:CGRectMake(5, 0, 60, 40)];
-    [self setButtonProperties:btnCancelSlSnr withTitle:@"Close" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    if (isRemoveSnrSelect == NO)
+    {
+        UILabel * lbltitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, viewForBgAllSnr.frame.size.width, 60)];
+        lbltitle.font = [UIFont fontWithName:CGRegular size:20];
+        lbltitle.textAlignment = NSTextAlignmentCenter;
+        lbltitle.textColor = [UIColor whiteColor];
+        lbltitle.text = @"Select any two sensors to display it on Player Screen.";
+        [viewForBgAllSnr addSubview:lbltitle];
+    }
+    
+    UIButton *btnCancelSlSnr = [[UIButton alloc]initWithFrame:CGRectMake(5, 0, 100, 60)];
+    [self setButtonProperties:btnCancelSlSnr withTitle:@"Close" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnCancelSlSnr addTarget:self action:@selector(btnCancelSlClick) forControlEvents:UIControlEventTouchUpInside];
     btnCancelSlSnr.layer.cornerRadius = 5;
     [viewForBgAllSnr addSubview:btnCancelSlSnr];
 
-    UIButton *btnSelectOk = [[UIButton alloc]initWithFrame:CGRectMake(viewForListOfSensor.frame.size.width-70, 0, 70, 40)];
-    [self setButtonProperties:btnSelectOk withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    UIButton *btnSelectOk = [[UIButton alloc]initWithFrame:CGRectMake(viewForListOfSensor.frame.size.width-60, 0, 50, 60)];
+    [self setButtonProperties:btnSelectOk withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnSelectOk addTarget:self action:@selector(btnOkSelClick) forControlEvents:UIControlEventTouchUpInside];
     [viewForBgAllSnr addSubview:btnSelectOk];
+    
 
     if(isRemoveSnrSelect == YES)
     {
         [tmpArrySensor setValue:@"0" forKey:@"isRemoveSelected"];
-        btnSelectOk.frame = CGRectMake(viewForListOfSensor.frame.size.width-70, 0, 70, 40);
+        btnSelectOk.frame = CGRectMake(viewForListOfSensor.frame.size.width-150, 0, 150, 60);
         [btnSelectOk setTitle:@"Remove" forState:UIControlStateNormal];
     }
-    tblListOfSensor = [[UITableView alloc]initWithFrame: CGRectMake(0, 0, viewForListOfSensor.frame.size.width, viewForListOfSensor.frame.size.height-80) style:UITableViewStylePlain];
-    tblListOfSensor.frame = CGRectMake(0, 40, viewForListOfSensor.frame.size.width, viewForListOfSensor.frame.size.height-40);
+    tblListOfSensor = [[UITableView alloc]initWithFrame: CGRectMake(0, 125, viewForListOfSensor.frame.size.width, viewForListOfSensor.frame.size.height-250) style:UITableViewStylePlain];
+    tblListOfSensor.frame = CGRectMake(0, 60, viewForListOfSensor.frame.size.width, viewForListOfSensor.frame.size.height);
     tblListOfSensor.backgroundColor = UIColor.whiteColor;
     tblListOfSensor.delegate= self;
     tblListOfSensor.dataSource = self;
@@ -1234,7 +1454,7 @@ btnAddSensor.layer.cornerRadius = 22;
 
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
     {
-        self->viewForListOfSensor.frame = CGRectMake(10, 50, DEVICE_WIDTH-20, DEVICE_HEIGHT-40);
+        self->viewForListOfSensor.frame = CGRectMake(40, 125, DEVICE_WIDTH-80, DEVICE_HEIGHT-240);
         [self->tblListOfSensor reloadData];
         [self->viewForAddSensor removeFromSuperview];
     }
@@ -1244,7 +1464,7 @@ btnAddSensor.layer.cornerRadius = 22;
 {
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
     {
-        self-> viewForListOfSensor.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, DEVICE_HEIGHT-40);
+        self-> viewForListOfSensor.frame = CGRectMake(40, DEVICE_HEIGHT, DEVICE_WIDTH-80, DEVICE_HEIGHT-40);
     }
                     completion:(^(BOOL finished)
     {
@@ -1257,7 +1477,7 @@ btnAddSensor.layer.cornerRadius = 22;
     {
         [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
         {
-            self-> viewForListOfSensor.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, DEVICE_HEIGHT-40);
+            self-> viewForListOfSensor.frame = CGRectMake(40, DEVICE_HEIGHT, DEVICE_WIDTH-80, DEVICE_HEIGHT-40);
 //            [self UpdateSensorsLabels];
             }
                         completion:(^(BOOL finished)
@@ -1398,7 +1618,7 @@ btnAddSensor.layer.cornerRadius = 22;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 40;
+    return 70;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -1418,18 +1638,23 @@ btnAddSensor.layer.cornerRadius = 22;
 
     //@"Dummy";//[NSString stringWithFormat:@"%@",[[tmpArryMonitor objectAtIndex:indexPath.row] valueForKey:@"id"]];//,[[arrSensors objectAtIndex:indexPath.row] valueForKey:@"number"]];
 
-    cell.lblSensor.frame = CGRectMake(20, 0, tableView.frame.size.width/2, 40);
-    cell.lblNameSnr.frame = CGRectMake(tableView.frame.size.width/2, 0, tableView.frame.size.width/2-60, 40);
+    cell.lblSensor.frame = CGRectMake(20, 0, tableView.frame.size.width/2, 70);
+    cell.lblNameSnr.frame = CGRectMake(tableView.frame.size.width/2, 0, tableView.frame.size.width/2-60, 70);
     
     cell.lblSensor.text = [NSString stringWithFormat:@"%@ (%@)",[[tmpArrySensor objectAtIndex:indexPath.row] valueForKey:@"sensor_id"],[[tmpArrySensor objectAtIndex:indexPath.row] valueForKey:@"sensor_type"]];
     
     cell.lblNameSnr.text= [[tmpArrySensor objectAtIndex:indexPath.row] valueForKey:@"name"];
-    cell.viewSelect.hidden = false;// c
     
+    cell.viewSelect.frame = CGRectMake(tableView.frame.size.width - 50, 17, 30, 30);
+    cell.viewSelect.hidden = false;
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        cell.viewSelect.frame = CGRectMake(tableView.frame.size.width - 50, 0, 40, 40);
+    }
+
     if (isRemoveSnrSelect == YES)
     {
-        cell.viewSelect.frame = CGRectMake(tblListOfSensor.frame.size.width - 100, 10, 30, 30);
-        cell.viewSelect.hidden = false;
         
         if ([[[tmpArrySensor objectAtIndex:indexPath.row] valueForKey:@"isRemoveSelected"] isEqualToString:@"1"])
         {
@@ -1442,14 +1667,14 @@ btnAddSensor.layer.cornerRadius = 22;
     }
     else if (isRemoveSnrSelect == NO)
     {
-//        if ([[[tmpArryMonitor objectAtIndex:indexPath.row] valueForKey:@"isAdded"] isEqualToString:@"1"])
-//        {
-//            cell.viewSelect.image = [UIImage imageNamed:@"greenSelected.png"];
-//        }
-//        else
-//        {
-//            cell.viewSelect.image = [UIImage imageNamed:@"radioUnselected.png"];
-//        }
+        if ([[[tmpArrySensor objectAtIndex:indexPath.row] valueForKey:@"isSelected"] isEqualToString:@"1"])
+        {
+            cell.viewSelect.image = [UIImage imageNamed:@"greenSelected.png"];
+        }
+        else
+        {
+            cell.viewSelect.image = [UIImage imageNamed:@"radioUnselected.png"];
+        }
     }
     return cell;
 }
@@ -1476,8 +1701,8 @@ btnAddSensor.layer.cornerRadius = 22;
             }
             if (selectCount >= 2)
             {
-                //show alert popup
-                [self AlertViewFCTypeCaution:@"selected two sensor, if you want another uncheck the selected"];
+                //show alert popup @"selected two sensor, if you want another uncheck the selected"
+                [self AlertViewFCTypeCaution:@"Two sensors are selected. Please uncheck if you want to select this sensor."];
           }
           else
           {
@@ -1508,26 +1733,25 @@ btnAddSensor.layer.cornerRadius = 22;
 }
  -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView*viewHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tblListOfSensor.frame.size.width, 40)];
+    UIView*viewHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tblListOfSensor.frame.size.width, 60)];
     viewHeader.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     UIColor * lblBGC = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     
-    UILabel *lblType = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, DEVICE_WIDTH/2, 40)];
-    [self setLabelProperties:lblType withText:@"Sensor ID(Type)" backColor:lblBGC textColor:UIColor.blackColor textSize:textSize-6];
+    UILabel *lblType = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, DEVICE_WIDTH/2, 60)];
+    [self setLabelProperties:lblType withText:@"Sensor ID(Type)" backColor:lblBGC textColor:UIColor.blackColor textSize:25];
     lblType.textAlignment = NSTextAlignmentLeft;
     [viewHeader addSubview:lblType];
 
-    
-    UILabel *lblNameAndNum = [[UILabel alloc] initWithFrame:CGRectMake(tblListOfSensor.frame.size.width/2, 0, tblListOfSensor.frame.size.width/2-60, 40)];
-    [self setLabelProperties:lblNameAndNum withText:@"Name" backColor:lblBGC textColor:UIColor.blackColor textSize:textSize-6];
+    UILabel *lblNameAndNum = [[UILabel alloc] initWithFrame:CGRectMake(tblListOfSensor.frame.size.width/2, 0, tblListOfSensor.frame.size.width/2-60, 60)];
+    [self setLabelProperties:lblNameAndNum withText:@"Name" backColor:lblBGC textColor:UIColor.blackColor textSize:25];
     lblNameAndNum.textAlignment = NSTextAlignmentCenter;
     [viewHeader addSubview:lblNameAndNum];
 
-         return viewHeader;
-     }
+        return viewHeader;
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 60;
 }
 #pragma mark- remove Sensor Method
 -(void)btnRemoveSnrClick
@@ -1555,25 +1779,25 @@ btnAddSensor.layer.cornerRadius = 22;
 #pragma mark- Assiging  fielsd from data dict
 -(void)fromDataDict
 {
-    selectedFromPicker = @"10";
+    selectedFromPicker = @"10 Seconds";
     if (dataDict.count > 0)
     {
         NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
-        tmpDict = [arrPlayers objectAtIndex:0];
+//        tmpDict = [arrPlayers objectAtIndex:0];
             
         txtFullName.text = [dataDict valueForKey:@"name"];
         txtHash.text = [dataDict valueForKey:@"number"];
         txtViewNote.text = [dataDict valueForKey:@"notes"];
 
-        highIngstF = [[dataDict valueForKey:@"ing_lowF"] floatValue];
-        lowIngestF = [[dataDict valueForKey:@"ing_highF"] floatValue];
+        highIngstF = [[dataDict valueForKey:@"ing_highF"] floatValue];
+        lowIngestF = [[dataDict valueForKey:@"ing_lowF"] floatValue];
         highDermalF = [[dataDict valueForKey:@"drml_highF"] floatValue];
         lowDermalF = [[dataDict valueForKey:@"drml_lowF"] floatValue];
 
-        highIngstC = [[tmpDict valueForKey:@"ing_highC"] floatValue];
-        lowIngestC = [[tmpDict valueForKey:@"ing_lowC"] floatValue];
-        highDermalC = [[tmpDict valueForKey:@"drml_highC"] floatValue];
-        lowDermalC = [[tmpDict valueForKey:@"drml_lowC"] floatValue];
+        highIngstC = [[dataDict valueForKey:@"ing_highC"] floatValue];
+        lowIngestC = [[dataDict valueForKey:@"ing_lowC"] floatValue];
+        highDermalC = [[dataDict valueForKey:@"drml_highC"] floatValue];
+        lowDermalC = [[dataDict valueForKey:@"drml_lowC"] floatValue];
         
         selectedFromPicker = [dataDict valueForKey:@"timeInterval"];
         
@@ -1785,8 +2009,30 @@ btnAddSensor.layer.cornerRadius = 22;
     pikerViewIntervalSelect.delegate = self;
     pikerViewIntervalSelect.dataSource = self;
     pikerViewIntervalSelect.backgroundColor = UIColor.whiteColor;
-    NSInteger indexSelctTemp = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectIndexTempr"];
-    [pikerViewIntervalSelect selectRow:indexSelctTemp inComponent:0 animated:YES];
+//    NSInteger indexSelctTemp = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectIndexTempr"];
+    NSInteger foundIndex = 0;
+    
+    if (![[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
+    {
+        if ([arrayPiker containsObject:[dataDict valueForKey:@"timeInterval"]])
+        {
+            foundIndex = [arrayPiker indexOfObject:[dataDict valueForKey:@"timeInterval"]];
+            if (foundIndex != NSNotFound)
+            {
+                if ([arrayPiker count] < foundIndex)
+                {
+                    foundIndex = 0;
+                }
+            }
+            else
+            {
+                foundIndex = 0;
+            }
+        }
+    }
+
+    
+    [pikerViewIntervalSelect selectRow:foundIndex inComponent:0 animated:YES];
     [showPickerView addSubview:pikerViewIntervalSelect];
 
       [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^

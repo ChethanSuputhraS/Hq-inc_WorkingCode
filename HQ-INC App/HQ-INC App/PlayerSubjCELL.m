@@ -27,38 +27,39 @@
     if (self)
     {
      
-        imgViewpProfile = [[UIImageView alloc]initWithFrame:CGRectMake(5, 0, 30, 40)];
+        imgViewpProfile = [[UIImageView alloc]initWithFrame:CGRectMake(50, 0, 60, 60)];
         imgViewpProfile.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:imgViewpProfile];
         
-        lblName = [[UILabel alloc ]initWithFrame:CGRectMake(40, 0, (DEVICE_WIDTH-40)/4, 40)];
-        lblName.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        lblName = [[UILabel alloc ]initWithFrame:CGRectMake(120, 0, (DEVICE_WIDTH-80)/4, 80)];
+        lblName.font = [UIFont fontWithName:CGRegular size:20];
         lblName.textColor = UIColor.blackColor;
         lblName.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:lblName];
         
-        lblPlayer = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-40)/4*2-40, 0, (DEVICE_WIDTH-40)/4, 40)];
+        lblPlayer = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*2-80, 0, (DEVICE_WIDTH-70)/4, 80)];
         lblPlayer.textColor = UIColor.blackColor;
         lblPlayer.textAlignment = NSTextAlignmentCenter;
-        lblPlayer.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        lblPlayer.font = [UIFont fontWithName:CGRegular size:20];
         [self.contentView addSubview:lblPlayer];
                 
-        lblCoreTmp = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-40)/4*3-40, 0, (DEVICE_WIDTH-40)/4, 40)];
+        lblCoreTmp = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*3-80, 0, (DEVICE_WIDTH-70)/4, 80)];
         lblCoreTmp.textColor = UIColor.blackColor;
         lblCoreTmp.textAlignment = NSTextAlignmentCenter;
-        lblCoreTmp.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        lblCoreTmp.font = [UIFont fontWithName:CGRegular size:20];
         [self.contentView addSubview:lblCoreTmp];
         
-        lblSkinTmp = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-40)/4*4-40, 0,(DEVICE_WIDTH-40)/4, 40)];
+        lblSkinTmp = [[UILabel alloc ]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*4-100, 0,(DEVICE_WIDTH-70)/4, 80)];
         lblSkinTmp.textColor = UIColor.blackColor;
         lblSkinTmp.textAlignment = NSTextAlignmentCenter;
-        lblSkinTmp.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        lblSkinTmp.font = [UIFont fontWithName:CGRegular size:20];
         [self.contentView addSubview:lblSkinTmp];
         
         lblDate = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, DEVICE_WIDTH, 40)];
         lblDate.backgroundColor = UIColor.clearColor;
         lblDate.textColor = UIColor.blackColor;
         lblDate.textAlignment = NSTextAlignmentLeft;
+
         lblDate.hidden = true;
         [self.contentView addSubview:lblDate];
         
@@ -79,10 +80,36 @@
         lblConncet.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:lblConncet];
 
-        lblLine = [[UILabel alloc ]initWithFrame:CGRectMake(0, 39, DEVICE_WIDTH, 1)];
+        lblLine = [[UILabel alloc ]initWithFrame:CGRectMake(0, 49, DEVICE_WIDTH, 1)];
         lblLine.backgroundColor = UIColor.lightGrayColor;
         lblLine.hidden = true;
         [self.contentView addSubview:lblLine];
+        
+        
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            imgViewpProfile.frame = CGRectMake(5, 0, 30, 40);
+            lblName.frame = CGRectMake(40, 0, (DEVICE_WIDTH-40)/4, 40);
+            lblName.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+            lblPlayer.frame = CGRectMake((DEVICE_WIDTH-40)/4*2-40, 0, (DEVICE_WIDTH-40)/4, 40);
+            lblPlayer.font = [UIFont fontWithName:CGRegular size:textSize-6];
+            
+            lblCoreTmp.frame = CGRectMake((DEVICE_WIDTH-40)/4*3-40, 0, (DEVICE_WIDTH-40)/4, 40);
+            lblCoreTmp.font = [UIFont fontWithName:CGRegular size:textSize-6];
+            
+            lblSkinTmp.frame = CGRectMake((DEVICE_WIDTH-40)/4*4-40, 0,(DEVICE_WIDTH-40)/4, 40);
+            lblSkinTmp.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+            lblDate.frame = CGRectMake(5, 0, DEVICE_WIDTH, 40);
+
+            lblTemp.frame = CGRectMake(DEVICE_WIDTH/2, 0, DEVICE_WIDTH/2, 40);
+
+            lblConncet.frame = CGRectMake(DEVICE_WIDTH-110, 5, 100, 40);
+            
+            lblLine.frame = CGRectMake(0, 39, DEVICE_WIDTH, 1);
+
+        }
     }
     return self;
     }

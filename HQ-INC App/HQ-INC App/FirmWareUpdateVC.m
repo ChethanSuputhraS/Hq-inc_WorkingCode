@@ -78,7 +78,7 @@
     
     UIColor * lbltxtClor = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
 
-    UILabel * lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, DEVICE_WIDTH-20, 44)];
+    UILabel * lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(50, 20, DEVICE_WIDTH-100, 44)];
     [lblTitle setBackgroundColor:[UIColor clearColor]];
     [lblTitle setText:@"Firmware update"];
     [lblTitle setTextAlignment:NSTextAlignmentCenter];
@@ -87,7 +87,7 @@
     [viewHeader addSubview:lblTitle];
         
     UIButton * btnRefresh = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-60, 10, 40, 04)];
+    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-60, 10, 50, 55)];
     btnRefresh.backgroundColor = UIColor.clearColor;
     [btnRefresh setImage:[UIImage imageNamed:@"reload.png"] forState:UIControlStateNormal];
     [btnRefresh addTarget:self action:@selector(refreshBtnClick) forControlEvents:UIControlEventTouchUpInside];
@@ -96,22 +96,22 @@
     
      UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      
-     UIButton * btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-50, 60, 40)];
-     [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+     UIButton * btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+     [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
      btnCanceldown.layer.cornerRadius = 5;
      [btnCanceldown addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
      [self.view addSubview:btnCanceldown];
          
-     UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-50, 60, 40)];
-     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+     UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
      btnDone.layer.cornerRadius = 5;
      [btnDone setTitle:@"Done" forState:UIControlStateNormal];
      btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
      [self.view addSubview:btnDone];
     
-    btnUpdateFirmWare = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-100, DEVICE_WIDTH-20, 40)];
-    [self setButtonProperties:btnDone withTitle:@"Open file" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+    btnUpdateFirmWare = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-120, DEVICE_WIDTH-20, 50)];
+    [self setButtonProperties:btnDone withTitle:@"Open file" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnUpdateFirmWare.layer.cornerRadius = 5;
     [btnUpdateFirmWare setTitle:@"Open file" forState:UIControlStateNormal];
     btnUpdateFirmWare.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
@@ -151,13 +151,37 @@
     lblScanning.hidden = true;
     [self.view addSubview:lblScanning];
 
-    lblNoDevice = [[UILabel alloc]initWithFrame:CGRectMake(10, (DEVICE_HEIGHT/2)-90, (DEVICE_WIDTH)-20, 50)];
+    lblNoDevice = [[UILabel alloc]initWithFrame:CGRectMake(30, (DEVICE_HEIGHT/2)-90, (DEVICE_WIDTH)-60, 100)];
     lblNoDevice.backgroundColor = UIColor.clearColor;
     [lblNoDevice setTextAlignment:NSTextAlignmentCenter];
     [lblNoDevice setFont:[UIFont fontWithName:CGRegular size:textSize+2]];
     [lblNoDevice setTextColor:[UIColor blackColor]];
     lblNoDevice.text = @"Looking for Monitor.";
     [self.view addSubview:lblNoDevice];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblTitle.frame = CGRectMake(0, 20, DEVICE_WIDTH, 50);
+        lblTitle.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        line.frame = CGRectMake(0, 60 - 1, DEVICE_WIDTH, 0.5);
+
+        btnUpdateFirmWare.frame = CGRectMake(10, DEVICE_HEIGHT-100, DEVICE_WIDTH-20, 35);
+        btnUpdateFirmWare.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        tblMonitorList.frame = CGRectMake(0, 60, DEVICE_WIDTH, DEVICE_HEIGHT-yy-40);
+
+        btnRefresh.frame = CGRectMake(DEVICE_WIDTH-40, 10, 30, 30);
+        btnRefresh.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnCanceldown.frame = CGRectMake(10, DEVICE_HEIGHT-40, 60, 35);
+        btnCanceldown.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-40, 60, 35);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+    }
+    
 }
 #pragma mark - BLE Methods
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
@@ -300,10 +324,22 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
         lblmenu.backgroundColor = UIColor.clearColor;
         lblmenu.textAlignment = NSTextAlignmentCenter;
         [headerView addSubview:lblmenu];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        headerView.frame = CGRectMake(5, 0, self.view.frame.size.width-20, 40);
+        lblmenu.frame = CGRectMake(5,0, DEVICE_WIDTH-10, 40);
+        [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+
+    }
         return headerView;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 40;
+    }
     return 50;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -316,6 +352,10 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 65;
+    }
     return 80;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

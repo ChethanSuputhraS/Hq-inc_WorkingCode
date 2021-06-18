@@ -17,8 +17,7 @@
 #import "Header.h"
 #import "AddMonitorVC.h"
 #import "BleTestClass.h"
-#import "AddSensorVC.h"
-
+#import "StoredSubjectDetailVC.h"
 //#import <<#header#>>
 
 @interface AppDelegate ()
@@ -84,10 +83,8 @@
     [self generateSecretkey];
     
     arrGlobalSensorsAdded = [[NSMutableArray alloc] init];
-    
-//    AddSensorVC * view1 = [[AddSensorVC alloc]init];
+//    StoredSubjectDetailVC * view1 = [[StoredSubjectDetailVC alloc]init];
 
-    
     PlayerSubjVC * view1 = [[PlayerSubjVC alloc]init];
     UINavigationController *navig = [[UINavigationController alloc]initWithRootViewController:view1];
     self.window = [[UIWindow alloc]init];

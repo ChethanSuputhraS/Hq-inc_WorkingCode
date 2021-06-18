@@ -33,15 +33,16 @@
     lblLinking.text = @"Session";
     lblLinking.textColor = [UIColor whiteColor];
     lblLinking.textAlignment = NSTextAlignmentCenter;
-    lblLinking.font = [UIFont boldSystemFontOfSize:textSize-6];
+    lblLinking.font = [UIFont boldSystemFontOfSize:25];
     [self.view addSubview:lblLinking];
+    
     if (![strPlayerName isEqualToString:@"NA"])
     {
         lblLinking.text = [NSString stringWithFormat:@"Session of %@",strPlayerName];
     }
 
-    tblLinkMonitor = [[UITableView alloc]initWithFrame: CGRectMake(10, 64, DEVICE_WIDTH-20, DEVICE_HEIGHT-64) style:UITableViewStylePlain];
-    tblLinkMonitor.frame = CGRectMake(10, 64, DEVICE_WIDTH, DEVICE_HEIGHT-70);
+    tblLinkMonitor = [[UITableView alloc]initWithFrame: CGRectMake(40, 64, DEVICE_WIDTH-80, DEVICE_HEIGHT-170) style:UITableViewStylePlain];
+    tblLinkMonitor.frame = CGRectMake(0, 100, DEVICE_WIDTH, DEVICE_HEIGHT-170);
     tblLinkMonitor.backgroundColor = UIColor.whiteColor;
     tblLinkMonitor.delegate = self;
     tblLinkMonitor.dataSource = self;
@@ -51,23 +52,23 @@
 
     [self.view addSubview:tblLinkMonitor];
     
-    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-50, 60, 40)];
+    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
     [btnCancel setTitle:@"Cancel" forState:UIControlStateNormal];
     //    [btnCancel setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
     btnCancel.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [btnCancel addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
     btnCancel.layer.borderWidth = 1;
     btnCancel.layer.cornerRadius = 5;
-    btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:30];
     [self.view addSubview:btnCancel];
         
-    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-60, DEVICE_HEIGHT-50, 60, 40)];
+    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
     [btnDone setTitle:@"Done" forState:UIControlStateNormal];
     btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
     btnDone.layer.borderWidth = 1;
     btnDone.layer.cornerRadius = 5;
-    btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:30];
     [self.view addSubview:btnDone];
     
     NSString * strPlayerId = [APP_DELEGATE checkforValidString:[dictSession valueForKey:@"player_id"]];
@@ -75,6 +76,22 @@
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Session_Table where player_id = '%@'",strPlayerId];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrSessions];
 
+    
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblLinking.frame = CGRectMake(0, 20, DEVICE_WIDTH, 50);
+        lblLinking.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        tblLinkMonitor = [[UITableView alloc]initWithFrame: CGRectMake(10, 64, DEVICE_WIDTH-20, DEVICE_HEIGHT-100) style:UITableViewStylePlain];
+
+        btnCancel.frame = CGRectMake(10, DEVICE_HEIGHT-40, 60, 35);
+        btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-40, 60, 35);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+    }
     [super viewDidLoad];
     
     
@@ -84,9 +101,10 @@
 {
     return UIStatusBarStyleLightContent;
 }
-    - (BOOL)shouldAutorotate {
+- (BOOL)shouldAutorotate
+{
       return NO;
-    }
+}
 #pragma mark - Buttons
 -(void)btnAddClick
 {
@@ -108,7 +126,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 40;
+    return 80;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -122,8 +140,8 @@
     PlayerSubjCELL *cell = [tableView dequeueReusableCellWithIdentifier:cellP];
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
     
-    cell.lblPlayer.frame = CGRectMake(15, 0, DEVICE_WIDTH/2, 40);
-    cell.lblPlayer.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    cell.lblPlayer.frame = CGRectMake(15, 0, DEVICE_WIDTH/2, 80);
+    cell.lblPlayer.font = [UIFont fontWithName:CGRegular size:25];
 
 //    cell.selectionStyle= UITableViewCellSelectionStyleNone;
     cell.lblLine.hidden = false;
@@ -134,7 +152,7 @@
     [cell.imgViewpProfile setImage:[UIImage imageNamed:@"arrow.png"]];
     [cell.imgViewpProfile setContentMode:UIViewContentModeScaleAspectFit];
     
-    cell.lblLine.frame = CGRectMake(0, 39, DEVICE_WIDTH, 1);
+    cell.lblLine.frame = CGRectMake(0, 79, DEVICE_WIDTH, 1);
     
 
     double timeStamp = [[[arrSessions objectAtIndex:indexPath.row] valueForKey:@"timeStamp"] doubleValue];

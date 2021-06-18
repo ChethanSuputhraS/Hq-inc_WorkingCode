@@ -10,6 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol SubjectSetupDelegate <NSObject>
+@required
+-(void)UpdatePlayerDatafromSetup:(NSMutableDictionary *)updatedDataDict;
+@end
+
 @interface SubjSetupVC : UIViewController
 {
     UILabel *lblSubject, *lbladdsetup, *lblHash, *lblAddAlarms,*lblType2iblSenAlarm, *lblType2ible, *lblHighTempAlarm, *lblLowTempAlarm,*lblDermalSensorAlram,* lblType1,*lblNameNo1,* lblType2,*lblNameNo2,* lblHeader;
@@ -32,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 @property (nonatomic) BOOL isFromEdit;
 @property(nonatomic, strong) NSMutableDictionary * dataDict;
+@property (nonatomic, weak) id<SubjectSetupDelegate>SubjectDelegate;
 
 -(void)ConnectedMonitorDetail:(NSMutableDictionary *)arryFromAddMonitor;
 -(void)SetupDemoFromAddSensorData:(NSMutableArray *)arryData;

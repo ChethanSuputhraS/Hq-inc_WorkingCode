@@ -17,7 +17,7 @@
 
 @import Charts;
 
-@interface SubjDetailsVC ()<UITableViewDelegate,UITableViewDataSource,ChartViewDelegate, MFMailComposeViewControllerDelegate>
+@interface SubjDetailsVC ()<UITableViewDelegate,UITableViewDataSource,ChartViewDelegate, MFMailComposeViewControllerDelegate, SubjectSetupDelegate>
 {
     NSMutableArray * arrSubjects,*arrRecords;
     BOOL isSessionStarted, blinkStatus, blinkStatusCore, blinkStatusSkin;;
@@ -33,18 +33,16 @@
     NSMutableArray * arrSessionGraphData, * arrSavedSensors;
     UITableView * tblDevices;
     NSMutableDictionary * liveSessionDetail;
+    UIView *ProfileView ,*graphBgView;
     
     UILabel * lblSensor3,* lblSensor4,* lblSensor5,* lblSensor6,* lblSensor7,* lblSensor8,* lblSensor9,* lblSensor10;
     UILabel * lblTemp3,* lblTemp4,* lblTemp5,* lblTemp6,* lblTemp7,* lblTemp8,* lblTemp9,* lblTemp10;
-
-    
 }
 @end
 @implementation SubjDetailsVC
 @synthesize dataDict, sessionDict, isfromSessionList;
 - (void)viewDidLoad
 {
-
     arrSkinsTemp = [[NSMutableArray alloc] init];
     arrCoreTemp = [[NSMutableArray alloc] init];
     yVals1 = [[NSMutableArray alloc] init];
@@ -92,6 +90,21 @@
     
     [self gettingImg];
 
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        
+        lblSubjectDetails.frame = CGRectMake(0, 20, self.view.frame.size.width, 44);
+        lblSubjectDetails.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnSubSetup.frame = CGRectMake(10, self.view.frame.size.height-40, 100, 35);
+        btnSubSetup.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnDone.frame = CGRectMake(self.view.frame.size.width-80, self.view.frame.size.height-40, 60, 35);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+    }
+    
     [super viewDidLoad];
 }
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
@@ -107,6 +120,13 @@
     [tblPreviousCoreTmp reloadData];
     [tblPreviousSkinTmp reloadData];
     [_chartView reloadInputViews];
+    
+    if (dataDict)
+    {
+        lblName.text = [dataDict objectForKey:@"name"];
+        lblNumber.text = [dataDict objectForKey:@"number"];
+        [self gettingImg];
+    }
 }
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -115,7 +135,7 @@
 #pragma mark-
 -(void)SetupForProfileview
 {
-    UIView * ProfileView = [[UIView alloc]init];
+    ProfileView = [[UIView alloc]init];
     ProfileView.frame = CGRectMake(40, 64, self.view.frame.size.width-80, self.view.frame.size.height/3-115);
     ProfileView.backgroundColor = UIColor.blackColor;
     [self.view addSubview:ProfileView];
@@ -185,6 +205,7 @@
     [self setButtonProperties:btnRead withTitle:@"Start Readings" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:20];
     [btnRead addTarget:self action:@selector(btnReadClick) forControlEvents:UIControlEventTouchUpInside];
     btnRead.layer.cornerRadius = 6;
+    btnRead.titleLabel.numberOfLines = 0;
     [ProfileView addSubview:btnRead];
              
     zz = zz+170;
@@ -200,11 +221,51 @@
     {
         lblBattery.hidden = YES;
     }
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        ProfileView.frame = CGRectMake(0, 64, DEVICE_WIDTH, self.view.frame.size.height/3-80);
+//        ProfileView.backgroundColor = UIColor.redColor;
+        imgView.frame = CGRectMake(0, 0, 110, ProfileView.frame.size.height-30);
+
+        lblName.frame  = CGRectMake(0, imgView.frame.size.height, imgView.frame.size.width-30, 30);
+        lblName.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        lblNumber.frame = CGRectMake(imgView.frame.size.width-30, imgView.frame.size.height, 30, 30);
+        lblName.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        lblLatestReading.frame = CGRectMake(imgView.frame.size.width+5, 0, self.view.frame.size.width-imgView.frame.size.width, 30);
+        lblLatestReading.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        int zz = imgView.frame.size.width+5;
+        lblCoreTmp.frame = CGRectMake(zz, 30,(ProfileView.frame.size.width-zz)/2, 30);
+        lblCoreTmp.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblSkinTmp.frame = CGRectMake((ProfileView.frame.size.width+zz)/2+5, 30, (ProfileView.frame.size.width-zz)/2-5, 30);
+        lblSkinTmp.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblMoreSubjDetails.frame = CGRectMake(zz, 65, ProfileView.frame.size.width-zz, 30);
+        lblMoreSubjDetails.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        imgBattery.frame = CGRectMake(zz, ProfileView.frame.size.height-30, 30, 15);
+        zz = zz + 30;
+        lblBattery.frame = CGRectMake(zz, ProfileView.frame.size.height-40, 50, 35);
+        lblBattery.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        zz = zz+60;
+        btnRead.frame = CGRectMake(zz, ProfileView.frame.size.height-40, 70, 35);
+        btnRead.titleLabel.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        zz = zz+80;
+        btnSpotCheck.frame = CGRectMake(zz, ProfileView.frame.size.height-40, 70, 35);
+        btnSpotCheck.titleLabel.font  = [UIFont fontWithName:CGRegular size:textSize-6];
+
+    }
 }
 #pragma mark-Graph view
 -(void)SetupGraphView
 {
-    UIView * graphBgView = [[UIView alloc]init];
+    graphBgView = [[UIView alloc]init];
     graphBgView.frame = CGRectMake(40, DEVICE_HEIGHT/3-60, DEVICE_WIDTH-80, DEVICE_HEIGHT/3+50);
     graphBgView.backgroundColor = UIColor.clearColor;
     [self.view addSubview:graphBgView];
@@ -267,6 +328,17 @@
     rightAxis.axisMinimum = 0.0;
     rightAxis.drawGridLinesEnabled = NO;
     rightAxis.granularityEnabled = NO;
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        graphBgView.frame = CGRectMake(0, DEVICE_HEIGHT/3-10, DEVICE_WIDTH, DEVICE_HEIGHT/3+20);
+        lblTrendGraph.frame = CGRectMake(5, 0, graphBgView.frame.size.width-10, 30);
+        lblTrendGraph.font = [UIFont fontWithName:CGBold size:textSize-4];
+        
+        _chartView.frame = CGRectMake(0, 30, graphBgView.frame.size.width, graphBgView.frame.size.height-35);
+
+    }
+    
 }
 -(void)SetupBottomSensorView
 {
@@ -414,6 +486,104 @@
     UILabel * lblLineRight3 = [[UILabel alloc] initWithFrame:CGRectMake(width/2+5, ya+40, lblIDtypeRight.frame.size.width, 0.5)];
     lblLineRight3.backgroundColor = UIColor.lightGrayColor;
     [viewlblTmp addSubview:lblLineRight3];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        int yy  = ProfileView.frame.size.height +  graphBgView.frame.size.height + 70;
+        lblotherSnr.frame = CGRectMake(5, yy, self.view.frame.size.width, 30);
+        lblotherSnr.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        int xx = 5;
+        
+        viewlblTmp.frame = CGRectMake(xx, yy+30, DEVICE_WIDTH-10, DEVICE_HEIGHT-yy-80);
+        int width = viewlblTmp.frame.size.width;
+
+        // header
+        lblIDtypeLeft.frame = CGRectMake(0, 0, width/2-10, 25);
+        lblIDtypeLeft.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblIDtypeRight.frame = CGRectMake(width/2+5, 0, width/2-5, 25);
+        lblIDtypeRight.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblTempLeft.frame = CGRectMake(0, 0, width/2-15, 25);
+        lblTempLeft.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblTempRight.frame = CGRectMake(width/2+5, 0, width/2-15, 25);
+        lblTempRight.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        // sensors lalbles
+        int ya = 25;
+        
+        lblSensor3.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblSensor3.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp3.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblTemp3.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblSensor7.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblSensor7.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp7.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblTemp7.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblLineLeft.frame = CGRectMake(0, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+        lblLineRight.frame = CGRectMake(width/2+5, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+
+        ya = ya+25;
+        
+        lblSensor4.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblSensor4.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp4.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblTemp4.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblSensor4.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblSensor4.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblSensor8.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblSensor8.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp8.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblTemp8.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblLineLeft1.frame = CGRectMake(0, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+        lblLineRight1.frame = CGRectMake(width/2+5, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+
+        ya = ya+25;
+         lblSensor5.frame = CGRectMake(5, ya, width/2-10, 25);
+         lblSensor5.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp5.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblTemp5.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblSensor9.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblSensor9.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp9.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblTemp9.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblLineLeft2.frame = CGRectMake(0, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+        lblLineRight2.frame = CGRectMake(width/2+5, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+
+        ya = ya+25;
+        lblSensor6.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblSensor6.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblTemp6.frame = CGRectMake(5, ya, width/2-10, 25);
+        lblTemp6.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblSensor10.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblSensor10.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblTemp10.frame = CGRectMake(width/2+10, ya, width/2-10, 25);
+        lblTemp10.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblLineleft3.frame = CGRectMake(0, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+        lblLineRight3.frame = CGRectMake(width/2+5, ya+25, lblIDtypeRight.frame.size.width, 0.5);
+
+
+
+    }
+    
 }
 -(NSString *)GetSensorIDandTypeForLableWithIndex:(NSInteger)i
 {
@@ -464,6 +634,20 @@
         lblTemp.frame = CGRectMake(tblDevices.frame.size.width-59, 0, 50, 35);
         lblTemp.textAlignment = NSTextAlignmentLeft;
     }
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        
+        viewHeader.frame = CGRectMake(0, 0, tblPreviousCoreTmp.frame.size.width, 35);
+        lblDateTime.frame = CGRectMake(5, 0, tblPreviousCoreTmp.frame.size.width, 35);
+        lblDateTime.font = [UIFont fontWithName:CGRegular size:17];
+
+        lblTemp.frame = CGRectMake(0, 0, tblPreviousCoreTmp.frame.size.width-10, 35);
+        lblTemp.font = [UIFont fontWithName:CGRegular size:17];
+
+
+    }
+    
         return viewHeader;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -562,6 +746,7 @@
      globalSbuSetupVC = [[SubjSetupVC alloc]init];
      globalSbuSetupVC.dataDict = dataDict;
      globalSbuSetupVC.isFromEdit = YES;
+     globalSbuSetupVC.SubjectDelegate = self;
      [self.navigationController pushViewController:globalSbuSetupVC animated:true];
  }
  -(void)btnDoneClick
@@ -619,7 +804,7 @@
             [self StopSessionCommandtoDevice];
         }
         
-        [self setButtonProperties:btnRead withTitle:@"Read" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:25];
+        [self setButtonProperties:btnRead withTitle:@"Start Readings" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
     }
 }
 -(void)btnSpotCkClick
@@ -757,7 +942,7 @@
 #pragma mark-BLE  Methoda
 -(void)SetTempIntervalwithPlayerID
 {
-    NSString * strUserId = @"NA";
+    NSString * strUserId = [NSString stringWithFormat:@"%.0f",[[NSDate date] timeIntervalSince1970]];
     if ([[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"user_id"]] isEqualToString:@"NA"])
     {
         strUserId = [NSString stringWithFormat:@"%.0f",[[NSDate date] timeIntervalSince1970]];
@@ -768,8 +953,24 @@
     {
         strUserId = [dataDict valueForKey:@"user_id"];
     }
+//    arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10 Seconds",@"1 Minute",@"1 Hour",@"1 Day", nil];
 
-    NSInteger interval = [@"5" integerValue];
+    NSInteger interval = [@"10" integerValue];
+    if (![[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
+    {
+        if ([[dataDict valueForKey:@"timeInterval"] isEqualToString:@"1 Minute"])
+        {
+            interval = [@"60" integerValue];
+        }
+        else if ([[dataDict valueForKey:@"timeInterval"] isEqualToString:@"1 Hour"])
+        {
+            interval = [@"3600" integerValue];
+        }
+        else if ([[dataDict valueForKey:@"timeInterval"] isEqualToString:@"1 Hour"])
+        {
+            interval = [@"86400" integerValue];
+        }
+    }
     NSData * dataInterval = [[NSData alloc] initWithBytes:&interval length:2];
 
     NSInteger intUserID = [strUserId integerValue];
@@ -1115,7 +1316,7 @@
     {
 //        [APP_DELEGATE startHudProcess:@"Loading..."];
         isSessionStarted = YES;
-        [self setButtonProperties:btnRead withTitle:@"Stop\nSession" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
+        [self setButtonProperties:btnRead withTitle:@"Stop Readings" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
     }
 }
 -(void)WritePlayerNametoMonitorttoStartSession
@@ -1285,9 +1486,17 @@
 {
     liveSessionDetail = LiveSessionData;
     isSessionStarted = YES;
-    [self setButtonProperties:btnRead withTitle:@"Stop\nSession" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
+    [self setButtonProperties:btnRead withTitle:@"Stop Readings" backColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] textColor:UIColor.whiteColor txtSize:20];
 }
 
+-(void)UpdatePlayerDatafromSetup:(NSMutableDictionary *)updatedDataDict;
+{
+    dataDict = [updatedDataDict mutableCopy];
+    lblName.text = [dataDict objectForKey:@"name"];
+    lblNumber.text = [dataDict objectForKey:@"number"];
+
+    [self gettingImg];
+}
 @end
 //    "player_id" = 1613640340;
 

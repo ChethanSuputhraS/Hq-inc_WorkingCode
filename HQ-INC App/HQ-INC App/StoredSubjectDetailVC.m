@@ -66,59 +66,58 @@
     self.view.backgroundColor = UIColor.blackColor;
     
     UIColor * lbltxtClr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 00, self.view.frame.size.width, 40)];
-    [self setLabelProperties:lblSubjectDetails withText:@"SUBJECT DETAILS" backColor:UIColor.clearColor textColor:lbltxtClr textSize:textSize-4];
+    UILabel* lblSubjectDetails = [[UILabel alloc]initWithFrame:CGRectMake(0, 00, self.view.frame.size.width, 50)];
+    [self setLabelProperties:lblSubjectDetails withText:@"SUBJECT DETAILS" backColor:UIColor.clearColor textColor:lbltxtClr textSize:25];
     lblSubjectDetails.textAlignment = NSTextAlignmentCenter;
 //    [self.view addSubview:lblSubjectDetails];
    
     UIColor *btnBGColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    UIButton * btnExportData = [[UIButton alloc]initWithFrame:CGRectMake(10, self.view.frame.size.height-40, 100, 35)];
-    [self setButtonProperties:btnExportData withTitle:@"Export Data" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    UIButton * btnExportData = [[UIButton alloc]initWithFrame:CGRectMake(100, self.view.frame.size.height-60, 200, 50)];
+    [self setButtonProperties:btnExportData withTitle:@"Export Data" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:25];
     [btnExportData addTarget:self action:@selector(btnExportClick) forControlEvents:UIControlEventTouchUpInside];
     btnExportData.layer.cornerRadius = 5;
     [self.view addSubview:btnExportData]; 
 
-    UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width-80, self.view.frame.size.height-60, 60, 40)];
+    UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width-250, self.view.frame.size.height-60, 150, 50)];
     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBGColor textColor:UIColor.whiteColor txtSize:25];
     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
     btnDone.layer.cornerRadius = 5;
     [self.view addSubview:btnDone];
     
-    UIView* viewFortxtFld = [[UIView alloc] initWithFrame:CGRectMake(10, 15, DEVICE_HEIGHT-20, 40)];
+    UIView* viewFortxtFld = [[UIView alloc] initWithFrame:CGRectMake(40, 15, DEVICE_HEIGHT-80, 60)];
     viewFortxtFld.backgroundColor = UIColor.clearColor;
     [self.view addSubview:viewFortxtFld];
     
     int aa = viewFortxtFld.frame.size.width/4;
     
     txtPlayerName = [[UIFloatLabelTextField alloc]init];
-    txtPlayerName.frame = CGRectMake(0, 0, aa, 40);
-    [self setTextfieldProperties:txtPlayerName withPlaceHolderText:@"Player Name" withTextSize:textSize-6];
+    txtPlayerName.frame = CGRectMake(0, 0, aa, 60);
+    [self setTextfieldProperties:txtPlayerName withPlaceHolderText:@"Player Name" withTextSize:textSize+2];
     [APP_DELEGATE getPlaceholderText:txtPlayerName andColor:UIColor.lightGrayColor];
     txtPlayerName.text = @"Jithi";
     [viewFortxtFld addSubview:txtPlayerName];
     
     txtSensorTime = [[UIFloatLabelTextField alloc]init];
-    txtSensorTime.frame = CGRectMake(aa+5, 0, aa-5, 40);
-    [self setTextfieldProperties:txtSensorTime withPlaceHolderText:@"Session Time" withTextSize:textSize-6];
+    txtSensorTime.frame = CGRectMake(aa+10, 0, aa-10, 60);
+    [self setTextfieldProperties:txtSensorTime withPlaceHolderText:@"Session Time" withTextSize:textSize];
     [APP_DELEGATE getPlaceholderText:txtSensorTime andColor:UIColor.lightGrayColor];
     txtSensorTime.text = @"04/02/2021 04:44 PM";
     [viewFortxtFld addSubview:txtSensorTime];
     
     txtSensorType = [[UIFloatLabelTextField alloc]init];
-    txtSensorType.frame = CGRectMake(aa*2+5, 0, aa-5, 40);
-    [self setTextfieldProperties:txtSensorType withPlaceHolderText:@"Sensor Type" withTextSize:textSize-6];
+    txtSensorType.frame = CGRectMake(aa*2+10, 0, aa-10, 60);
+    [self setTextfieldProperties:txtSensorType withPlaceHolderText:@"Sensor Type" withTextSize:textSize+2];
     [APP_DELEGATE getPlaceholderText:txtSensorType andColor:UIColor.lightGrayColor];
     txtSensorType.text = @"Skin";
     [viewFortxtFld addSubview:txtSensorType];
     
     txtSensorNumber = [[UIFloatLabelTextField alloc]init];
-    txtSensorNumber.frame = CGRectMake(aa*3+5, 0, aa-5, 40);
+    txtSensorNumber.frame = CGRectMake(aa*3+10, 0, aa-10, 60);
     [self setTextfieldProperties:txtSensorNumber withPlaceHolderText:@"Number of Sensors " withTextSize:textSize];
     [APP_DELEGATE getPlaceholderText:txtSensorNumber andColor:UIColor.lightGrayColor];
     txtSensorNumber.text = @"1";
     [viewFortxtFld addSubview:txtSensorNumber];
 
-    [self SetupGraphView];
 
     arrSessionSensors = [[NSMutableArray alloc] init];
     NSString * strSensorsQuery = [NSString stringWithFormat:@"select * from Sensor_Table where session_id = '%@' group by sensor_id",[sessionDict valueForKey:@"session_id"]];
@@ -141,7 +140,6 @@
     [self SetDatetoValue:startTime withLabel:lblPreviousDate];
     [self SetDatetoValue:endTime withLabel:lblNextDate];
 
-
     [self FetchSensorDataQuery:0 start:startTime end:endTime];
 
     btnRead.hidden = YES;
@@ -150,6 +148,36 @@
     imgView.image = [UIImage imageNamed:@"User_Default"];
     lblName.text = [sessionDict valueForKey:@"player_name"];
 
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblSubjectDetails.frame = CGRectMake(0, 00, self.view.frame.size.width, 40);
+        lblSubjectDetails.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnExportData.frame = CGRectMake(5, self.view.frame.size.height-40, 100, 35);
+        btnExportData.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnDone.frame = CGRectMake(self.view.frame.size.width-80, self.view.frame.size.height-40, 60, 35);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        viewFortxtFld.frame = CGRectMake(10, 15, DEVICE_HEIGHT-20, 40);
+        int aa = viewFortxtFld.frame.size.width/4;
+        
+        txtPlayerName.frame = CGRectMake(0, 0, aa, 40);
+        txtPlayerName.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        txtSensorTime.frame = CGRectMake(aa+5, 0, aa-5, 40);
+        txtSensorTime.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        txtSensorType.frame = CGRectMake(aa*2+5, 0, aa-5, 40);
+        txtSensorType.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        txtSensorNumber.frame = CGRectMake(aa*3+5, 0, aa-5, 40);
+        txtSensorNumber.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+
+    }
+    
+    [self SetupGraphView];
     [self gettingImg];
 
     [super viewDidLoad];
@@ -269,6 +297,31 @@
     rightAxis.axisMinimum = 0.0;
     rightAxis.drawGridLinesEnabled = NO;
     rightAxis.granularityEnabled = NO;
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        graphBgView.frame = CGRectMake(10, 60, self.view.frame.size.width-20, self.view.frame.size.height -105);
+//        graphBgView.backgroundColor = UIColor.redColor;
+        
+        
+        lblTrendGraph.frame = CGRectMake(5, 0,wh, 40);
+        lblTrendGraph.font = [UIFont fontWithName:CGBold size:textSize-6];
+
+        btnPrevious.frame = CGRectMake(wh+55, 0, 35, 35);
+        
+        lblPreviousDate.frame = CGRectMake(wh*2-20, 0, wh+75, 35);
+        lblPreviousDate.font = [UIFont fontWithName:CGBold size:textSize-6];
+
+        lblNextDate.frame = CGRectMake(graphBgView.frame.size.width-lblPreviousDate.frame.size.width-45, 0, wh+75, 35);
+        lblNextDate.font = [UIFont fontWithName:CGBold size:textSize-6];
+        
+        btnNext.frame = CGRectMake(graphBgView.frame.size.width-40, 0, 35, 35);
+        
+        _chartView.frame = CGRectMake(0, 40, graphBgView.frame.size.width, graphBgView.frame.size.height-40);
+
+        
+        
+    }
 }
 #pragma mark- Table View Method
  -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -555,6 +608,11 @@
     txtfld.autocapitalizationType = UITextAutocapitalizationTypeNone;
     txtfld.layer.cornerRadius = 5;
     txtfld.font = [UIFont fontWithName:CGRegular size:textSize];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        txtfld.font = [UIFont fontWithName:CGRegular size:14];
+    }
 
 }
 -(void)setTemperoryData

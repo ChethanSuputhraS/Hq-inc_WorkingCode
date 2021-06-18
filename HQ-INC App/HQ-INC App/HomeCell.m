@@ -39,7 +39,7 @@
         lblDeviceName.numberOfLines = 0;
         [lblDeviceName setBackgroundColor:[UIColor clearColor]];
         lblDeviceName.textColor = UIColor.blackColor;
-        [lblDeviceName setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+        [lblDeviceName setFont:[UIFont fontWithName:CGRegular size:textSize+3]];
         [lblDeviceName setTextAlignment:NSTextAlignmentLeft];
         lblDeviceName.text = @"Device name";
         
@@ -47,14 +47,14 @@
         lblAddress = [[UILabel alloc] initWithFrame:CGRectMake(18, 35,  DEVICE_WIDTH-36, 35)];
         [lblAddress setBackgroundColor:[UIColor clearColor]];
         [lblAddress setTextColor:[UIColor blackColor]];
-        [lblAddress setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+        [lblAddress setFont:[UIFont fontWithName:CGRegular size:textSize]];
         [lblAddress setTextAlignment:NSTextAlignmentLeft];
         lblAddress.text = @"Ble Address";
         
-        lblConnect = [[UILabel alloc] initWithFrame:CGRectMake(DEVICE_WIDTH-100, 0, 80, 40)];
+        lblConnect = [[UILabel alloc] initWithFrame:CGRectMake(DEVICE_WIDTH-150, 0, 100, 70)];
         [lblConnect setBackgroundColor:[UIColor clearColor]];
         [lblConnect setTextColor:[UIColor blackColor]];
-        [lblConnect setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+        [lblConnect setFont:[UIFont fontWithName:CGRegular size:textSize]];
         [lblConnect setTextAlignment:NSTextAlignmentLeft];
         lblConnect.text = @"ADD";
         
@@ -62,6 +62,17 @@
         [self.contentView addSubview:lblDeviceName];
         [self.contentView addSubview:lblAddress];
         [self.contentView addSubview:lblConnect];
+        
+        
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            lblBack.frame = CGRectMake(0, 0,DEVICE_WIDTH-0,60);
+            lblDeviceName.frame = CGRectMake(5, 0, DEVICE_WIDTH-10, 30);
+            lblAddress.frame = CGRectMake(5, 30,  DEVICE_WIDTH-10, 30);
+            lblConnect.frame = CGRectMake(DEVICE_WIDTH-100, 0, 80, 60);
+            lblConnect.font = [UIFont fontWithName:CGRegular size:textSize-6];
+            
+        }
     }
     return self;
 }

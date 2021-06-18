@@ -10,6 +10,7 @@
 @import Charts;  
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface SubjDetailsVC : UIViewController
 {
     UITableView * tblPreviousCoreTmp,* tblPreviousSkinTmp;
@@ -17,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
     UIButton *btnRead,*btnSpotCheck,*btnViewSnr;
     UIImageView * imgView;
 }
+
 -(void)StartSessionConfirmation:(BOOL)isSessionStartSuccess;
 -(void)SendTemperatureReadingtoDetailVC:(NSMutableArray *)arrSensorData;
 -(void)ShowErrorMessagewithOpcode:(NSString *)strOpcode;
@@ -25,11 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)ReceiveSensorDetails:(NSMutableArray *)arrSensors;
 -(void)LiveSessionReadingStarted:(NSMutableDictionary *)LiveSessionData;
+-(void)UpdatePlayerDatafromSetup:(NSMutableDictionary *)updatedDataDict;
 
 @property (nonatomic, strong) LineChartView* chartView;
 @property(nonatomic, strong) NSMutableDictionary * dataDict;
 @property(nonatomic, strong) NSMutableDictionary * sessionDict;
 @property BOOL isfromSessionList;
+
 @end
 
 NS_ASSUME_NONNULL_END

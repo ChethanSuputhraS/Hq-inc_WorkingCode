@@ -24,7 +24,7 @@
     UIView *listView,*gridView,*viewForOrderPiker;
     UIView *showPickerView,*showPickerforOrder;
     NSString *selectedFromPicker, *StrikePIker;
-    UIButton * btnMenu,* btnGridView;
+    UIButton * btnMenu,* btnGridView,*btnLink;
     BOOL isListClicked, isOneDataAvail, isGridSelected;
     UICollectionView *_collectionView;;
     UIImageView *imgViewListButton;
@@ -48,93 +48,89 @@
     [self setNeedsStatusBarAppearanceUpdate];
     isGridSelected = YES;
     
-    int textPhoneSize = 14;
-
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
-    
+
     navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 130)];
     navigViewTop.backgroundColor = UIColor.clearColor;
     [self.view addSubview:navigViewTop];
             
     UIColor * lbltxtclr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    
-    lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 44)];
-    [self setLabelProperties:lblPLayerSubject withText: @"Player / Subject" backColor:UIColor.clearColor textColor:lbltxtclr textSize:textPhoneSize];
+    lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 48)];
+    [self setLabelProperties:lblPLayerSubject withText: @"Player / Subject" backColor:UIColor.clearColor textColor:lbltxtclr textSize:25];
     lblPLayerSubject.textAlignment = NSTextAlignmentCenter;
     [navigViewTop addSubview:lblPLayerSubject];
             
     UIColor *allBtnClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    btnExportData = [[UIButton alloc]initWithFrame:CGRectMake(0, 50, 80, 35)];
-    [self setButtonProperties:btnExportData withTitle:@"Export Data" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:textPhoneSize-2];
+    btnExportData = [[UIButton alloc]initWithFrame:CGRectMake(10, 28, 150, 44)];
+    [self setButtonProperties:btnExportData withTitle:@"Export Data" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnExportData addTarget:self action:@selector(btnExportDataClick) forControlEvents:UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnExportData];
             
-    int yyBottom = 90;
-    btnGlobalRead = [[UIButton alloc]initWithFrame:CGRectMake(0, yyBottom, 80, 35)];
-    [self setButtonProperties:btnGlobalRead withTitle:@"Settings"  backColor:allBtnClor textColor:UIColor.whiteColor txtSize:textPhoneSize];
+    int yyBottom = 76;
+    btnGlobalRead = [[UIButton alloc]initWithFrame:CGRectMake(10, yyBottom, 150, 44)];
+    [self setButtonProperties:btnGlobalRead withTitle:@"Settings"  backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnGlobalRead addTarget:self action:@selector(btnGlobalReadClick) forControlEvents:UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnGlobalRead];
              
-    btnNotes = [[UIButton alloc]initWithFrame:CGRectMake(85, yyBottom, 45, 35)];
-    [self setButtonProperties:btnNotes withTitle:@"Notes" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:textPhoneSize];
+    btnNotes = [[UIButton alloc]initWithFrame:CGRectMake(170, yyBottom, 70, 44)];
+    [self setButtonProperties:btnNotes withTitle:@"Notes" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnNotes addTarget:self action:@selector(btnNotesClick) forControlEvents:UIControlEventTouchUpInside];
 //    btnNotes.frame = CGRectMake(170, yyBottom, 18, 4.85);
 //    btnNotes.layer.cornerRadius = 2;
 //    btnNotes.layer.masksToBounds = YES;
     [navigViewTop addSubview:btnNotes];
                 
-
-    lblFilter = [[UILabel alloc]initWithFrame:CGRectMake(135, yyBottom, 60, 35)];
-    [self setLabelProperties:lblFilter withText:@"Filter:" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoneSize];
+    lblFilter = [[UILabel alloc]initWithFrame:CGRectMake(260, yyBottom, 90, 44)];
+    [self setLabelProperties:lblFilter withText:@"Filter:" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:17];
     [navigViewTop addSubview:lblFilter];
     
-    btnSelect = [[UIButton alloc]initWithFrame:CGRectMake(170, yyBottom, 70, 35)];
-    [self setButtonProperties:btnSelect withTitle:@"Select" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:textPhoneSize-1];
+    btnSelect = [[UIButton alloc]initWithFrame:CGRectMake(305, yyBottom, 150, 44)];
+    [self setButtonProperties:btnSelect withTitle:@"Select" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnSelect addTarget:self action:@selector(btnSelectClick) forControlEvents:UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnSelect];
 
-    lblOrder = [[UILabel alloc]initWithFrame:CGRectMake(245, yyBottom, 40, 35)];
-    [self setLabelProperties:lblOrder withText:@"Order" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoneSize];
+    lblOrder = [[UILabel alloc]initWithFrame:CGRectMake(475, yyBottom, 90, 44)];
+    [self setLabelProperties:lblOrder withText:@"Order" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:17];
     [navigViewTop addSubview:lblOrder];
     
-    btnOrder = [[UIButton alloc]initWithFrame:CGRectMake(285, yyBottom, 35, 35)];
-    [self setButtonProperties:btnOrder withTitle:@"" backColor:allBtnClor textColor:UIColor.clearColor txtSize:textPhoneSize];
+    btnOrder = [[UIButton alloc]initWithFrame:CGRectMake(525, yyBottom, 50, 40)];
+    [self setButtonProperties:btnOrder withTitle:@"" backColor:allBtnClor textColor:UIColor.clearColor txtSize:17];
     UIImage *btnOrimg = [UIImage imageNamed:@"DownArrow.png.png"];
     [btnOrder setImage:btnOrimg forState:normal];
     [btnOrder addTarget:self action:@selector(btnOrderClick) forControlEvents: UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnOrder];
 
-    lblOutSideTmp = [[UILabel alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-210, 35, 150, 30)];
-    [self setLabelProperties:lblOutSideTmp withText:@"Outside Temp / Humidity :" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoneSize-5];
+    lblOutSideTmp = [[UILabel alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-300, 45, 200, 30)];
+    [self setLabelProperties:lblOutSideTmp withText:@"Outside Temp / Humidity :" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
     lblOutSideTmp.textAlignment = NSTextAlignmentRight;
     [navigViewTop addSubview:lblOutSideTmp];
     
-    lblOutSidTem = [[UILabel alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-80, 35, 60, 30)];
-    [self setLabelProperties:lblOutSidTem withText:@"22ºC /" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoneSize-5];
+    lblOutSidTem = [[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-105, 45, 60, 30)];
+    [self setLabelProperties:lblOutSidTem withText:@"22ºC /" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
     lblOutSidTem.textAlignment = NSTextAlignmentRight;
     [navigViewTop addSubview:lblOutSidTem];
     
-    lblOutSidHumid = [[UILabel alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-60, 35, 60, 30)];
-    [self setLabelProperties:lblOutSidHumid withText:@"76%" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoneSize-5];
+    lblOutSidHumid = [[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-62, 45, 60, 30)];
+    [self setLabelProperties:lblOutSidHumid withText:@"76%" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
     lblOutSidHumid.textAlignment = NSTextAlignmentRight;
     [navigViewTop addSubview:lblOutSidHumid];
            
-    int aa = navigViewTop.frame.size.width-50;
-    UIButton * btnLink = [[UIButton alloc]initWithFrame:CGRectMake(aa, yyBottom, 44, 35)];
+    int aa = navigViewTop.frame.size.width-btnSelect.frame.size.width-btnOrder.frame.size.width+20;
+    UIButton * btnLink = [[UIButton alloc]initWithFrame:CGRectMake(aa, yyBottom, 50, 50)];
     [self setButtonProperties:btnLink withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.clearColor txtSize:20];
     [btnLink addTarget:self action:@selector(btnLinkClick) forControlEvents:UIControlEventTouchUpInside];
     UIImage *btnimg = [UIImage imageNamed:@"linked.png"];
     [btnLink setImage:btnimg forState:normal];
     [navigViewTop addSubview:btnLink];
     
-    btnlistView = [[UIButton alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-70, 55, 35, 35)];
+    btnlistView = [[UIButton alloc]initWithFrame:CGRectMake(aa+103, yyBottom, 35, 50)];
     btnlistView.backgroundColor = UIColor.clearColor;
     [btnlistView addTarget:self action:@selector(btnlistViewClick) forControlEvents:UIControlEventTouchUpInside];
     [btnlistView setImage:[UIImage imageNamed:@"List.png"] forState:normal];
     [navigViewTop addSubview:btnlistView];
         
-    btnGridView = [[UIButton alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-40, 55, 35, 35)];
+    btnGridView = [[UIButton alloc]initWithFrame:CGRectMake(aa+140, yyBottom, 35, 50)];
     btnGridView.backgroundColor = UIColor.clearColor;
     [btnGridView addTarget:self action:@selector(btnGridClick) forControlEvents:UIControlEventTouchUpInside];
     [btnGridView setImage:[UIImage imageNamed:@"GridSelected.png"] forState:normal];
@@ -142,7 +138,7 @@
     
     gridView = [[UIView alloc]init];
     gridView.frame =CGRectMake(0, 130, DEVICE_WIDTH, DEVICE_HEIGHT-130);
-    gridView.backgroundColor = UIColor.clearColor;
+    gridView.backgroundColor = UIColor.blackColor;
     gridView.hidden = false;
     [self.view addSubview:gridView];
     
@@ -158,12 +154,12 @@
     
     listView = [[UIView alloc]init];
     listView.frame =CGRectMake(0, 130, DEVICE_WIDTH-0, DEVICE_HEIGHT-130);
-    listView.backgroundColor = UIColor.clearColor;
+    listView.backgroundColor = UIColor.blackColor;
     listView.hidden = true;
     [self.view addSubview:listView];
 
     tblPlayerList = [[UITableView alloc]init];
-    tblPlayerList.frame = CGRectMake(0, 0, listView.frame.size.width, listView.frame.size.height-0);
+    tblPlayerList.frame = CGRectMake(0, 0, listView.frame.size.width, listView.frame.size.height);
     tblPlayerList.backgroundColor = UIColor.clearColor;
     tblPlayerList.delegate = self;
     tblPlayerList.dataSource = self;
@@ -172,7 +168,7 @@
     
     arrayPlayers = [[NSMutableArray alloc] init];
     arrayPiker = [[NSMutableArray alloc]initWithObjects:@"Core Temp",@"Skin Temp",@"Last Name",@"Subject#", nil];
-    arrayPickerOrderBy =[[NSMutableArray alloc]initWithObjects:@"Name",@"Number",@"Tempareture", nil];
+    arrayPickerOrderBy =[[NSMutableArray alloc]initWithObjects:@"Name",@"Number",@"Temperature", nil];
     
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleLongPress:)];
@@ -186,9 +182,67 @@
     longPCollection.delegate = self;
     [_collectionView addGestureRecognizer:longPCollection];
 
+ 
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        yyBottom = 90;
+        lblPLayerSubject.frame = CGRectMake(0, 5, DEVICE_WIDTH, 44);
+        lblPLayerSubject.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnExportData.frame = CGRectMake(0, 50, 80, 35);
+        btnExportData.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        btnGlobalRead.frame = CGRectMake(0, yyBottom, 80, 35);
+        btnGlobalRead.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnNotes.frame = CGRectMake(85, yyBottom, 45, 35);
+        btnNotes.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        lblFilter.frame = CGRectMake(135, yyBottom, 60, 35);
+        lblFilter.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnSelect.frame = CGRectMake(170, yyBottom, 70, 35);
+        btnSelect.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblOrder.frame = CGRectMake(245, yyBottom, 40, 35);
+        lblOrder.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnOrder.frame = CGRectMake(285, yyBottom, 35, 35);
+        btnOrder.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        aa = navigViewTop.frame.size.width-50;
+
+        btnLink.frame = CGRectMake(aa, yyBottom, 44, 35);
+        
+        lblOutSideTmp.frame = CGRectMake(navigViewTop.frame.size.width-220, 35, 150, 30);
+        lblOutSideTmp.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblOutSidTem.frame = CGRectMake(navigViewTop.frame.size.width-80, 35, 50, 30);
+        lblOutSidTem.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblOutSidHumid.frame = CGRectMake(navigViewTop.frame.size.width-50, 35, 50, 30);
+        lblOutSidHumid.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        int aa = navigViewTop.frame.size.width-50;
+        btnLink = [[UIButton alloc]initWithFrame:CGRectMake(aa, yyBottom, 44, 35)];
+        
+        btnlistView.frame = CGRectMake(navigViewTop.frame.size.width-70, 55, 35, 35);
+
+        btnGridView.frame = CGRectMake(navigViewTop.frame.size.width-40, 55, 35, 35);
+
+//        gridView.frame =CGRectMake(0, 130, DEVICE_WIDTH, DEVICE_HEIGHT-130);
+//        
+//        _collectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT-130) collectionViewLayout:layout];
+//
+//        listView.frame =CGRectMake(0, 130, DEVICE_WIDTH-0, DEVICE_HEIGHT-130);
+//        self.view.backgroundColor = UIColor.redColor;
+
+    }
     
     [_collectionView reloadData];
     [tblPlayerList reloadData];
+    
     [super viewDidLoad];
     
     NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
@@ -253,14 +307,13 @@
 
     }
     
-
     [self DataFromnDatabase];
 //    [self getOutSideTempAndHumidity];
 }
 #pragma mark - Collection Methods
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-        return arrSubjects.count+5;
+        return arrSubjects.count+1;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -269,12 +322,11 @@
     
     
       CGFloat vWidth = (DEVICE_WIDTH/3)-10;
-      CGFloat vHeight = vWidth +20;
+      CGFloat vHeight = vWidth + 20;
     
     if (arrSubjects.count > indexPath.row)
     {
-        cell.imgViewpProfile.frame = CGRectMake(0, 0,vWidth-0, vHeight  - 30);
-
+        cell.imgViewpProfile.frame = CGRectMake(0, 0,vWidth-0, vHeight  - 50);
         cell.imgViewpProfile.contentMode = UIViewContentModeScaleAspectFill;
         cell.imgViewpProfile.layer.masksToBounds = YES;
         cell.lblTransView.hidden = NO;
@@ -357,6 +409,12 @@
             cell.lblCoreTmp.hidden = false;
             cell.lblSkinTmp.hidden = false;
         }
+        
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            cell.imgViewpProfile.frame = CGRectMake(0, 0,vWidth-0, vHeight  - 30);
+
+        }
     }
     else
     {
@@ -370,13 +428,28 @@
         cell.lblTransView.hidden = true;
         cell.lblCoreTmp.hidden = true;
         cell.lblSkinTmp.hidden = true;
+        
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            cell.imgViewpProfile.frame = CGRectMake(5, 0,vWidth-10, vHeight  - 30);
+
+        }
     }
     return cell;
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat vWidth = (DEVICE_WIDTH/3)-7;
-    return CGSizeMake(vWidth, vWidth +10);
+    CGFloat vWidth = (DEVICE_WIDTH/3)-10;
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        vWidth = (DEVICE_WIDTH/3)-7;
+        return CGSizeMake(vWidth, vWidth + 20);
+    }
+    else
+    {
+        return CGSizeMake(vWidth, vWidth + 20);
+    }
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -400,11 +473,18 @@
 #pragma mark - Tableview Methods
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 40;
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 40;
+    }
+    else
+    {
+        return 80;
+    }
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return arrSubjects.count+5;
+    return arrSubjects.count+1;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -412,7 +492,6 @@
     PlayerSubjCELL *cell = [tableView dequeueReusableCellWithIdentifier:cellP];
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
 //    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
 
     cell.lblName.text = @"---";
     cell.lblPlayer.text = @"---";
@@ -428,6 +507,7 @@
         {
             cell.lblCoreTmp.text = @"-NA-";
             cell.lblSkinTmp.text = @"-NA-";//ºF\nSkin Temp
+
         }
         else
         {
@@ -451,12 +531,23 @@
                 cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºC\nSkin",floatCore];
                 cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºC\nCore",floatSkin];//ºF\nSkin Temp
             }
+
         }
         
-        cell.imgViewpProfile.frame = CGRectMake(5, 0, 30, 40);
+      
+  
+        
+        cell.imgViewpProfile.frame = CGRectMake(40, 5, 70, 70);
         cell.imgViewpProfile.contentMode = UIViewContentModeScaleAspectFill;
         cell.imgViewpProfile.layer.masksToBounds = YES;
-
+        
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            cell.imgViewpProfile.frame = CGRectMake(5, 0, 30, 40);
+            cell.lblLine.frame = CGRectMake(0, 39, self.view.frame.size.width, 1);
+        }
+        
+        
         UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageTable"];
         if (imgProf != nil)
         {
@@ -470,7 +561,13 @@
     else
     {
         cell.imgViewpProfile.image = [UIImage imageNamed:@"add.png"];
-        cell.imgViewpProfile.frame = CGRectMake(5, 0, 30, 40);
+        cell.imgViewpProfile.frame = CGRectMake(49, 5, 45, 70);
+        
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            cell.imgViewpProfile.frame = CGRectMake(5, 0, 30, 40);
+
+        }
     }
     
     if (indexPath.row % 2)
@@ -482,7 +579,11 @@
            cell.backgroundColor = UIColor.whiteColor;
        }
     // above code css commeted
-    cell.lblLine.frame = CGRectMake(0, 39, self.view.frame.size.width, 1);
+    cell.lblLine.frame = CGRectMake(0, 79, self.view.frame.size.width, 1);
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        cell.lblLine.frame = CGRectMake(0, 39, self.view.frame.size.width, 1);
+    }
     int i ;
     i =  cell.lblCoreTmp.text.intValue;
     
@@ -514,8 +615,7 @@
         cell.lblLine.hidden = false;
     }
     
-//    cell.backgroundColor = UIColor.redColor;
-
+    
     
     return cell;
 }
@@ -538,34 +638,57 @@
 }
  -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView*viewHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tblPlayerList.frame.size.width, 40)];
+    UIView*viewHeader = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tblPlayerList.frame.size.width, 50)];
     viewHeader.backgroundColor = [UIColor colorWithRed:77.0/255 green:(CGFloat)77.0/255 blue:77.0/255 alpha:1];
     
-    UILabel *lblName= [[UILabel alloc] initWithFrame:CGRectMake(50, 0, (DEVICE_WIDTH-40)/4, 40)];
-    [self setLabelProperties:lblName withText: @"Name" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-8];
+    UILabel *lblName= [[UILabel alloc] initWithFrame:CGRectMake(100, 0, (DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblName withText: @"Name" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblName.textAlignment = NSTextAlignmentCenter;
     [viewHeader addSubview:lblName];
     
-    UILabel *lblPlayerH = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH)/4*2-40, 0, (DEVICE_WIDTH-40)/4, 40)];
-    [self setLabelProperties:lblPlayerH withText:@"Player #" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-8];
+    UILabel *lblPlayerH = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*2-80, 0, (DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblPlayerH withText:@"Player #" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblPlayerH.textAlignment = NSTextAlignmentCenter;
     [viewHeader addSubview:lblPlayerH];
        
-    UILabel *lblCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-30)/4*3-40, 0, (DEVICE_WIDTH-40)/4, 40)];
-    [self setLabelProperties:lblCoreTmp withText:@"Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-8];
+    UILabel *lblCoreTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*3-80, 0, (DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblCoreTmp withText:@"Core Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblCoreTmp.textAlignment = NSTextAlignmentCenter;
     [viewHeader addSubview:lblCoreTmp];
     
-    UILabel *lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH)/4*4-60, 0,60, 40)];
-    [self setLabelProperties:lblSkinTmp withText:@"Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-8];
+    UILabel *lblSkinTmp = [[UILabel alloc]initWithFrame:CGRectMake((DEVICE_WIDTH-70)/4*4-110, 0,(DEVICE_WIDTH-70)/4, 50)];
+    [self setLabelProperties:lblSkinTmp withText:@"Skin Temp" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblSkinTmp.textAlignment = NSTextAlignmentCenter;
     [viewHeader addSubview:lblSkinTmp];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        viewHeader.frame = CGRectMake(0, 0, tblPlayerList.frame.size.width, 40);
+        lblName.frame = CGRectMake(50, 0, (DEVICE_WIDTH-40)/4, 40);
+        lblName.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        lblPlayerH.frame = CGRectMake((DEVICE_WIDTH)/4*2-40, 0, (DEVICE_WIDTH-40)/4, 40);
+        lblPlayerH.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        
+        lblCoreTmp.frame = CGRectMake((DEVICE_WIDTH-30)/4*3-40, 0, (DEVICE_WIDTH-40)/4, 40);
+        lblCoreTmp.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblSkinTmp.frame = CGRectMake((DEVICE_WIDTH)/4*4-60, 0,60, 40);
+        lblSkinTmp.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+    }
 
     return viewHeader;
     }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 40;
+    }
+    
+    return 50;
 }
 #pragma mark- Img Scalling
 -(UIImage *)scaleMyImage:(UIImage *)newImg withNewWidth:(double)newWidth newHeight:(double)newHeight
@@ -633,35 +756,35 @@
     viewForPiker.backgroundColor = [UIColor colorWithRed:0 green:(CGFloat)0 blue:0 alpha:0.9];
     [self.view addSubview:viewForPiker];
 
-    showPickerView  = [[UIView alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250)];
+    showPickerView  = [[UIView alloc]initWithFrame:CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400)];
     showPickerView.backgroundColor = UIColor.whiteColor;
     showPickerView.layer.cornerRadius = 6;
     showPickerView.clipsToBounds = true;
     [viewForPiker addSubview:showPickerView];
     
     UIView * bgView = [[UIView alloc]init];
-    bgView.frame  = CGRectMake(0, 0, showPickerView.frame.size.width+10, 40);
+    bgView.frame  = CGRectMake(0, 0, showPickerView.frame.size.width, 70);
     bgView.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [showPickerView addSubview:bgView];
         
-    UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, showPickerView.frame.size.width , 40)];
+    UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, showPickerView.frame.size.width , 70)];
     lblHeader.text = @"Fliter by";
     lblHeader.textColor = UIColor.whiteColor;
     lblHeader.textAlignment = NSTextAlignmentCenter;
-    lblHeader.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblHeader.font = [UIFont fontWithName:CGRegular size:30];
     [bgView addSubview:lblHeader];
     
-    UIButton *btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 60, 40)];
-    [self setButtonProperties:btnCancel withTitle:@"Cancel" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    UIButton *btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 100, 70)];
+    [self setButtonProperties:btnCancel withTitle:@"Cancel" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnCancel addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
     [bgView addSubview:btnCancel];
         
-    UIButton *btnDone = [[UIButton alloc]initWithFrame:CGRectMake(showPickerView.frame.size.width-60, 0, 60, 40)];
-    [self setButtonProperties:btnDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    UIButton *btnDone = [[UIButton alloc]initWithFrame:CGRectMake(showPickerView.frame.size.width-100, 0, 100, 70)];
+    [self setButtonProperties:btnDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
     [bgView addSubview:btnDone];
         
-    pikerViewTmpSelect = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 45, showPickerView.frame.size.width, 150)];
+    pikerViewTmpSelect = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 75, showPickerView.frame.size.width, 300)];
     pikerViewTmpSelect.delegate = self;
     pikerViewTmpSelect.dataSource = self;
     pikerViewTmpSelect.backgroundColor = UIColor.whiteColor;
@@ -669,13 +792,40 @@
     [pikerViewTmpSelect selectRow:indexSelctTemp inComponent:0 animated:YES];
     [showPickerView addSubview:pikerViewTmpSelect];
 
+    
       [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
          {
-         self-> showPickerView.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
+         self-> showPickerView.frame = CGRectMake(150, (DEVICE_HEIGHT-400)/2, DEVICE_WIDTH-300, 400);
          }
          completion:(^(BOOL finished)
          {
         })];
+    
+    if (( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus))
+    {
+        
+        showPickerView.frame  = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+        bgView.frame  = CGRectMake(0, 0, showPickerView.frame.size.width+10, 40);
+        
+        lblHeader.frame = CGRectMake(0, 0, showPickerView.frame.size.width , 40);
+        lblHeader.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        btnCancel.frame = CGRectMake(0, 0, 60, 40);
+        btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnDone.frame = CGRectMake(showPickerView.frame.size.width-60, 0, 60, 40);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        pikerViewTmpSelect.frame = CGRectMake(0, 45, showPickerView.frame.size.width, 150);
+        
+        
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+           {
+           self-> showPickerView.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
+           }
+           completion:(^(BOOL finished)
+           {
+          })];
+    }
 }
 -(void)btnGlobalReadClick
 {
@@ -810,14 +960,30 @@
     }
     // after slected by
     // [tblPlayerList reloadData];
+    
+    
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
-         self-> showPickerView.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         self-> showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
      }
                     completion:(^(BOOL finished)
     {
         [self-> viewForPiker removeFromSuperview];
     })];
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        btnSelect.titleLabel.numberOfLines = 2;
+        btnSelect.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+         {
+             self-> showPickerView.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         }
+                        completion:(^(BOOL finished)
+        {
+            [self-> viewForPiker removeFromSuperview];
+        })];
+    }
+    
     [self selctedIndexTemparature:selectedFromPicker];
 }
 -(void)selctedIndexTemparature:(NSString *)strTempSelect
@@ -846,12 +1012,24 @@
 {
        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
-         self-> showPickerView.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         self-> showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
      }
                     completion:(^(BOOL finished)
     {
         [self-> viewForPiker removeFromSuperview];
     })];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+      {
+          self-> showPickerView.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+      }
+                     completion:(^(BOOL finished)
+     {
+         [self-> viewForPiker removeFromSuperview];
+     })];
+    }
 }
 
 #pragma mark- long Press
@@ -970,47 +1148,47 @@
     [self.view addSubview:viewForOrderPiker];
      
     showPickerforOrder  = [[UIView alloc]init];
-    showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+    showPickerforOrder.frame = CGRectMake(200, DEVICE_HEIGHT, DEVICE_WIDTH-400, 400);
     showPickerforOrder.backgroundColor = UIColor.whiteColor;
     showPickerforOrder.layer.cornerRadius = 6;
     showPickerforOrder.clipsToBounds = true;
     [viewForOrderPiker addSubview:showPickerforOrder];
 
     UIView * bgViewOrder = [[UIView alloc]init];
-    bgViewOrder.frame  = CGRectMake(0, 0, showPickerforOrder.frame.size.width+20, 40);
+    bgViewOrder.frame  = CGRectMake(0, 0, showPickerforOrder.frame.size.width, 70);
     bgViewOrder.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [showPickerforOrder addSubview:bgViewOrder];
     
     
-    UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, showPickerforOrder.frame.size.width, 40)];
+    UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, showPickerforOrder.frame.size.width , 70)];
     lblHeader.text = @"Order by";
     lblHeader.textColor = UIColor.whiteColor;
     lblHeader.textAlignment = NSTextAlignmentCenter;
-    lblHeader.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblHeader.font = [UIFont fontWithName:CGRegular size:30];
     [bgViewOrder addSubview:lblHeader];
     
     UIButton *btnOrderCancel = [[UIButton alloc]init];
-    btnOrderCancel.frame = CGRectMake(0, 0, 60, 40);
+    btnOrderCancel.frame = CGRectMake(0, 0, 100, 70);
     [btnOrderCancel addTarget:self action:@selector(btnOrderCancelClick) forControlEvents:UIControlEventTouchUpInside];
     [btnOrderCancel setTitle:@"Cancel" forState:normal];
     [btnOrderCancel setTitleColor:UIColor.blackColor forState:normal];
     btnOrderCancel.layer.cornerRadius = 12;
     [btnOrderCancel setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     btnOrderCancel.backgroundColor = UIColor.clearColor;
-    btnOrderCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    btnOrderCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:25];
     [bgViewOrder addSubview:btnOrderCancel];
            
     UIButton *btnOrderDone = [[UIButton alloc]init];
-    btnOrderDone.frame = CGRectMake(showPickerforOrder.frame.size.width-60, 0, 60, 40);
+    btnOrderDone.frame = CGRectMake(showPickerforOrder.frame.size.width-100, 0, 100, 70);
     [btnOrderDone addTarget:self action:@selector(btnOrderDoneClick) forControlEvents:UIControlEventTouchUpInside];
     [btnOrderDone setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     btnOrderDone.backgroundColor = UIColor.clearColor;
     [btnOrderDone setTitle:@"Done" forState:normal];
-    btnOrderDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    btnOrderDone.titleLabel.font = [UIFont fontWithName:CGRegular size:25];
     [bgViewOrder addSubview:btnOrderDone];
     
     pikerViewOderSelect = [[UIPickerView alloc]init];
-    pikerViewOderSelect.frame = CGRectMake(0, 45, showPickerforOrder.frame.size.width, 200);
+    pikerViewOderSelect.frame = CGRectMake(0, 75, showPickerforOrder.frame.size.width, 250);
     pikerViewOderSelect.delegate = self;
     pikerViewOderSelect.dataSource = self;
     pikerViewOderSelect.backgroundColor = UIColor.whiteColor;
@@ -1020,31 +1198,77 @@
     
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
        {
-        self->showPickerforOrder.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
+        self->showPickerforOrder.frame = CGRectMake(200, (DEVICE_HEIGHT-300)/2, DEVICE_WIDTH-400, 400);
        }
                     completion:NULL];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+        bgViewOrder.frame  = CGRectMake(0, 0, showPickerforOrder.frame.size.width+20, 40);
+        lblHeader.frame = CGRectMake(0, 0, showPickerforOrder.frame.size.width, 40);
+        lblHeader.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnOrderCancel.frame = CGRectMake(0, 0, 60, 40);
+        btnOrderCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnOrderDone.frame = CGRectMake(showPickerforOrder.frame.size.width-60, 0, 60, 40);
+        btnOrderDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        pikerViewOderSelect.frame = CGRectMake(0, 45, showPickerforOrder.frame.size.width, 200);
+
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+           {
+            self->showPickerforOrder.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
+           }
+                        completion:NULL];
+
+    }
 }
 #pragma mark- Buttons Order
 -(void)btnOrderDoneClick
 {
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
-         self-> showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         self-> showPickerforOrder.frame = CGRectMake(200, DEVICE_HEIGHT, DEVICE_WIDTH-400, 400);
      }
                     completion:(^(BOOL finished){
                     [self-> viewForOrderPiker removeFromSuperview];
     })];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+         {
+             self-> showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         }
+                        completion:(^(BOOL finished){
+                        [self-> viewForOrderPiker removeFromSuperview];
+        })];
+    }
+    
     [self sortingData:orderSelected];
 }
 -(void)btnOrderCancelClick
 {
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
-         self-> showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         self-> showPickerforOrder.frame = CGRectMake(200, DEVICE_HEIGHT, DEVICE_WIDTH-400, 400);
      }
                     completion:(^(BOOL finished){
                     [self-> viewForOrderPiker removeFromSuperview];
     })];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+         {
+             self-> showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
+         }
+                        completion:(^(BOOL finished){
+                        [self-> viewForOrderPiker removeFromSuperview];
+        })];
+    }
 }
 -(void)sortingData:(NSString *)strSort
 {
@@ -1065,7 +1289,7 @@
         arrSubjects = [sortedArraynum mutableCopy];
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"sortSelectedIndex"];
     }
-    else if ([strSort isEqual:@"Tempareture"])
+    else if ([strSort isEqual:@"Temperature"])
     {
         sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"IntTemptur" ascending:YES];
         NSArray *sortedArrTemp = [arrSubjects sortedArrayUsingDescriptors:@[sortDescriptor]];
@@ -1084,24 +1308,24 @@
     viewForNotes.backgroundColor = [UIColor colorWithRed:0 green:(CGFloat)0 blue:0 alpha:0.9];
     [self.view addSubview:viewForNotes];
      
-    viewforShowNotes  = [[UIView alloc]initWithFrame:CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250)];
+    viewforShowNotes  = [[UIView alloc]initWithFrame:CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500)];
     viewforShowNotes.backgroundColor = UIColor.whiteColor;
     viewforShowNotes.layer.cornerRadius = 6;
     viewforShowNotes.clipsToBounds = true;
     [viewForNotes addSubview:viewforShowNotes];
     
-    UILabel * lblNote = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewforShowNotes.frame.size.width, 40)];
+    UILabel * lblNote = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewforShowNotes.frame.size.width, 45)];
     [self setLabelProperties:lblNote withText:@"Note" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:40];
     lblNote.textAlignment = NSTextAlignmentCenter;
-    lblNote.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblNote.font = [UIFont fontWithName:CGRegular size:40];
 //    [viewforShowNotes addSubview:lblNote];
     
-    UIView * viewBgNote = [[UIView alloc]initWithFrame:CGRectMake(0, 0, viewforShowNotes.frame.size.width, 40)];
+    UIView * viewBgNote = [[UIView alloc]initWithFrame:CGRectMake(0, 0, viewforShowNotes.frame.size.width, 70)];
     viewBgNote.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [viewforShowNotes addSubview:viewBgNote];
     
-    UIButton *btnNoteCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 60, 40)];
-    [self setButtonProperties:btnNoteCancel withTitle:@"Cancel" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    UIButton *btnNoteCancel = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 100, 70)];
+    [self setButtonProperties:btnNoteCancel withTitle:@"Cancel" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnNoteCancel addTarget:self action:@selector(btnNoteCancelClick) forControlEvents:UIControlEventTouchUpInside];
     btnNoteCancel.layer.cornerRadius = 5;
     [viewBgNote addSubview:btnNoteCancel];
@@ -1115,24 +1339,25 @@
 //    [viewforShowNotes addSubview:tblNotesView];
     
         
-    UIButton *btnNoteDone = [[UIButton alloc]initWithFrame:CGRectMake(viewforShowNotes.frame.size.width-80, 0, 60, 40)];
-    [self setButtonProperties:btnNoteDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:textSize-6];
+    UIButton *btnNoteDone = [[UIButton alloc]initWithFrame:CGRectMake(viewforShowNotes.frame.size.width-100, 0, 100, 70)];
+    [self setButtonProperties:btnNoteDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnNoteDone addTarget:self action:@selector(btnNoteDoneClick) forControlEvents:UIControlEventTouchUpInside];
     [viewBgNote addSubview:btnNoteDone];
        
-    txtViewNotes = [[UITextView alloc] initWithFrame:CGRectMake(0, 40, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-40)];
+    txtViewNotes = [[UITextView alloc] initWithFrame:CGRectMake(0, 70, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70)];
     txtViewNotes.delegate = self;
     txtViewNotes.autocapitalizationType = UITextAutocapitalizationTypeNone;
     txtViewNotes.autocorrectionType = UITextAutocorrectionTypeNo;
     txtViewNotes.backgroundColor = [UIColor colorWithRed:240.0/255 green:240.0/255 blue:240.0/255 alpha:0.6];
-    txtViewNotes.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    txtViewNotes.font = [UIFont fontWithName:CGRegular size:30];
     txtViewNotes.editable = YES;
     [viewforShowNotes addSubview:txtViewNotes];
     
-    lblPlceholdNote = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, txtViewNotes.frame.size.width, 40)];
-    lblPlceholdNote.font = [UIFont fontWithName:CGRegular size:textSize-6];
-    [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:textSize-6];
+    lblPlceholdNote = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, txtViewNotes.frame.size.width, 50)];
+    lblPlceholdNote.font = [UIFont fontWithName:CGRegular size:26];
+    [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
     [txtViewNotes addSubview:lblPlceholdNote];
+    
     
     
    NSMutableArray * arrNotes = [[NSMutableArray alloc] init];
@@ -1153,13 +1378,39 @@
 //    {
 //        [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
 //    }
-
-
+    
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
         {
-        self->viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
+        self->viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT-500)/2, DEVICE_WIDTH-200, 500);
         }
                     completion:NULL];
+    
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        viewforShowNotes.frame  = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+        lblNote.frame = CGRectMake(0, 0, viewforShowNotes.frame.size.width, 40);
+        lblNote.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        viewBgNote.frame = CGRectMake(0, 0, viewforShowNotes.frame.size.width, 40);
+        
+        btnNoteCancel.frame = CGRectMake(0, 0, 60, 40);
+        btnNoteCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        btnNoteDone.frame = CGRectMake(viewforShowNotes.frame.size.width-80, 0, 60, 40);
+        btnNoteDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        txtViewNotes.frame = CGRectMake(0, 40, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-40);
+        txtViewNotes.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblPlceholdNote.frame = CGRectMake(5, 0, txtViewNotes.frame.size.width, 40);
+        lblPlceholdNote.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+            {
+            self->viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
+            }
+                        completion:NULL];
+        }
     }
 #pragma mark-button Notes
 -(void)btnNoteDoneClick
@@ -1217,14 +1468,29 @@
            withDoneButtonTitle:nil
                     andButtons:nil];
         [alert doneActionBlock:^{
+    
+            
             [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
             {
-                self-> viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+                self-> viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500);
             }
                             completion:(^(BOOL finished)
             {
                 [self-> viewForNotes removeFromSuperview];
             })];
+            
+            if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+            {
+                [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+                {
+                    self-> viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+                }
+                                completion:(^(BOOL finished)
+                {
+                    [self-> viewForNotes removeFromSuperview];
+                })];
+            }
+            
         }];
     }
 }
@@ -1232,12 +1498,24 @@
 {
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
     {
-        self-> viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+        self-> viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500);
     }
                     completion:(^(BOOL finished)
     {
         [self-> viewForNotes removeFromSuperview];
     })];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+        {
+            self-> viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
+        }
+                        completion:(^(BOOL finished)
+        {
+            [self-> viewForNotes removeFromSuperview];
+        })];
+    }
 }
 #pragma mark- TextView Methods
 - (void)textViewDidChange:(UITextView *)textView

@@ -79,16 +79,16 @@
     
     UIColor * lbltxtClor = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
 
-    UILabel * lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, DEVICE_WIDTH, 44)];
+    UILabel * lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(50, 20, DEVICE_WIDTH-100, 44)];
     [lblTitle setBackgroundColor:[UIColor clearColor]];
     [lblTitle setText:@"Add Monitor"];
     [lblTitle setTextAlignment:NSTextAlignmentCenter];
-    [lblTitle setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+    [lblTitle setFont:[UIFont fontWithName:CGRegular size:textSize+5]];
     [lblTitle setTextColor:lbltxtClor];
     [viewHeader addSubview:lblTitle];
         
     UIButton * btnRefresh = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-50, 20, 44, 44)];
+    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-60, 10, 50, 55)];
     btnRefresh.backgroundColor = UIColor.clearColor;
     [btnRefresh setImage:[UIImage imageNamed:@"reload.png"] forState:UIControlStateNormal];
     [btnRefresh addTarget:self action:@selector(refreshBtnClick) forControlEvents:UIControlEventTouchUpInside];
@@ -97,25 +97,25 @@
     
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      
-    btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-60, 60, 44)];
-    [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
-    btnCanceldown.layer.cornerRadius = 5;
-    [btnCanceldown addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btnCanceldown];
-        
-    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-60, 60, 44)];
-    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
-    btnDone.layer.cornerRadius = 5;
-    [btnDone setTitle:@"Done" forState:UIControlStateNormal];
-    btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btnDone];
+     btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+     [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
+     btnCanceldown.layer.cornerRadius = 5;
+     [btnCanceldown addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
+     [self.view addSubview:btnCanceldown];
+         
+     btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
+     btnDone.layer.cornerRadius = 5;
+     [btnDone setTitle:@"Done" forState:UIControlStateNormal];
+     btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
+     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
+     [self.view addSubview:btnDone];
     
-    UIView * line = [[UIView alloc] initWithFrame:CGRectMake(0,  yy - 1, DEVICE_WIDTH, 0.5)];
+    UIView * line = [[UIView alloc] initWithFrame:CGRectMake(0, globalStatusHeight + yy - 1, DEVICE_WIDTH, 0.5)];
     line.backgroundColor = [UIColor lightGrayColor];
     [viewHeader addSubview:line];
     
-    tblDeviceList = [[UITableView alloc] initWithFrame:CGRectMake(0, yy, DEVICE_WIDTH, DEVICE_HEIGHT-yy-50)];
+    tblDeviceList = [[UITableView alloc] initWithFrame:CGRectMake(0, yy+globalStatusHeight, DEVICE_WIDTH, DEVICE_HEIGHT-yy-globalStatusHeight-100)];
     tblDeviceList.delegate = self;
     tblDeviceList.dataSource= self;
     tblDeviceList.backgroundColor = UIColor.clearColor;
@@ -152,17 +152,17 @@
 #pragma mark- UITableView Methods
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section;   // custom view for header. will be adjusted to default or specified header height
 {
-    UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-20, 50)];
-    headerView.backgroundColor = [UIColor clearColor];
-    
-    UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH-20, 50)];
-    lblmenu.text = @" Tap on Connect button to pair with device";
-    [lblmenu setTextColor:[UIColor whiteColor]];
-    [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
-    lblmenu.backgroundColor = UIColor.clearColor;
-    lblmenu.textAlignment = NSTextAlignmentCenter;
-    [headerView addSubview:lblmenu];
-    return headerView;
+        UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-20, 50)];
+        headerView.backgroundColor = [UIColor clearColor];
+        
+        UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH-20, 50)];
+        lblmenu.text = @" Tap on Connect button to pair with device";
+        [lblmenu setTextColor:[UIColor whiteColor]];
+        [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-1]];
+        lblmenu.backgroundColor = UIColor.clearColor;
+        lblmenu.textAlignment = NSTextAlignmentCenter;
+        [headerView addSubview:lblmenu];
+        return headerView;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {

@@ -57,6 +57,24 @@
           tblViewSession.backgroundColor = UIColor.clearColor;
           tblViewSession.separatorStyle = UITableViewScrollPositionNone;
           [self.view addSubview:tblViewSession];
+    
+    
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblHeader.frame = CGRectMake(0, 20, DEVICE_WIDTH, 50);
+        lblHeader.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        [btnBck setFrame:CGRectMake(10, globalStatusHeight-5, 30, 30)];
+
+        imgBack.frame = CGRectMake(5, 5, 30, 30);
+
+        line.frame = CGRectMake(0, globalStatusHeight + 40 - 1, DEVICE_WIDTH, 0.5);
+        tblViewSession.frame = CGRectMake(5, yy, DEVICE_WIDTH-10, DEVICE_HEIGHT-yy) ;
+
+    }
+    
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
@@ -67,6 +85,10 @@
 #pragma mark-tableview method
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+ {
+    return 40;
+ }
     return 50;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -79,6 +101,10 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 40;
+    }
     return 60;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -32,8 +32,6 @@
 @implementation GlobalSettingVC
 - (void)viewDidLoad
 {
-    int textPhoSize = 12;
-
     [self setNeedsStatusBarAppearanceUpdate];
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
@@ -44,36 +42,60 @@
     arrSensorsofSessions = [[NSMutableArray alloc] init];
     
     UIColor *lblTxtClr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    lblGlobalsetting = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, DEVICE_WIDTH, 50)];
-    [self setLabelProperties:lblGlobalsetting withText:@"GLOBAL SETTINGS" backColor:UIColor.clearColor textColor:lblTxtClr textSize:textSize-6];
+    lblGlobalsetting = [[UILabel alloc]initWithFrame:CGRectMake(0, 35, DEVICE_WIDTH, 40)];
+    [self setLabelProperties:lblGlobalsetting withText:@"GLOBAL SETTINGS" backColor:UIColor.clearColor textColor:lblTxtClr textSize:25];
     lblGlobalsetting.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:lblGlobalsetting];
     
-    allView = [[UIView alloc]initWithFrame:CGRectMake(0, 64, DEVICE_WIDTH-0, DEVICE_HEIGHT-64)];
+    allView = [[UIView alloc]initWithFrame:CGRectMake(40, 100, DEVICE_WIDTH-80, DEVICE_HEIGHT-200)];
     allView.backgroundColor = UIColor.blackColor;
     [self.view addSubview:allView];
     
-    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, allView.frame.size.width-20, 45)];
-    [self setLabelProperties:lblAddAlarms withText:@"Add Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textPhoSize+2];
+    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(10, 20, DEVICE_WIDTH, 50)];
+    [self setLabelProperties:lblAddAlarms withText:@"Add Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     [allView addSubview:lblAddAlarms];
     
     UIColor *btnBgC = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-60, 60, 44)];
-    [self setButtonProperties:btnCancel withTitle:@"Cancel"  backColor:btnBgC textColor:UIColor.whiteColor txtSize:textPhoSize+2];
+    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+    [self setButtonProperties:btnCancel withTitle:@"Cancel"  backColor:btnBgC textColor:UIColor.whiteColor txtSize:25];
     [btnCancel addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
     btnCancel.layer.cornerRadius = 5;
     [self.view addSubview:btnCancel];
     
-    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-60, 60, 44)];
-    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgC textColor:UIColor.whiteColor txtSize:textPhoSize+2];
+    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+    [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgC textColor:UIColor.whiteColor txtSize:25];
     [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
     btnDone.layer.cornerRadius = 5;
     btnDone.tag = 1;
-    btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textPhoSize+2];
+    btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:25];
     [self.view addSubview:btnDone];
+    
+    
+    [self setupIngestSensorAlarm];
+    [self setupDermalSensorAlarm];
     
     [self setupAdditionalSettings];
     [self setupGlobalSeneorCheck];
+
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblGlobalsetting.frame = CGRectMake(0, 10, DEVICE_WIDTH, 50);
+        lblGlobalsetting.font = [UIFont fontWithName:CGRegular size:textSize-4];
+        
+        allView.frame = CGRectMake(10, lblGlobalsetting.frame.size.height, DEVICE_WIDTH, DEVICE_HEIGHT- lblGlobalsetting.frame.size.height);
+        
+        lblAddAlarms.frame = CGRectMake(10, 0, allView.frame.size.width-20, 45);
+        lblAddAlarms.font = [UIFont fontWithName:CGRegular size:textSize-4];
+        
+        btnCancel.frame = CGRectMake(10, DEVICE_HEIGHT-40, 60, 35);
+        btnCancel.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-40, 60, 35);
+        btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+    }
+ 
     arrAlrmResult = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlrmResult];
@@ -103,9 +125,6 @@
             isCClicked = YES;
         }
     }
-    [self setupIngestSensorAlarm];
-    [self setupDermalSensorAlarm];
-
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -117,39 +136,68 @@
 #pragma mark- Ingest Sensor Setting
 -(void)setupIngestSensorAlarm
 {
-    lblType2ible = [[UILabel alloc]initWithFrame:CGRectMake(10, lblAddAlarms.frame.size.height, allView.frame.size.width-20, 44)];
-    [self setLabelProperties:lblType2ible withText:@"Ingestible Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-4];
+    lblType2ible = [[UILabel alloc]initWithFrame:CGRectMake(10, lblAddAlarms.frame.size.height+10, DEVICE_WIDTH, 50)];
+    [self setLabelProperties:lblType2ible withText:@"Ingestible Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
     [allView addSubview:lblType2ible];
         
-    int yy = lblType2ible.frame.size.height+40;
     viewBorderTmp = [[UIView alloc]init];
-    viewBorderTmp.frame = CGRectMake(0, yy, allView.frame.size.width, 50);
+    viewBorderTmp.frame = CGRectMake(0, lblType2ible.frame.size.height+50, allView.frame.size.width, 70);
     viewBorderTmp.layer.borderWidth = 1;
     viewBorderTmp.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     viewBorderTmp.layer.cornerRadius = 5;
     [allView addSubview:viewBorderTmp];
         
-    lblHighTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, 80, 50)];
-    [self setLabelProperties:lblHighTempAlarm withText:@"High Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-6];
+    lblHighTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, 200, 70)];
+    [self setLabelProperties:lblHighTempAlarm withText:@"High Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
     lblHighTempAlarm.userInteractionEnabled = true;
     [viewBorderTmp addSubview:lblHighTempAlarm];
         
-    txtHighTmpIngest = [[UITextField alloc]initWithFrame:CGRectMake(lblHighTempAlarm.frame.size.width+30, 5, 60, 45)];
-    [self setTextfieldProperties:txtHighTmpIngest withPlaceHolderText:@"" withTextSize:textSize-6];
+    txtHighTmpIngest = [[UITextField alloc]initWithFrame:CGRectMake(225, 15, 100, 40)];
+    [self setTextfieldProperties:txtHighTmpIngest withPlaceHolderText:@"" withTextSize:20];
     txtHighTmpIngest.layer.cornerRadius = 5;
     [viewBorderTmp addSubview:txtHighTmpIngest];
     
-    lblLowTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(viewBorderTmp.frame.size.width/2+30, 0, 80, 50)];
-    [self setLabelProperties:lblLowTempAlarm withText:@"Low Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-6];
+    lblLowTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(350, 0, 180, 70)];
+    [self setLabelProperties:lblLowTempAlarm withText:@"Low Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
     [viewBorderTmp addSubview:lblLowTempAlarm];
         
-    txtLowTmpIngst = [[UITextField alloc]initWithFrame:CGRectMake(viewBorderTmp.frame.size.width-70, 5, 60, 45)];
-    [self setTextfieldProperties:txtLowTmpIngst withPlaceHolderText:@"" withTextSize:textSize-4];
+    txtLowTmpIngst = [[UITextField alloc]initWithFrame:CGRectMake(viewBorderTmp.frame.size.width-120, 15, 100, 40)];
+    [self setTextfieldProperties:txtLowTmpIngst withPlaceHolderText:@"" withTextSize:20];
     txtLowTmpIngst.layer.cornerRadius = 5;
     txtLowTmpIngst.returnKeyType = UIReturnKeyNext;
     txtLowTmpIngst.keyboardType = UIKeyboardTypeNumberPad;
     txtLowTmpIngst.textAlignment = NSTextAlignmentCenter;
     [viewBorderTmp addSubview:txtLowTmpIngst];
+    
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        lblType2ible.frame = CGRectMake(10, lblAddAlarms.frame.size.height, DEVICE_WIDTH-20, 40);
+        lblType2ible.font = [UIFont fontWithName:CGRegular size:textSize-4];
+        allView.frame = CGRectMake(0, lblGlobalsetting.frame.size.height, DEVICE_WIDTH, DEVICE_HEIGHT-lblGlobalsetting.frame.size.height);
+        
+//        lblAddAlarms.backgroundColor = UIColor.redColor;
+//        lblType2ible.backgroundColor = UIColor.greenColor;
+//        allView.backgroundColor = UIColor.greenColor;
+        int yy = lblType2ible.frame.size.height+50;
+        viewBorderTmp.frame = CGRectMake(0, yy, allView.frame.size.width-10, 50);
+//        viewBorderTmp.backgroundColor = UIColor.redColor;
+        
+        lblHighTempAlarm.frame = CGRectMake(10, 0, 100, 50);
+        lblHighTempAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtHighTmpIngest.frame = CGRectMake(lblHighTempAlarm.frame.size.width+15, 5, 60, 40);
+        txtHighTmpIngest.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblLowTempAlarm.frame = CGRectMake(viewBorderTmp.frame.size.width/2, 0, 100, 50);
+        lblLowTempAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        
+        txtLowTmpIngst.frame = CGRectMake(viewBorderTmp.frame.size.width-65, 5, 60, 40);
+        txtLowTmpIngst.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        
+    }
+
     
     if (isCClicked == YES)
     {
@@ -166,43 +214,67 @@
 -(void)setupDermalSensorAlarm
 {
     //1 Dermal
-    int yy = viewBorderTmp.frame.size.height+80;
-
-    lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(10, yy,allView.frame.size.width-20, 44)];
-    [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-6];
+       int yy = viewBorderTmp.frame.size.height+120;
+       
+    lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(0, yy,DEVICE_WIDTH, 50)];
+    [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
     [allView addSubview:lblDermalSensorAlram];
        
     UIView *viewBorderTmp1 = [[UIView alloc]init];
-    viewBorderTmp1.frame = CGRectMake(0, yy+40, allView.frame.size.width, 50);
+    viewBorderTmp1.frame = CGRectMake(0, yy+40, allView.frame.size.width, 70);
     viewBorderTmp1.layer.borderWidth = 1;
     viewBorderTmp1.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     viewBorderTmp1.layer.cornerRadius = 5;
     [allView addSubview:viewBorderTmp1];
        
     UILabel * lblHighTempAlarm1;
-    lblHighTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(10, 5, 80, 45)];
-    [self setLabelProperties:lblHighTempAlarm1 withText:@"High Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-6];
+    lblHighTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, 200, 70)];
+    [self setLabelProperties:lblHighTempAlarm1 withText:@"High Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
     [viewBorderTmp1 addSubview:lblHighTempAlarm1];
       
-    txtHighTmpDerml = [[UITextField alloc]initWithFrame:CGRectMake(lblHighTempAlarm1.frame.size.width+30, 5, 60, 40)];
-    [self setTextfieldProperties:txtHighTmpDerml withPlaceHolderText:@"" withTextSize:textSize-6];
+    txtHighTmpDerml = [[UITextField alloc]initWithFrame:CGRectMake(225, 15, 100, 40)];
+    [self setTextfieldProperties:txtHighTmpDerml withPlaceHolderText:@"" withTextSize:20];
     txtHighTmpDerml.layer.cornerRadius = 5;
     txtHighTmpDerml.returnKeyType = UIReturnKeyNext;
     txtHighTmpDerml.keyboardType = UIKeyboardTypeNumberPad;
     txtHighTmpDerml.textAlignment = NSTextAlignmentCenter;
     [viewBorderTmp1 addSubview:txtHighTmpDerml];
 
-    UILabel * lblLowTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(viewBorderTmp1.frame.size.width/2+30, 0, 80, 50)];
-    [self setLabelProperties:lblLowTempAlarm1 withText:@"Low Temp" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-6];
+    UILabel * lblLowTempAlarm1 = [[UILabel alloc]initWithFrame:CGRectMake(350, 0, 180, 70)];
+    [self setLabelProperties:lblLowTempAlarm1 withText:@"Low Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
     [viewBorderTmp1 addSubview:lblLowTempAlarm1];
        
-    txtLowTmpDerml = [[UITextField alloc]initWithFrame:CGRectMake(viewBorderTmp1.frame.size.width-80, 5, 60, 44)];
-    [self setTextfieldProperties:txtLowTmpDerml withPlaceHolderText:@"" withTextSize:textSize-6];
+    txtLowTmpDerml = [[UITextField alloc]initWithFrame:CGRectMake(viewBorderTmp1.frame.size.width-120, 15, 100, 40)];
+    [self setTextfieldProperties:txtLowTmpDerml withPlaceHolderText:@"" withTextSize:20];
     txtLowTmpDerml.layer.cornerRadius = 5;
     txtLowTmpDerml.returnKeyType = UIReturnKeyNext;
     txtLowTmpDerml.keyboardType = UIKeyboardTypeNumberPad;
     txtLowTmpDerml.textAlignment = NSTextAlignmentCenter;
     [viewBorderTmp1 addSubview:txtLowTmpDerml];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        int yy = viewBorderTmp.frame.size.height+90;
+
+        lblDermalSensorAlram.frame = CGRectMake(5, yy,allView.frame.size.width-10, 44);
+        lblDermalSensorAlram.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        viewBorderTmp1.frame = CGRectMake(0, yy+40, allView.frame.size.width-10, 50);
+
+        lblHighTempAlarm1.frame = CGRectMake(5, 5, 100, 45);
+        lblHighTempAlarm1.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtHighTmpDerml.frame = CGRectMake(lblHighTempAlarm1.frame.size.width+15, 5, 60, 40);
+        txtHighTmpDerml.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        lblLowTempAlarm1.frame = CGRectMake(viewBorderTmp1.frame.size.width/2, 5, 100, 40);
+        lblLowTempAlarm1.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        txtLowTmpDerml.frame = CGRectMake(viewBorderTmp1.frame.size.width-65, 5, 60, 40);
+        txtLowTmpDerml.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+        
+    }
+    
     
     if (isCClicked == YES)
        {
@@ -218,47 +290,47 @@
 #pragma mark- Additional Settings
 -(void)setupAdditionalSettings
 {
-    int yy = 210;
-
-    lblAdditionalSetgs = [[UILabel alloc]initWithFrame:CGRectMake(10, yy, allView.frame.size.width-20, 44)];
-    [self setLabelProperties:lblAdditionalSetgs withText:@"Additional Settings" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:textSize-6];
+    int yy = viewBorderTmp.frame.size.height+150;
+       
+    lblAdditionalSetgs = [[UILabel alloc]initWithFrame:CGRectMake(0, yy+150, DEVICE_WIDTH, 50)];
+    [self setLabelProperties:lblAdditionalSetgs withText:@"Additional Settings" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
     [allView addSubview:lblAdditionalSetgs];
     
     UIView *viewBgAddsetng = [[UIView alloc]init];
-    viewBgAddsetng.frame = CGRectMake(0, yy+40, (DEVICE_WIDTH)/1.5, 140);
+    viewBgAddsetng.frame = CGRectMake(0, yy+190, (DEVICE_WIDTH-150)/2+30, 180);
     viewBgAddsetng.layer.cornerRadius = 5;
     viewBgAddsetng.layer.borderWidth = 1;
     viewBgAddsetng.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     [allView addSubview:viewBgAddsetng];
        
     lblTmpUnit = [[UILabel alloc]init];
-    lblTmpUnit.frame = CGRectMake(5, 35, 140, 50);
+    lblTmpUnit.frame = CGRectMake(10, 35, 200, 50);
     lblTmpUnit.text = @"Temperature Units";
-    lblTmpUnit.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblTmpUnit.font = [UIFont fontWithName:CGRegular size:20];
     [viewBgAddsetng addSubview:lblTmpUnit];
     
     UILabel* lblC = [[UILabel alloc]init];
-    lblC.frame = CGRectMake(140, 0, 40, 40);//CGRectMake(275, 0, 50, 60)
+    lblC.frame = CGRectMake(275, 0, 50, 60);//CGRectMake(275, 0, 50, 60)
     lblC.textColor = UIColor.blackColor;
     lblC.text = @"ºC";
     lblC.textAlignment = NSTextAlignmentCenter;
     [viewBgAddsetng addSubview:lblC];
     
     UILabel* lblF = [[UILabel alloc]init];
-    lblF.frame = CGRectMake(190, 0, 40, 40); //CGRectMake(225, 0, 50, 60);
+    lblF.frame = CGRectMake(225, 0, 50, 60); //CGRectMake(225, 0, 50, 60);
     lblF.textColor = UIColor.blackColor;
     lblF.text = @"ºF";
     lblF.textAlignment = NSTextAlignmentCenter;
     [viewBgAddsetng addSubview:lblF];
     
-    UIView * viewBtnBg = [[UIView alloc] initWithFrame:CGRectMake(140, 40, 100, 40)];//222
-    viewBtnBg.backgroundColor = UIColor.whiteColor;//whiteColor
+    UIView * viewBtnBg = [[UIView alloc] initWithFrame:CGRectMake(222, 40, 100, 40)];
+    viewBtnBg.backgroundColor = UIColor.whiteColor;
     viewBtnBg.layer.cornerRadius = 5;
     [viewBgAddsetng addSubview:viewBtnBg];
     
     UIColor * btnSwBg = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
     btnSwitchF = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnSwitchF.frame = CGRectMake(0, 0, 50, 44);
+    btnSwitchF.frame = CGRectMake(0, 0, 50, 40);
     [self setButtonProperties:btnSwitchF withTitle:@"" backColor:btnSwBg textColor:UIColor.clearColor txtSize:28];
     [btnSwitchF addTarget:self action:@selector(btnFaradClick) forControlEvents:UIControlEventTouchUpInside];
     btnSwitchF.layer.cornerRadius = 5;
@@ -266,20 +338,20 @@
     [viewBtnBg addSubview:btnSwitchF];
     
     btnSwitchC = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnSwitchC.frame = CGRectMake(50, 0, 50, 44);
+    btnSwitchC.frame = CGRectMake(50, 0, 50, 40);
     btnSwitchC.layer.cornerRadius = 5;
     btnSwitchC.clipsToBounds = true;
     [btnSwitchC addTarget:self action:@selector(btnCelsClick) forControlEvents:UIControlEventTouchUpInside];
     [viewBtnBg addSubview:btnSwitchC];
     
     lblBatteryAlarm = [[UILabel alloc]init];
-    lblBatteryAlarm.frame = CGRectMake(5, 90, 150, 44);
+    lblBatteryAlarm.frame = CGRectMake(10, 100, 150, 50);
     lblBatteryAlarm.text = @"Battery Alarm";
-    lblBatteryAlarm.font = [UIFont fontWithName:CGRegular size:textSize-6];
+    lblBatteryAlarm.font = [UIFont fontWithName:CGRegular size:20];
     [viewBgAddsetng addSubview:lblBatteryAlarm];
        
-    txtbatteryAlarm = [[UITextField alloc]initWithFrame:CGRectMake(150, 90, 55, 44)];
-    [self setTextfieldProperties:txtbatteryAlarm withPlaceHolderText:@"20" withTextSize:textSize-6];
+    txtbatteryAlarm = [[UITextField alloc]initWithFrame:CGRectMake(222, 100, 55, 40)];
+    [self setTextfieldProperties:txtbatteryAlarm withPlaceHolderText:@"" withTextSize:20];
     txtbatteryAlarm.backgroundColor = UIColor.whiteColor;
     txtbatteryAlarm.layer.cornerRadius = 5;
     txtbatteryAlarm.returnKeyType = UIReturnKeyNext;
@@ -288,8 +360,8 @@
     txtbatteryAlarm.tag = 300;
     [viewBgAddsetng addSubview:txtbatteryAlarm];
         
-    UILabel *lblPersentage = [[UILabel alloc]initWithFrame:CGRectMake(220, 90, 44, 50)];
-    [self setLabelProperties:lblPersentage withText:@"%" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-2];
+    UILabel *lblPersentage = [[UILabel alloc]initWithFrame:CGRectMake(280, 100, 60, 50)];
+    [self setLabelProperties:lblPersentage withText:@"%" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:25];
     [viewBgAddsetng addSubview:lblPersentage];
     
 //    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"isCelsicusSelect"] isEqualToString:@"Yes"])
@@ -304,8 +376,7 @@
 //         btnSwitchF.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
 //         btnSwitchC.backgroundColor = UIColor.clearColor;
 //    }
-    
-    
+ 
    NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
@@ -323,31 +394,60 @@
             btnSwitchC.backgroundColor = UIColor.clearColor;
         }
     }
+    
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        int yy = DEVICE_WIDTH/2+40;
+        lblAdditionalSetgs.frame = CGRectMake(10, yy, allView.frame.size.width-20, 44);
+        lblAdditionalSetgs.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        viewBgAddsetng.frame = CGRectMake(0, yy+40, (DEVICE_WIDTH)/1.5, 140);
+        lblTmpUnit.frame = CGRectMake(5, 35, 140, 50);
+        lblTmpUnit.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblC.frame = CGRectMake(140, 0, 40, 40);//CGRectMake(275, 0, 50, 60)
+        lblF.frame = CGRectMake(190, 0, 40, 40); //CGRectMake(225, 0, 50, 60);
+
+       viewBtnBg.frame = CGRectMake(140, 40, 100, 40);//222
+
+        btnSwitchF.frame = CGRectMake(0, 0, 50, 40);
+        btnSwitchC.frame = CGRectMake(50, 0, 50, 40);
+        
+        lblBatteryAlarm.frame = CGRectMake(5, 90, 150, 44);
+        lblBatteryAlarm.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        txtbatteryAlarm.frame = CGRectMake(lblBatteryAlarm.frame.size.width, 90, 55, 44);
+        txtbatteryAlarm.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        lblPersentage.frame = CGRectMake(viewBgAddsetng.frame.size.width-40, 90, 44, 50);
+        txtbatteryAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
+
+    }
 }
 
 #pragma mark-Global sensor chek
 -(void)setupGlobalSeneorCheck
 {
-    int yy = allView.frame.size.height-220;
+    int yy = viewBorderTmp.frame.size.height+120;
 
-    lblGlobalSnrCheck = [[UILabel alloc]initWithFrame:CGRectMake(10, yy+10, DEVICE_WIDTH, 40)];
+    lblGlobalSnrCheck = [[UILabel alloc]initWithFrame:CGRectMake(10, yy+410, DEVICE_WIDTH, 50)];
     [self setLabelProperties:lblGlobalSnrCheck withText:@"Global Sensor Check" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
     [allView addSubview:lblGlobalSnrCheck];
     
-    yy = yy +45;
     UIView * globalSnrCheckView  = [[UIView alloc]init];
-    globalSnrCheckView.frame = CGRectMake(0, yy, allView.frame.size.width/1.5, 50);
+    globalSnrCheckView.frame = CGRectMake(0, yy+450, (DEVICE_WIDTH-80)/3+10, 90);
     globalSnrCheckView.layer.cornerRadius = 5;
     globalSnrCheckView.layer.borderWidth = 1;
     globalSnrCheckView.backgroundColor= [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     [allView addSubview:globalSnrCheckView];
     
-    lblQuantity = [[UILabel alloc]initWithFrame:CGRectMake(5, 0, 70, 50)];
-    [self setLabelProperties:lblQuantity withText:@"Quantity" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:textSize-6];
+    lblQuantity = [[UILabel alloc]initWithFrame:CGRectMake(10, 20, 100, 50)];
+    [self setLabelProperties:lblQuantity withText:@"Quantity" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
     [globalSnrCheckView addSubview:lblQuantity];
     
-    txtQuantitySnrChk = [[UITextField alloc]initWithFrame:CGRectMake(100, 5, 55, 40)];
-    [self setTextfieldProperties:txtQuantitySnrChk withPlaceHolderText:@"10" withTextSize:textSize-6];
+    txtQuantitySnrChk = [[UITextField alloc]initWithFrame:CGRectMake(100, 25, 55, 40)];
+    [self setTextfieldProperties:txtQuantitySnrChk withPlaceHolderText:@"" withTextSize:20];
     txtQuantitySnrChk.layer.cornerRadius = 5;
     txtQuantitySnrChk.returnKeyType = UIReturnKeyDone;
     txtQuantitySnrChk.keyboardType = UIKeyboardTypeNumberPad;
@@ -356,30 +456,58 @@
     [globalSnrCheckView addSubview:txtQuantitySnrChk];
     
     UIColor* btnBGC = [UIColor colorWithRed:27.0/255 green:157.0/255 blue:25.0/255 alpha:1];
-    btnOk = [[UIButton alloc]initWithFrame:CGRectMake(180, 2, 46, 46)];
-    [self setButtonProperties:btnOk withTitle:@"OK" backColor:btnBGC textColor:UIColor.whiteColor txtSize:textSize-6];
+    btnOk = [[UIButton alloc]initWithFrame:CGRectMake(180, 20, 50, 50)];
+    [self setButtonProperties:btnOk withTitle:@"OK" backColor:btnBGC textColor:UIColor.whiteColor txtSize:20];
     [btnOk setTitle:@"OK" forState:UIControlStateNormal];
-    btnOk.layer.cornerRadius = 23;
+    btnOk.layer.cornerRadius = 25;
     [btnOk addTarget:self action:@selector(btnOKClick) forControlEvents:UIControlEventTouchUpInside];
     [globalSnrCheckView addSubview:btnOk];
     
     
-    yy = yy +60;
     UIButton * btnReadStoredSession = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnReadStoredSession.frame = CGRectMake(5, yy, 150, 44);
+    btnReadStoredSession.frame = CGRectMake(40, yy + 450 + 225, (DEVICE_WIDTH-80)/3+10, 70);
     [btnReadStoredSession addTarget:self action:@selector(btnReadStoreSessionClick) forControlEvents:UIControlEventTouchUpInside];
     [btnReadStoredSession setTitle:@"Get Stored Session" forState:UIControlStateNormal];
     btnReadStoredSession.layer.cornerRadius = 5;
-    [self setButtonProperties:btnReadStoredSession withTitle:@"Get Stored Session" backColor:UIColor.whiteColor textColor:UIColor.blackColor txtSize:textSize-6];
-    [allView addSubview:btnReadStoredSession];
+    [self setButtonProperties:btnReadStoredSession withTitle:@"Get Stored Session" backColor:UIColor.whiteColor textColor:UIColor.blackColor txtSize:20];
+    [self.view addSubview:btnReadStoredSession];
 
+    
     UIButton * btnFirmWareupdate = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnFirmWareupdate.frame = CGRectMake(allView.frame.size.width/2, yy, 150, 44);
+    btnFirmWareupdate.frame = CGRectMake(btnReadStoredSession.frame.size.width+100, yy + 450 + 225, (DEVICE_WIDTH-80)/3+10, 70);
     [btnFirmWareupdate addTarget:self action:@selector(btnFirmWarwUpdateClick) forControlEvents:UIControlEventTouchUpInside];
 //    [btnFirmWareupdate setTitle:@"Get Stored Session" forState:UIControlStateNormal];
-    [self setButtonProperties:btnFirmWareupdate withTitle:@"Update firmware" backColor:UIColor.whiteColor  textColor:UIColor.blackColor txtSize:textSize-6];
+    [self setButtonProperties:btnFirmWareupdate withTitle:@"Update firmware" backColor:UIColor.whiteColor  textColor:UIColor.blackColor txtSize:20];
     btnFirmWareupdate.layer.cornerRadius = 5;
-    [allView addSubview:btnFirmWareupdate];
+    [self.view addSubview:btnFirmWareupdate];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        int yy = DEVICE_HEIGHT/2+60;
+        lblGlobalSnrCheck.frame = CGRectMake(10, yy+10, DEVICE_WIDTH, 40);
+        lblGlobalSnrCheck.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        
+        yy = yy +45;
+        globalSnrCheckView.frame = CGRectMake(0, yy, allView.frame.size.width/1.5, 50);
+        
+        lblQuantity.frame = CGRectMake(5, 0, 70, 50);
+        lblQuantity.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        txtQuantitySnrChk.frame = CGRectMake(lblQuantity.frame.size.width+20, 5, 55, 40);
+        txtQuantitySnrChk.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnOk.frame = CGRectMake(txtQuantitySnrChk.frame.size.width+120, 10, 30, 30);
+        btnOk.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+        btnOk.layer.cornerRadius = 15;
+        
+        yy = yy +btnOk.frame.size.height+80;
+        btnReadStoredSession.frame = CGRectMake(5, yy, 150, 44);
+        btnReadStoredSession.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+        btnFirmWareupdate.frame = CGRectMake(DEVICE_WIDTH/2, yy, 150, 44);
+        btnFirmWareupdate.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
+
+
+    }
 }
 #pragma mark - Buttons
 -(void)btnFaradClick
@@ -605,7 +733,7 @@
     BOOL isValidValue = YES;
     if(isCClicked == YES)
     {
-        if(valC > 38.1)
+        /*if(valC > 38.1)
         {
             isValidValue = NO;
            [self AlertViewFCTypeCaution:@"Maximum value Exceed for Temperature in ºC"] ;
@@ -614,7 +742,7 @@
         {
             isValidValue = NO;
            [self AlertViewFCTypeCaution:@"Temperature can't be less than 36.1 ºC"];
-        }
+        }*/
     }
     else
     {
@@ -628,7 +756,7 @@
 //        }
 //        else
 //        {
-            if(valF > 100.5)
+            /*if(valF > 100.5)
             {
                 isValidValue = NO;
 //                [self AlertViewFCTypeCaution:@"Maximum value Exceed for temprature in ºF"] ;
@@ -637,7 +765,7 @@
             {
                 isValidValue = NO;
     //           [self AlertViewFCTypeCaution:@"Temperature can't be less than 97 ºF"] ;
-            }
+            }*/
 //        }
  
         isValidValue = YES;

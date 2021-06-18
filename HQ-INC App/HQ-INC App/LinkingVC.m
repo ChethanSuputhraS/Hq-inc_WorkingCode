@@ -62,7 +62,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
-
 -(void)viewWillAppear:(BOOL)animated
 {
     [self InitialBLE];
@@ -93,12 +92,12 @@
     [lblTitle setBackgroundColor:[UIColor clearColor]];
     [lblTitle setText:@"Sync Sessions"];
     [lblTitle setTextAlignment:NSTextAlignmentCenter];
-    [lblTitle setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+    [lblTitle setFont:[UIFont fontWithName:CGRegular size:textSize+5]];
     [lblTitle setTextColor:lbltxtClor];
     [viewHeader addSubview:lblTitle];
         
     UIButton * btnRefresh = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-50, 10, 40, 40)];
+    [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-60, 10, 50, 55)];
     btnRefresh.backgroundColor = UIColor.clearColor;
     [btnRefresh setImage:[UIImage imageNamed:@"reload.png"] forState:UIControlStateNormal];
     [btnRefresh addTarget:self action:@selector(refreshBtnClick) forControlEvents:UIControlEventTouchUpInside];
@@ -107,25 +106,25 @@
     
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      
-     btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(10, DEVICE_HEIGHT-60, 60, 44)];
-     [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+     btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+     [self setButtonProperties:btnCanceldown withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
      btnCanceldown.layer.cornerRadius = 5;
      [btnCanceldown addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
      [self.view addSubview:btnCanceldown];
          
-     btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-60, 60, 44)];
-     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:textSize-6];
+     btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
      btnDone.layer.cornerRadius = 5;
      [btnDone setTitle:@"Done" forState:UIControlStateNormal];
      btnDone.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      [btnDone addTarget:self action:@selector(btnDoneClick) forControlEvents:UIControlEventTouchUpInside];
      [self.view addSubview:btnDone];
     
-    UIView * line = [[UIView alloc] initWithFrame:CGRectMake(0, yy - 1, DEVICE_WIDTH, 0.5)];
+    UIView * line = [[UIView alloc] initWithFrame:CGRectMake(0, globalStatusHeight + yy - 1, DEVICE_WIDTH, 0.5)];
     line.backgroundColor = [UIColor lightGrayColor];
     [viewHeader addSubview:line];
     
-    tblDeviceList = [[UITableView alloc] initWithFrame:CGRectMake(0, yy, DEVICE_WIDTH, DEVICE_HEIGHT-yy)];
+    tblDeviceList = [[UITableView alloc] initWithFrame:CGRectMake(0, yy+globalStatusHeight, DEVICE_WIDTH, DEVICE_HEIGHT-yy-globalStatusHeight-100)];
     tblDeviceList.delegate = self;
     tblDeviceList.dataSource= self;
     tblDeviceList.backgroundColor = UIColor.clearColor;
@@ -142,22 +141,50 @@
     
     yy = yy+30;
     
-    lblScanning = [[UILabel alloc] initWithFrame:CGRectMake((DEVICE_WIDTH/2)-50, yy, 100, 40)];
+    lblScanning = [[UILabel alloc] initWithFrame:CGRectMake((DEVICE_WIDTH/2)-50, yy, 100, 44)];
     [lblScanning setBackgroundColor:[UIColor clearColor]];
     [lblScanning setText:@"Scanning..."];
     [lblScanning setTextAlignment:NSTextAlignmentCenter];
-    [lblScanning setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+    [lblScanning setFont:[UIFont fontWithName:CGRegular size:textSize]];
     [lblScanning setTextColor:[UIColor blackColor]];
     lblScanning.hidden = true;
     [self.view addSubview:lblScanning];
 
-    lblNoDevice = [[UILabel alloc]initWithFrame:CGRectMake(30, (DEVICE_HEIGHT/2)-90, (DEVICE_WIDTH)-60, 40)];
+    lblNoDevice = [[UILabel alloc]initWithFrame:CGRectMake(30, (DEVICE_HEIGHT/2)-90, (DEVICE_WIDTH)-60, 100)];
     lblNoDevice.backgroundColor = UIColor.clearColor;
     [lblNoDevice setTextAlignment:NSTextAlignmentCenter];
-    [lblNoDevice setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+    [lblNoDevice setFont:[UIFont fontWithName:CGRegular size:textSize+2]];
     [lblNoDevice setTextColor:[UIColor blackColor]];
     lblNoDevice.text = @"Looking for Monitor.";
     [self.view addSubview:lblNoDevice];
+    
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        yy = 60;
+        viewHeader.frame = CGRectMake(0, 0, DEVICE_WIDTH, yy );
+        lblTitle.frame = CGRectMake(50, 20, DEVICE_WIDTH-100, 44);
+        [lblTitle setFont:[UIFont fontWithName:CGRegular size:textSize-4]];
+
+        [btnRefresh setFrame:CGRectMake(DEVICE_WIDTH-50, 10, 40, 40)];
+        
+        btnCanceldown.frame = CGRectMake(10, DEVICE_HEIGHT-60, 60, 44);
+        [btnCanceldown.titleLabel setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+        
+        btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-60, 60, 44);
+        [btnDone.titleLabel setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+
+        line.frame = CGRectMake(0, yy - 1, DEVICE_WIDTH, 0.5);
+        tblDeviceList.frame = CGRectMake(0, yy, DEVICE_WIDTH, DEVICE_HEIGHT-yy);
+        
+        yy = yy+30;
+        
+        lblScanning.frame = CGRectMake((DEVICE_WIDTH/2)-50, yy, 100, 40);
+        [lblScanning setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+        lblNoDevice.frame = CGRectMake(30, (DEVICE_HEIGHT/2)-90, (DEVICE_WIDTH)-60, 40);
+        [lblNoDevice setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+
+    }
+    
 }
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -179,21 +206,32 @@
 #pragma mark- UITableView Methods
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section;   // custom view for header. will be adjusted to default or specified header height
 {
-        UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-20, 40)];
+        UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-20, 50)];
         headerView.backgroundColor = [UIColor clearColor];
         
-        UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH-20, 40)];
+        UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH-20, 50)];
         lblmenu.text = @" Tap on Connect button to pair with device";
         [lblmenu setTextColor:[UIColor whiteColor]];
-        [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+        [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-1]];
         lblmenu.backgroundColor = UIColor.clearColor;
         lblmenu.textAlignment = NSTextAlignmentCenter;
         [headerView addSubview:lblmenu];
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        headerView.frame = CGRectMake(10, 0, self.view.frame.size.width-20, 40);
+        [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+
+        
+    }
         return headerView;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 40;
+    }
+    return 50;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -205,6 +243,10 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        return 40;
+    }
     return 80;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -222,7 +264,7 @@
     CBPeripheral * p = [[arrayDevices objectAtIndex:indexPath.row] valueForKey:@"peripheral"];
     if (p.state == CBPeripheralStateConnected)
     {
-        cell.lblConnect.frame = CGRectMake(DEVICE_WIDTH-100, 0, 80, 70);
+        cell.lblConnect.frame = CGRectMake(DEVICE_WIDTH-150, 0, 150, 70);
         cell.lblConnect.text= @"Disconnect";
     }
     cell.lblDeviceName.text = [[arrayDevices  objectAtIndex:indexPath.row]valueForKey:@"name"];

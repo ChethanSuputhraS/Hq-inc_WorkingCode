@@ -55,6 +55,21 @@
         viewSelect.hidden = true;
         [self.contentView addSubview:viewSelect];
         
+        if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+        {
+            lblname.frame = CGRectMake(5, 0,  DEVICE_WIDTH/3-10, 40);
+            [lblname setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+
+            
+            lblTemp.frame = CGRectMake(DEVICE_WIDTH/3, 0, DEVICE_WIDTH/3, 40);
+            [lblTemp setFont:[UIFont fontWithName:CGRegular size:textSize-6]];
+
+            imgArrow.frame = CGRectMake(DEVICE_WIDTH-40, 0, 40, 40);
+
+
+
+        }
+        
         
     }
     return self;
