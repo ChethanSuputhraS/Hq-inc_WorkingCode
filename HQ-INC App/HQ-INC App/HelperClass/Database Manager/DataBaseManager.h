@@ -44,6 +44,7 @@
 -(BOOL)Create_Alarm_Table;
 -(BOOL)Create_Session_Table;
 -(BOOL)Create_SessionData_Table;
+-(BOOL)Create_Instant_Reading_Table;
 
 @end
 

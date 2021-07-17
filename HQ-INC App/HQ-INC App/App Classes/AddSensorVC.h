@@ -16,6 +16,16 @@ NS_ASSUME_NONNULL_BEGIN
     UIView *viewForAddSensor, *viewForSensorNameNum;
     UIButton  *btnCancel, *btnSave;
     UITextField *txtNameSnr;
+    
+    NSString * strName;
+    NSMutableArray *arrySensors,*arrBlrID,* arrdata,*arrSnrType;
+    NSInteger selectedIndex;
+    NSMutableDictionary * dictData;
+    NSArray *indexes;
+    NSTimer * connectionTimer,*timeoutforAddSensor,*timerSave,*tmScan;
+    UIButton * btnCanceldown,*btnDone;
+    BOOL isAnyAdded;
+
 }
 
 -(void)AddSensortoList:(NSString *)strSensorId withType:(NSString *)strSensorType;

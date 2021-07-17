@@ -21,6 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
     UIView *viewForSensorNameNum, *viewForAddSensor;
     UIButton *btnCancelSnr,*btnSave;
     UITextField *txtNameSnr;
+    NSTimer * connectionTimer, * advertiseTimer;;
+    CBCentralManager * centralManager;
+    CBPeripheral * classPeripheral;
+    NSMutableDictionary * dictConnectedPeripheral, * dictLiveSessionData;
+    UIButton *btnCanceldown,*btnDone;
+    FCAlertView *alertConnection;
+    NSInteger totalSensorsofLiveSession;
+    NSMutableArray * arrSensorsofSessions;
+
 }
 -(void)AddTestingRecords:(NSDictionary *)dict;
 

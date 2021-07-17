@@ -15,17 +15,6 @@
 
 @interface GlobalSettingVC ()<UITextFieldDelegate, BLEServiceDelegate>
 {
-    UIButton *  btnSwitchC ,*btnSwitchF ;
-    BOOL isCClicked,isCheckBtn;
-    NSInteger EnterdValue;
-    NSMutableArray * arrAlrmResult, * arrSessions;
-    float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
-    NSMutableArray * tmpDummyDataArr;
-    NSMutableDictionary * dictSessionData;
-    int sensorCount;
-    NSMutableArray * arrSessionData, * arrSensorsofSessions;
-    NSString * strCurrentSequence;
-    int indexofSession;
 }
 @end
 
@@ -70,13 +59,11 @@
     btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:25];
     [self.view addSubview:btnDone];
     
-    
     [self setupIngestSensorAlarm];
     [self setupDermalSensorAlarm];
     
     [self setupAdditionalSettings];
     [self setupGlobalSeneorCheck];
-
     
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
@@ -93,19 +80,16 @@
 
         btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-40, 60, 35);
         btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
-
     }
  
     arrAlrmResult = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlrmResult];
-    
 
     if (arrAlrmResult.count > 0)
     {
         NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
         tmpDict = [arrAlrmResult objectAtIndex:0];
-//        NSLog(@"%@",tmpDict);
     
         highIngstF = [[tmpDict valueForKey:@"high_ingest_F"] floatValue];
         lowIngestF = [[tmpDict valueForKey:@"low_ingest_F"] floatValue];
@@ -169,19 +153,14 @@
     txtLowTmpIngst.textAlignment = NSTextAlignmentCenter;
     [viewBorderTmp addSubview:txtLowTmpIngst];
     
-    
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         lblType2ible.frame = CGRectMake(10, lblAddAlarms.frame.size.height, DEVICE_WIDTH-20, 40);
         lblType2ible.font = [UIFont fontWithName:CGRegular size:textSize-4];
         allView.frame = CGRectMake(0, lblGlobalsetting.frame.size.height, DEVICE_WIDTH, DEVICE_HEIGHT-lblGlobalsetting.frame.size.height);
         
-//        lblAddAlarms.backgroundColor = UIColor.redColor;
-//        lblType2ible.backgroundColor = UIColor.greenColor;
-//        allView.backgroundColor = UIColor.greenColor;
         int yy = lblType2ible.frame.size.height+50;
         viewBorderTmp.frame = CGRectMake(0, yy, allView.frame.size.width-10, 50);
-//        viewBorderTmp.backgroundColor = UIColor.redColor;
         
         lblHighTempAlarm.frame = CGRectMake(10, 0, 100, 50);
         lblHighTempAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
@@ -194,10 +173,7 @@
         
         txtLowTmpIngst.frame = CGRectMake(viewBorderTmp.frame.size.width-65, 5, 60, 40);
         txtLowTmpIngst.font = [UIFont fontWithName:CGRegular size:textSize-8];
-
-        
     }
-
     
     if (isCClicked == YES)
     {
@@ -213,8 +189,8 @@
 #pragma mark- Dermal Sensor Setting
 -(void)setupDermalSensorAlarm
 {
-    //1 Dermal
-       int yy = viewBorderTmp.frame.size.height+120;
+    //1 DERMAL
+    int yy = viewBorderTmp.frame.size.height+120;
        
     lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(0, yy,DEVICE_WIDTH, 50)];
     [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:20];
@@ -271,21 +247,18 @@
 
         txtLowTmpDerml.frame = CGRectMake(viewBorderTmp1.frame.size.width-65, 5, 60, 40);
         txtLowTmpDerml.font = [UIFont fontWithName:CGRegular size:textSize-8];
-
-        
     }
     
-    
     if (isCClicked == YES)
-       {
-           txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02fºC",highDermalC];
-           txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02fºC",lowDermalC];
-       }
-       else
-       {
-           txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02fºF",highDermalF];
-           txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02fºF",lowDermalF];
-       }
+    {
+        txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02fºC",highDermalC];
+        txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02fºC",lowDermalC];
+    }
+    else
+    {
+        txtHighTmpDerml.text = [NSString stringWithFormat:@"%.02fºF",highDermalF];
+        txtLowTmpDerml.text = [NSString stringWithFormat:@"%.02fºF",lowDermalF];
+    }
 }
 #pragma mark- Additional Settings
 -(void)setupAdditionalSettings
@@ -363,21 +336,8 @@
     UILabel *lblPersentage = [[UILabel alloc]initWithFrame:CGRectMake(280, 100, 60, 50)];
     [self setLabelProperties:lblPersentage withText:@"%" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:25];
     [viewBgAddsetng addSubview:lblPersentage];
-    
-//    if([[[NSUserDefaults standardUserDefaults] valueForKey:@"isCelsicusSelect"] isEqualToString:@"Yes"])
-//    {
-//        isCClicked = YES;
-//        btnSwitchC.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
-//        btnSwitchF.backgroundColor = UIColor.clearColor;
-//    }
-//     else
-//     {
-//         isCClicked = NO;
-//         btnSwitchF.backgroundColor = [UIColor colorWithRed:83.0/255 green:187.0/255 blue:193.0/255 alpha:1];
-//         btnSwitchC.backgroundColor = UIColor.clearColor;
-//    }
  
-   NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
+    NSMutableArray * arrAlarm = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Alarm_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrAlarm];
     
@@ -394,7 +354,6 @@
             btnSwitchC.backgroundColor = UIColor.clearColor;
         }
     }
-    
     
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
@@ -422,7 +381,6 @@
 
         lblPersentage.frame = CGRectMake(viewBgAddsetng.frame.size.width-40, 90, 44, 50);
         txtbatteryAlarm.font = [UIFont fontWithName:CGRegular size:textSize-8];
-
     }
 }
 
@@ -505,8 +463,6 @@
 
         btnFirmWareupdate.frame = CGRectMake(DEVICE_WIDTH/2, yy, 150, 44);
         btnFirmWareupdate.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
-
-
     }
 }
 #pragma mark - Buttons
@@ -536,7 +492,6 @@
 -(void)btnOKClick
 {
     [[BLEService sharedInstance] setDelegate:self];
-//    [self generateDummyData];
     [self WriteCommandtoGetStoredSessions];
 }
 -(void)btnCancelClick
@@ -564,23 +519,197 @@
 {
     SessionPlayersVC * sessionlist = [[SessionPlayersVC alloc] init];
     [self.navigationController pushViewController:sessionlist animated:YES];
-    
-//    if (globalPeripheral.state == CBPeripheralStateConnected)
-//    {
-//
-//    }
-//    else
-//    {
-//        [self AlertViewFCTypeCaution:@"Please make sure Monitor is connected with App and then try again to Add Sensors."];
-//    }
-    
 }
 -(void)btnFirmWarwUpdateClick
 {
     FirmWareUpdateVC * firmWUpdate = [[FirmWareUpdateVC alloc] init];
     [self.navigationController pushViewController:firmWUpdate animated:true];
 }
-#pragma mark- To Update Alarm table
+
+#pragma mark - BLE Methods : Write Commands from App to Device
+-(void)WriteCommandtoGetStoredSessions
+{
+    NSInteger intMsg = [@"0" integerValue];
+    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
+
+    NSLog(@"Wrote Command to get Stored Session---==%@",dataMsg);
+    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"15" withLength:@"0" with:globalPeripheral];
+}
+-(void)GetSessionDataOnebyone:(NSString *)strSessionID
+{
+    NSInteger intMsg = [@"250" integerValue];
+    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
+    
+    NSInteger intSequnce = [strSessionID integerValue];
+    NSData * dataSequnce = [[NSData alloc] initWithBytes:&intSequnce length:1];
+
+    NSMutableData * completeData = [[NSMutableData alloc] initWithData:dataMsg];
+    [completeData appendData:dataSequnce];
+    
+    [[BLEService sharedInstance] WriteValuestoDevice:completeData withOcpde:@"16" withLength:@"2" with:globalPeripheral];
+}
+
+#pragma mark - BLESERVICE : Delegate Methods
+-(void)ReceivedNoSessionforStoredSessionsforSycing
+{
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [APP_DELEGATE endHudProcess];
+    [self AlertViewFCTypeCaution:@"No session found !"];
+    });
+}
+-(void)ReceiveListofSessionsID:(NSDictionary *)dictData
+{
+    if (![arrSessions containsObject:dictData])
+    {
+        [arrSessions addObject:dictData];
+    }
+    NSString * strPacketNo = [self checkforValidString:[dictData valueForKey:@"packetno"]];
+    if ([strPacketNo isEqualToString:@"0"])//Means its last packet and now go for individual session data
+    {
+        NSLog(@"Found Sessions====> %@",arrSessions);
+        if ([arrSessions count] > 0)
+        {
+            indexofSession = 0;
+            [self performSelector:@selector(FetchSessionDataOnebyOne) withObject:nil afterDelay:2];
+        }
+    }
+}
+-(void)RecieveSessionInformation:(NSMutableDictionary *)dictDetail;
+{
+    dictSessionData = [dictDetail mutableCopy];
+}
+-(void)RecievePlayerNameofSession:(NSString *)strPlayerName;
+{
+    [dictSessionData setValue:strPlayerName forKey:@"player_name"];
+}
+-(void)RecieveSensorInformationofSession:(NSMutableArray *)arrSensors;
+{
+    arrSensorsofSessions = [[NSMutableArray alloc] init];
+    arrSensorsofSessions = [arrSensors mutableCopy];
+    [dictSessionData setObject:arrSensors forKey:@"sensors"];
+    NSLog(@"Session Information====> %@",dictSessionData);
+}
+-(void)RecieveSessionDataString:(NSString *)strData withPacketLength:(int)packetLength;
+{
+    NSString * strSequence = [self stringFroHex:[strData substringWithRange:NSMakeRange(2, 4)]] ;
+
+    int totalSensors = [[dictSessionData valueForKey:@"no_of_sensor"] intValue];
+    NSString * strSessionID = [dictSessionData valueForKey:@"session_id"];
+    
+    for (int i=0; i < packetLength/2; i++)
+    {
+        if (sensorCount == totalSensors)
+        {
+            sensorCount = 0;
+        }
+        NSString * strSensorTemp = [self stringFroHex:[strData substringWithRange:NSMakeRange(6 + (i*4), 4)]];
+        int divValue =  [strSensorTemp doubleValue];
+        double fPointData = divValue / 100.0;
+        NSString * strActualTemp = [NSString stringWithFormat:@"%.2f", fPointData];
+
+        NSString * strSensorId = @"NA";
+        NSString * strSensorType = @"NA";
+        if ([arrSensorsofSessions count] > sensorCount)
+        {
+            strSensorId = [[arrSensorsofSessions objectAtIndex:sensorCount] valueForKey:@"sensor_id"];
+            strSensorType = [[arrSensorsofSessions objectAtIndex:sensorCount] valueForKey:@"sensor_type"];
+        }
+        sensorCount = sensorCount + 1;
+        NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strActualTemp,@"temp",strSensorId,@"sensor_id",strSensorType,@"sensor_type", strSessionID,@"session_id",strData,@"packetdata",nil];
+        if (![[arrSessionData valueForKey:@"packetdata"] containsObject:strData])
+        {
+            [arrSessionData addObject:dict];
+        }
+    }
+
+    strCurrentSequence = strSequence;
+    NSInteger intMsg = [@"252" integerValue];
+    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
+    
+    NSInteger intSequnce = [strCurrentSequence integerValue];
+    NSData * dataSequnce = [[NSData alloc] initWithBytes:&intSequnce length:2];
+
+    NSMutableData * completeData = [[NSMutableData alloc] initWithData:dataMsg];
+    [completeData appendData:dataSequnce];
+    
+    [[BLEService sharedInstance] WriteValuestoDevice:completeData withOcpde:@"16" withLength:@"3" with:globalPeripheral];
+}
+-(void)FetchSessionDataOnebyOne
+{
+    if ([arrSessions count] > indexofSession)
+    {
+        NSString * strSessionId = [[arrSessions objectAtIndex:indexofSession] valueForKey:@"session_id"];
+        [self GetSessionDataOnebyone:strSessionId];
+    }
+    else
+    {
+        NSLog(@"All Session Data Imported....");
+    }
+}
+-(void)RecieveSessionEndPacket
+{
+    NSString * strSessionId = [self checkforValidString:[dictSessionData valueForKey:@"session_id"]];
+    NSString * strTimeStamp = [self checkforValidString:[dictSessionData valueForKey:@"timeStamp"]];
+    NSString * strPlayerId = [self checkforValidString:[dictSessionData valueForKey:@"player_id"]];
+    NSString * strPlayerName = [self checkforValidString:[dictSessionData valueForKey:@"player_name"]];
+    NSString * strNoofSensors = [self checkforValidString:[dictSessionData valueForKey:@"no_of_sensor"]];
+    NSString * strReadInterval = [self checkforValidString:[dictSessionData valueForKey:@"read_interval"]];
+
+    NSString * strCheckSessionAvailable = [NSString stringWithFormat:@"select * from Session_Table where session_id ='%@' and timeStamp ='%@'",strSessionId, strTimeStamp];
+    NSMutableArray * arrData = [[NSMutableArray alloc] init];
+    [[DataBaseManager dataBaseManager] execute:strCheckSessionAvailable resultsArray:arrData];
+    if ([arrData count] == 0)
+    {
+        NSString * strInsertSession = [NSString stringWithFormat:@"insert into 'Session_Table' ('session_id', 'player_id', 'player_name', 'read_interval', 'timeStamp', 'no_of_sensor', 'is_active') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strSessionId,strPlayerId,strPlayerName,strReadInterval,strTimeStamp,strNoofSensors,@"1"];
+        [[DataBaseManager dataBaseManager] execute:strInsertSession];
+    }
+    int indexofData = 0;
+    int totalSensors = [strNoofSensors intValue];
+    int intReadInterval = [strReadInterval intValue];
+
+    int timeValue = [strTimeStamp intValue];
+    
+    for (int i = 0; i < [arrSessionData count]; i++)
+    {
+        NSString * strTemp = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"temp"]];
+        NSString * strSensorId = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"sensor_id"]];
+        NSString * strSensorType = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"sensor_type"]];
+        NSString * strPacket = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"packetdata"]];
+
+        if (![strTemp isEqualToString:@"NA"])
+        {
+            if (indexofData == totalSensors)
+            {
+                timeValue = timeValue + intReadInterval;
+                indexofData = 0;
+            }
+            else
+            {
+                timeValue = timeValue;
+            }
+            indexofData = indexofData + 1;
+
+            NSString * strDataTime = [NSString stringWithFormat:@"%d",timeValue];
+            NSString * strDataQuery = [NSString stringWithFormat:@"insert into 'Session_data' ('session_id', 'temp', 'timestamp', 'sensor_type', 'sensor_id', 'packet', 'player_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strSessionId,strTemp,strDataTime,strSensorType,strSensorId,strPacket, strPlayerId];
+            [[DataBaseManager dataBaseManager] execute:strDataQuery];
+        }
+    }
+    NSLog(@"Final Session Data====>%@",arrSessionData);
+    [self performSelector:@selector(SendRecievedDataAcknowledgement) withObject:nil afterDelay:1];
+    [arrSessionData removeAllObjects];
+    [arrSensorsofSessions removeAllObjects];
+}
+-(void)SendRecievedDataAcknowledgement
+{
+    NSInteger intMsg = [@"251" integerValue];
+    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
+    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:globalPeripheral];
+    
+    indexofSession = indexofSession + 1;
+    [self FetchSessionDataOnebyOne];
+}
+
+#pragma mark- DATABASE : To Update Alarm table
 -(void)UpdatedToAlarmTable:(BOOL)isCliSelect
 {
     NSString * strHighIngstF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f",highIngstF]] ;
@@ -733,41 +862,9 @@
     BOOL isValidValue = YES;
     if(isCClicked == YES)
     {
-        /*if(valC > 38.1)
-        {
-            isValidValue = NO;
-           [self AlertViewFCTypeCaution:@"Maximum value Exceed for Temperature in ºC"] ;
-        }
-        else if (valC < 36.1)
-        {
-            isValidValue = NO;
-           [self AlertViewFCTypeCaution:@"Temperature can't be less than 36.1 ºC"];
-        }*/
     }
     else
     {
-//        if (txtfld.tag == 200)
-//        {
-//
-//        }
-//        else if (txtfld.tag == 300)
-//        {
-//
-//        }
-//        else
-//        {
-            /*if(valF > 100.5)
-            {
-                isValidValue = NO;
-//                [self AlertViewFCTypeCaution:@"Maximum value Exceed for temprature in ºF"] ;
-            }
-            else if (valF < 97)
-            {
-                isValidValue = NO;
-    //           [self AlertViewFCTypeCaution:@"Temperature can't be less than 97 ºF"] ;
-            }*/
-//        }
- 
         isValidValue = YES;
         [self checkBattryAndQuantity:txtfld];
     }
@@ -791,30 +888,30 @@
 }
 -(void)showAlertForEmptyTextField:(UITextField *)txtfild
 {
-        if(txtfild == txtHighTmpIngest)
-        {
-            [self AlertViewFCTypeCaution:@"Please enater High Ingest value."];
-        }
-        else if (txtfild == txtLowTmpIngst)
-        {
-           [self AlertViewFCTypeCaution:@"Please enter Low Ingest Vlaue."] ;
-        }
-        else if (txtfild == txtHighTmpDerml)
-        {
-            [self AlertViewFCTypeCaution:@"Please enter High Dermal value."] ;
-        }
-        else if (txtfild == txtLowTmpDerml)
-        {
-            [self AlertViewFCTypeCaution: @"Please enter Low Dermal value."];
-        }
-        else if (txtfild == txtbatteryAlarm)
-        {
-            [self AlertViewFCTypeCaution:@"Please enter battery alarm."] ;
-        }
-        else if (txtfild == txtQuantitySnrChk)
-        {
-            [self AlertViewFCTypeCaution:@"Pleasse enter Quantity."] ;
-        }
+    if(txtfild == txtHighTmpIngest)
+    {
+        [self AlertViewFCTypeCaution:@"Please enater High Ingest value."];
+    }
+    else if (txtfild == txtLowTmpIngst)
+    {
+        [self AlertViewFCTypeCaution:@"Please enter Low Ingest Vlaue."] ;
+    }
+    else if (txtfild == txtHighTmpDerml)
+    {
+        [self AlertViewFCTypeCaution:@"Please enter High Dermal value."] ;
+    }
+    else if (txtfild == txtLowTmpDerml)
+    {
+        [self AlertViewFCTypeCaution: @"Please enter Low Dermal value."];
+    }
+    else if (txtfild == txtbatteryAlarm)
+    {
+        [self AlertViewFCTypeCaution:@"Please enter battery alarm."] ;
+    }
+    else if (txtfild == txtQuantitySnrChk)
+    {
+        [self AlertViewFCTypeCaution:@"Pleasse enter Quantity."] ;
+    }
     else
     {
         NSArray * arrVal = [self getFarnhitefromCelcius:txtfild.text];
@@ -856,29 +953,6 @@
             }
          }
     }
-    
-}
-#pragma mark-Get F From C
--(NSArray *)getFarnhitefromCelcius:(NSString *)strVal
-{
-    if ([[APP_DELEGATE checkforValidString:strVal] isEqualToString:@"NA"])
-    {
-        return [NSArray new];
-    }
-    float fff = 0.0;
-    float ccc = 0.0;
-    if (isCClicked == NO)
-    {
-        fff = strVal.floatValue;
-        ccc = (fff-32)/1.8;
-    }
-    else
-    {
-        ccc = strVal.floatValue;
-        fff = (ccc * 1.8) + 32;
-    }
-    NSArray * arr = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%.02f",fff],[NSString stringWithFormat:@"%.02f",ccc], nil];
-    return arr;
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
@@ -942,30 +1016,58 @@
 }
 
 
-#pragma mark - BLE Methods
-#pragma mark - Write Commands from App to Device
--(void)WriteCommandtoGetStoredSessions
+
+-(NSString*)stringFroHex:(NSString *)hexStr
 {
-    NSInteger intMsg = [@"0" integerValue];
-    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-
-    NSLog(@"Wrote Command to get Stored Session---==%@",dataMsg);
-    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"15" withLength:@"0" with:globalPeripheral];
+    unsigned long long startlong;
+    NSScanner* scanner1 = [NSScanner scannerWithString:hexStr];
+    [scanner1 scanHexLongLong:&startlong];
+    double unixStart = startlong;
+    NSNumber * startNumber = [[NSNumber alloc] initWithDouble:unixStart];
+    return [startNumber stringValue];
 }
--(void)GetSessionDataOnebyone:(NSString *)strSessionID
+#pragma mark-Get F From C
+-(NSArray *)getFarnhitefromCelcius:(NSString *)strVal
 {
-    NSInteger intMsg = [@"250" integerValue];
-    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-    
-    NSInteger intSequnce = [strSessionID integerValue];
-    NSData * dataSequnce = [[NSData alloc] initWithBytes:&intSequnce length:1];
-
-    NSMutableData * completeData = [[NSMutableData alloc] initWithData:dataMsg];
-    [completeData appendData:dataSequnce];
-    
-    [[BLEService sharedInstance] WriteValuestoDevice:completeData withOcpde:@"16" withLength:@"2" with:globalPeripheral];
+    if ([[APP_DELEGATE checkforValidString:strVal] isEqualToString:@"NA"])
+    {
+        return [NSArray new];
+    }
+    float fff = 0.0;
+    float ccc = 0.0;
+    if (isCClicked == NO)
+    {
+        fff = strVal.floatValue;
+        ccc = (fff-32)/1.8;
+    }
+    else
+    {
+        ccc = strVal.floatValue;
+        fff = (ccc * 1.8) + 32;
+    }
+    NSArray * arr = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%.02f",fff],[NSString stringWithFormat:@"%.02f",ccc], nil];
+    return arr;
 }
-
+-(void)generateDummyData
+{
+    tmpDummyDataArr = [[NSMutableArray alloc] init];
+    [tmpDummyDataArr addObject:@"100DFF01000000016c453245000205000000"];
+    [tmpDummyDataArr addObject:@"1005FE546573740000000000000000000000"];
+    [tmpDummyDataArr addObject:@"1010FD014D03015C04012D03019E03016603"];
+    [tmpDummyDataArr addObject:@"100FFC00010A280A290A280A2B0A2D0A2C00"];
+    [tmpDummyDataArr addObject:@"100FFC00020A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00030A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00040A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00050A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00060A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00070A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00080A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC00090A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC000A0A280A290A280A2B0A2D0A2C00"];//
+    [tmpDummyDataArr addObject:@"100FFC000B0A280A290A280A2B0A2D0A2C00"];
+    [tmpDummyDataArr addObject:@"100BFC000C0A280A290A280A2B0000000000"];
+    [tmpDummyDataArr addObject:@"1002FB01"];
+}
 #pragma mark - Receive data from Device to App
 -(NSString *)checkforValidString:(NSString *)strRequest
 {
@@ -990,192 +1092,6 @@
     return strValid;
 }
 
-#pragma mark - BLEService Delegate Methods
--(void)ReceiveListofSessionsID:(NSDictionary *)dictData
-{
-    if (![arrSessions containsObject:dictData])
-    {
-        [arrSessions addObject:dictData];
-    }
-    NSString * strPacketNo = [self checkforValidString:[dictData valueForKey:@"packetno"]];
-    if ([strPacketNo isEqualToString:@"0"])//Means its last packet and now go for individual session data
-    {
-        
-        NSLog(@"Found Sessions====> %@",arrSessions);
-        if ([arrSessions count] > 0)
-        {
-            indexofSession = 0;
-            [self performSelector:@selector(FetchSessionDataOnebyOne) withObject:nil afterDelay:2];
-
-        }
-    }
-}
--(void)RecieveSessionInformation:(NSMutableDictionary *)dictDetail;
-{
-    dictSessionData = [dictDetail mutableCopy];
-}
--(void)RecievePlayerNameofSession:(NSString *)strPlayerName;
-{
-    [dictSessionData setValue:strPlayerName forKey:@"player_name"];
-}
--(void)RecieveSensorInformationofSession:(NSMutableArray *)arrSensors;
-{
-    arrSensorsofSessions = [[NSMutableArray alloc] init];
-    arrSensorsofSessions = [arrSensors mutableCopy];
-    [dictSessionData setObject:arrSensors forKey:@"sensors"];
-    NSLog(@"Session Information====> %@",dictSessionData);
-}
--(void)RecieveSessionDataString:(NSString *)strData withPacketLength:(int)packetLength;
-{
-    NSString * strSequence = [self stringFroHex:[strData substringWithRange:NSMakeRange(2, 4)]] ;
-
-    int totalSensors = [[dictSessionData valueForKey:@"no_of_sensor"] intValue];
-    NSString * strSessionID = [dictSessionData valueForKey:@"session_id"];
-    
-    for (int i=0; i < packetLength/2; i++)
-    {
-        if (sensorCount == totalSensors)
-        {
-            sensorCount = 0;
-        }
-        NSString * strSensorTemp = [self stringFroHex:[strData substringWithRange:NSMakeRange(6 + (i*4), 4)]];
-        int divValue =  [strSensorTemp doubleValue];
-        double fPointData = divValue / 100.0;
-        NSString * strActualTemp = [NSString stringWithFormat:@"%.2f", fPointData];
-
-        NSString * strSensorId = @"NA";
-        NSString * strSensorType = @"NA";
-        if ([arrSensorsofSessions count] > sensorCount)
-        {
-            strSensorId = [[arrSensorsofSessions objectAtIndex:sensorCount] valueForKey:@"sensor_id"];
-            strSensorType = [[arrSensorsofSessions objectAtIndex:sensorCount] valueForKey:@"sensor_type"];
-        }
-        sensorCount = sensorCount + 1;
-        NSDictionary * dict = [[NSDictionary alloc] initWithObjectsAndKeys:strActualTemp,@"temp",strSensorId,@"sensor_id",strSensorType,@"sensor_type", strSessionID,@"session_id",strData,@"packetdata",nil];
-        if (![[arrSessionData valueForKey:@"packetdata"] containsObject:strData])
-        {
-            [arrSessionData addObject:dict];
-        }
-    }
-
-    strCurrentSequence = strSequence;
-    NSInteger intMsg = [@"252" integerValue];
-    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-    
-    NSInteger intSequnce = [strCurrentSequence integerValue];
-    NSData * dataSequnce = [[NSData alloc] initWithBytes:&intSequnce length:2];
-
-    NSMutableData * completeData = [[NSMutableData alloc] initWithData:dataMsg];
-    [completeData appendData:dataSequnce];
-    
-    [[BLEService sharedInstance] WriteValuestoDevice:completeData withOcpde:@"16" withLength:@"3" with:globalPeripheral];
-
-
-}
--(void)FetchSessionDataOnebyOne
-{
-    if ([arrSessions count] > indexofSession)
-    {
-        NSString * strSessionId = [[arrSessions objectAtIndex:indexofSession] valueForKey:@"session_id"];
-        [self GetSessionDataOnebyone:strSessionId];
-    }
-    else
-    {
-        NSLog(@"All Session Data Imported....");
-    }
-}
--(void)RecieveSessionEndPacket
-{
-    NSString * strSessionId = [self checkforValidString:[dictSessionData valueForKey:@"session_id"]];
-    NSString * strTimeStamp = [self checkforValidString:[dictSessionData valueForKey:@"timeStamp"]];
-    NSString * strPlayerId = [self checkforValidString:[dictSessionData valueForKey:@"player_id"]];
-    NSString * strPlayerName = [self checkforValidString:[dictSessionData valueForKey:@"player_name"]];
-    NSString * strNoofSensors = [self checkforValidString:[dictSessionData valueForKey:@"no_of_sensor"]];
-    NSString * strReadInterval = [self checkforValidString:[dictSessionData valueForKey:@"read_interval"]];
-
-    NSString * strCheckSessionAvailable = [NSString stringWithFormat:@"select * from Session_Table where session_id ='%@' and timeStamp ='%@'",strSessionId, strTimeStamp];
-    NSMutableArray * arrData = [[NSMutableArray alloc] init];
-    [[DataBaseManager dataBaseManager] execute:strCheckSessionAvailable resultsArray:arrData];
-    if ([arrData count] == 0)
-    {
-        NSString * strInsertSession = [NSString stringWithFormat:@"insert into 'Session_Table' ('session_id', 'player_id', 'player_name', 'read_interval', 'timeStamp', 'no_of_sensor', 'is_active') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strSessionId,strPlayerId,strPlayerName,strReadInterval,strTimeStamp,strNoofSensors,@"1"];
-        [[DataBaseManager dataBaseManager] execute:strInsertSession];
-    }
-    int indexofData = 0;
-    int totalSensors = [strNoofSensors intValue];
-    int intReadInterval = [strReadInterval intValue];
-
-    int timeValue = [strTimeStamp intValue];
-    
-    for (int i = 0; i < [arrSessionData count]; i++)
-    {
-        NSString * strTemp = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"temp"]];
-        NSString * strSensorId = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"sensor_id"]];
-        NSString * strSensorType = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"sensor_type"]];
-        NSString * strPacket = [self checkforValidString:[[arrSessionData objectAtIndex:i] valueForKey:@"packetdata"]];
-
-        if (![strTemp isEqualToString:@"NA"])
-        {
-            if (indexofData == totalSensors)
-            {
-                timeValue = timeValue + intReadInterval;
-                indexofData = 0;
-            }
-            else
-            {
-                timeValue = timeValue;
-            }
-            indexofData = indexofData + 1;
-
-            NSString * strDataTime = [NSString stringWithFormat:@"%d",timeValue];
-            NSString * strDataQuery = [NSString stringWithFormat:@"insert into 'Session_data' ('session_id', 'temp', 'timestamp', 'sensor_type', 'sensor_id', 'packet', 'player_id') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\", \"%@\")",strSessionId,strTemp,strDataTime,strSensorType,strSensorId,strPacket, strPlayerId];
-            [[DataBaseManager dataBaseManager] execute:strDataQuery];
-        }
-    }
-    NSLog(@"Final Session Data====>%@",arrSessionData);
-    [self performSelector:@selector(SendRecievedDataAcknowledgement) withObject:nil afterDelay:1];
-    [arrSessionData removeAllObjects];
-    [arrSensorsofSessions removeAllObjects];
-}
--(void)SendRecievedDataAcknowledgement
-{
-    NSInteger intMsg = [@"251" integerValue];
-    NSData * dataMsg = [[NSData alloc] initWithBytes:&intMsg length:1];
-    [[BLEService sharedInstance] WriteValuestoDevice:dataMsg withOcpde:@"16" withLength:@"1" with:globalPeripheral];
-    
-    indexofSession = indexofSession + 1;
-    [self FetchSessionDataOnebyOne];
-}
--(void)generateDummyData
-{
-    tmpDummyDataArr = [[NSMutableArray alloc] init];
-    [tmpDummyDataArr addObject:@"100DFF01000000016c453245000205000000"];
-    [tmpDummyDataArr addObject:@"1005FE546573740000000000000000000000"];
-    [tmpDummyDataArr addObject:@"1010FD014D03015C04012D03019E03016603"];
-    [tmpDummyDataArr addObject:@"100FFC00010A280A290A280A2B0A2D0A2C00"];
-    [tmpDummyDataArr addObject:@"100FFC00020A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00030A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00040A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00050A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00060A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00070A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00080A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC00090A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC000A0A280A290A280A2B0A2D0A2C00"];//
-    [tmpDummyDataArr addObject:@"100FFC000B0A280A290A280A2B0A2D0A2C00"];
-    [tmpDummyDataArr addObject:@"100BFC000C0A280A290A280A2B0000000000"];
-    [tmpDummyDataArr addObject:@"1002FB01"];
-}
-
--(NSString*)stringFroHex:(NSString *)hexStr
-{
-    unsigned long long startlong;
-    NSScanner* scanner1 = [NSScanner scannerWithString:hexStr];
-    [scanner1 scanHexLongLong:&startlong];
-    double unixStart = startlong;
-    NSNumber * startNumber = [[NSNumber alloc] initWithDouble:unixStart];
-    return [startNumber stringValue];
-}
 
 @end
 /*

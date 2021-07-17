@@ -43,17 +43,12 @@
  *  @discussion			This method returns the result of a @link readDeviceRSSI: @/link call.
  */
 -(void)updateSignalImage:(int )RSSI forDevice:(CBPeripheral*)device;
+-(void)batterySignalValueUpdated:(CBPeripheral*)device withBattLevel:(NSString*)batLevel;
 
 @required
-/*!
- *  @method batterySignalValueUpdated:withBattLevel:
- *
- *  @param device	The device providing this update.
- *
- *  @discussion			This method returns the result of a @link readDeviceBattery: @/link call.
- */
--(void)batterySignalValueUpdated:(CBPeripheral*)device withBattLevel:(NSString*)batLevel;
+
 -(void)ReceiveListofSessionsID:(NSDictionary *)dictData;
+-(void)ReceivedNoSessionforStoredSessionsforSycing;
 -(void)RecieveSessionInformation:(NSMutableDictionary *)dictDetail;
 -(void)RecievePlayerNameofSession:(NSString *)strPlayerName;
 -(void)RecieveSensorInformationofSession:(NSMutableArray *)arrSensors;

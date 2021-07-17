@@ -73,7 +73,6 @@
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Session_Table group by player_id"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrPlayers];
 
-    
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         lblLinking.frame = CGRectMake(0, 20, DEVICE_WIDTH, 50);

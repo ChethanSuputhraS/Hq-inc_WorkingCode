@@ -15,12 +15,9 @@
 #import "LinkingVC.h"
 #import "HomeVC.h"
 #import "Header.h"
-#import "AddMonitorVC.h"
-#import "BleTestClass.h"
 #import "StoredSubjectDetailVC.h"
-//#import <<#header#>>
 
-@interface AppDelegate ()
+@interface AppDelegate ()<CLLocationManagerDelegate>
 
 @end
 
@@ -29,46 +26,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    NSInteger intMsg = 17;
-    NSData * data = [[NSData alloc] initWithBytes:&intMsg length:1];
-    const char *byte = [data bytes];
-    unsigned int length = [data length];
-    NSString * strBits;
-
-    for (int i=0; i<length; i++)
-    {
-        char n = byte[i];
-        char buffer[9];
-        buffer[8] = 0; //for null
-        int j = 8;
-        while(j > 0)
-        {
-            if(n & 0x01)
-            {
-                buffer[--j] = '1';
-            } else
-        {
-            buffer[--j] = '0';
-        }
-        n >>= 1;
-        }
-        strBits = [NSString stringWithFormat:@"%s",buffer];
-        NSLog(@"opopoppopop=%@",strBits);
-
-}
-    NSArray * arrDays = [[NSArray alloc] initWithObjects:@"128",@"64",@"32",@"16",@"8",@"4",@"2",@"1", nil];
-    for (int i = 0; i < strBits.length; i++)
-    {
-        NSString * strStatus = [strBits substringWithRange:NSMakeRange((i*1), 1)];
-        NSLog(@"KAKPKPKPK=%@",[strBits substringWithRange:NSMakeRange((i*1), 1)]);
-
-        if ([strStatus isEqualToString:@"1"])
-        {
-            NSLog(@"Value=%@",[arrDays objectAtIndex:i]);
-        }
-    }
-//        [strDecrypted substringWithRange:NSMakeRange(2, 2)]
-        
     globalArr = [[NSMutableArray alloc] init];
     globalStatusHeight = 20;
     textSize = 20;
@@ -83,7 +40,6 @@
     [self generateSecretkey];
     
     arrGlobalSensorsAdded = [[NSMutableArray alloc] init];
-//    StoredSubjectDetailVC * view1 = [[StoredSubjectDetailVC alloc]init];
 
     PlayerSubjVC * view1 = [[PlayerSubjVC alloc]init];
     UINavigationController *navig = [[UINavigationController alloc]initWithRootViewController:view1];
@@ -94,6 +50,8 @@
 
     [self createDatabase];
     
+    [self LocationPermissionMethod];
+
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString * path = [paths objectAtIndex:0];
     NSLog(@"data base path:%@",[path stringByAppendingPathComponent:@"HqIncApp.sqlite"]);
@@ -152,6 +110,7 @@
     [[DataBaseManager dataBaseManager] Create_Alarm_Table];
     [[DataBaseManager dataBaseManager] Create_Session_Table];
     [[DataBaseManager dataBaseManager] Create_SessionData_Table];
+    [[DataBaseManager dataBaseManager] Create_Instant_Reading_Table];
 }
 #pragma mark Hud Method
 -(void)startHudProcess:(NSString *)text
@@ -357,4 +316,63 @@
           UILabel *placeholderLabel = object_getIvar(txtField, ivar);
           placeholderLabel.textColor = color;
 }
+
+#pragma mark :- Location Methods
+-(void)LocationPermissionMethod
+{
+    NSLog(@"%s",__FUNCTION__);
+    /*-----------Start Location Manager----------*/
+    locationManager = [[CLLocationManager alloc] init];
+    locationManager.delegate = self;
+    locationManager.distanceFilter = 0; // whenever we move
+    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation; // 100 m
+    if([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]){
+        [locationManager requestWhenInUseAuthorization];
+    }else{
+        [locationManager startUpdatingLocation];
+    }
+    [locationManager startMonitoringSignificantLocationChanges];
+    // Start heading updates.
+    if ([CLLocationManager locationServicesEnabled]&&[CLLocationManager headingAvailable])
+    {
+        [locationManager startUpdatingLocation];//开启定位服务
+        [locationManager startUpdatingHeading];//开始获得航向数据
+    }
+    /*-------------------------------------------*/
+}
+#pragma mark - Lolcation Update
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"didFailWithError: %@", error);
+    
+    /*UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:@"Failed to Get Your Location" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
+    [alertController addAction:defaultAction];
+    [self.window.rootViewController presentViewController:alertController animated:true completion:nil];*/
+ 
+}
+-(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    switch (status) {
+        case kCLAuthorizationStatusNotDetermined:
+        case kCLAuthorizationStatusRestricted:
+        case kCLAuthorizationStatusDenied:
+        {
+            // do some error handling
+        }
+            break;
+        default:{
+            [locationManager startUpdatingLocation];
+        }
+            break;
+    }
+}
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
+    CLLocation * lastLocation = locations.lastObject;
+    globalLatitude = lastLocation.coordinate.latitude;
+    globalLongitude = lastLocation.coordinate.longitude;
+//    NSLog(@"Location updated===========>>>>>>>>>%f",globalLongitude);
+}
+
 @end

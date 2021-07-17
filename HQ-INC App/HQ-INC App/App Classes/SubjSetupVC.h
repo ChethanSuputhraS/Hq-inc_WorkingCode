@@ -17,9 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SubjSetupVC : UIViewController
 {
-    UILabel *lblSubject, *lbladdsetup, *lblHash, *lblAddAlarms,*lblType2iblSenAlarm, *lblType2ible, *lblHighTempAlarm, *lblLowTempAlarm,*lblDermalSensorAlram,* lblType1,*lblNameNo1,* lblType2,*lblNameNo2,* lblHeader;
+//    UILabel *lblSubject, *lbladdsetup, *lblHash, *lblAddAlarms,*lblType2iblSenAlarm, *lblType2ible, *lblHighTempAlarm, *lblLowTempAlarm,*lblDermalSensorAlram,* lblType1,*lblNameNo1,* lblType2,*lblNameNo2,* lblHeader;
     UIView *addSetUpView, *addSensorView, *addAlarmsView,*viewForSensorNameNum,*viewForAddSensor,*viewAllSensor,*viewForListOfSensor;
-    UIButton  *btnCancel, *btnDone,*btnCamera,*btnSave,*btnCancelSnr,*btnIngsetAddSnr,* btnSkinAddSnr;
+    UIButton  *btnCamera,*btnSave,*btnCancelSnr,*btnIngsetAddSnr,* btnSkinAddSnr;
     UITextView *txtViewNote;
     UIImageView *imgViewProPic;
     UITextField *txtFullName,*txtIngesTmpHigh,*txtlngeslowTmpAl,* txtTimeInterval;
@@ -34,6 +34,18 @@ NS_ASSUME_NONNULL_BEGIN
         float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
     BOOL isCClicked;
     UIView *indiVisualView;
+    
+    UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor, * lblTimeInterval;
+    NSString * strMsg;
+    bool isBtnSkinSelected;
+    bool isRemoveSnrSelect;
+    NSMutableArray *tmpArryMonitor,*arrPlayers,*tmpArrySensor, *arrayPiker;
+    NSInteger selectedIndex;
+
+    UIView *showPickerView,*viewForPiker;
+    UIPickerView *pikerViewIntervalSelect;
+    NSString *selectedFromPicker;
+
 }
 @property (nonatomic) BOOL isFromEdit;
 @property(nonatomic, strong) NSMutableDictionary * dataDict;

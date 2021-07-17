@@ -7,36 +7,9 @@
 //
 
 #import "PlayerSubjVC.h"
-#import "PlayerSubjCELL.h"
-#import "SubjDetailsVC.h"
-#import "LinkingVC.h"
-#import "SubjSetupVC.h"
-#import "GlobalSettingVC.h"
-#import "CollectionCustomCell.h"
-#import "URLManager.h"
-#import <MessageUI/MessageUI.h>
 
-
-@interface PlayerSubjVC ()<UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,UIPickerViewDataSource,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UIGestureRecognizerDelegate,UITextViewDelegate,URLManagerDelegate,MFMailComposeViewControllerDelegate,FCAlertViewDelegate>
+@interface PlayerSubjVC ()
 {
-    UILabel *lblName,*lblplayer,*lblcore,*lblType1;
-    UITextField *txtName,*txtHash;
-    UIView *listView,*gridView,*viewForOrderPiker;
-    UIView *showPickerView,*showPickerforOrder;
-    NSString *selectedFromPicker, *StrikePIker;
-    UIButton * btnMenu,* btnGridView,*btnLink;
-    BOOL isListClicked, isOneDataAvail, isGridSelected;
-    UICollectionView *_collectionView;;
-    UIImageView *imgViewListButton;
-    UIPickerView *pikerViewTmpSelect,*pikerViewOderSelect;
-    NSMutableArray * arrSubjects;
-    NSMutableArray * arrayNotes;
-    NSMutableDictionary * DictData;
-    long selectedIndex,autoSelectedIndex;
-    NSString *orderSelected;
-    NSNumber *intTemp;
-        float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
-    BOOL isCClicked;
 }
 
 @end
@@ -51,91 +24,85 @@
     self.navigationController.navigationBarHidden = true;
     self.view.backgroundColor = UIColor.blackColor;
 
-    navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 130)];
+    // =============   TOP VIEW ===============
+    UIView * navigViewTop = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, 130)];
     navigViewTop.backgroundColor = UIColor.clearColor;
     [self.view addSubview:navigViewTop];
             
     UIColor * lbltxtclr = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 48)];
+    UILabel * lblPLayerSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVICE_WIDTH, 48)];
     [self setLabelProperties:lblPLayerSubject withText: @"Player / Subject" backColor:UIColor.clearColor textColor:lbltxtclr textSize:25];
     lblPLayerSubject.textAlignment = NSTextAlignmentCenter;
     [navigViewTop addSubview:lblPLayerSubject];
             
     UIColor *allBtnClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    btnExportData = [[UIButton alloc]initWithFrame:CGRectMake(10, 28, 150, 44)];
+    UIButton * btnExportData = [[UIButton alloc]initWithFrame:CGRectMake(10, 28, 150, 44)];
     [self setButtonProperties:btnExportData withTitle:@"Export Data" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnExportData addTarget:self action:@selector(btnExportDataClick) forControlEvents:UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnExportData];
             
     int yyBottom = 76;
-    btnGlobalRead = [[UIButton alloc]initWithFrame:CGRectMake(10, yyBottom, 150, 44)];
+    UIButton * btnGlobalRead = [[UIButton alloc]initWithFrame:CGRectMake(10, yyBottom, 150, 44)];
     [self setButtonProperties:btnGlobalRead withTitle:@"Settings"  backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnGlobalRead addTarget:self action:@selector(btnGlobalReadClick) forControlEvents:UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnGlobalRead];
              
-    btnNotes = [[UIButton alloc]initWithFrame:CGRectMake(170, yyBottom, 70, 44)];
+    UIButton * btnNotes = [[UIButton alloc]initWithFrame:CGRectMake(170, yyBottom, 70, 44)];
     [self setButtonProperties:btnNotes withTitle:@"Notes" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
     [btnNotes addTarget:self action:@selector(btnNotesClick) forControlEvents:UIControlEventTouchUpInside];
-//    btnNotes.frame = CGRectMake(170, yyBottom, 18, 4.85);
-//    btnNotes.layer.cornerRadius = 2;
-//    btnNotes.layer.masksToBounds = YES;
     [navigViewTop addSubview:btnNotes];
                 
-    lblFilter = [[UILabel alloc]initWithFrame:CGRectMake(260, yyBottom, 90, 44)];
+    UILabel * lblFilter = [[UILabel alloc]initWithFrame:CGRectMake(260, yyBottom, 90, 44)];
     [self setLabelProperties:lblFilter withText:@"Filter:" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:17];
     [navigViewTop addSubview:lblFilter];
     
-    btnSelect = [[UIButton alloc]initWithFrame:CGRectMake(305, yyBottom, 150, 44)];
-    [self setButtonProperties:btnSelect withTitle:@"Select" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
-    [btnSelect addTarget:self action:@selector(btnSelectClick) forControlEvents:UIControlEventTouchUpInside];
-    [navigViewTop addSubview:btnSelect];
+    btnFilter = [[UIButton alloc]initWithFrame:CGRectMake(305, yyBottom, 150, 44)];
+    [self setButtonProperties:btnFilter withTitle:@"Select" backColor:allBtnClor textColor:UIColor.whiteColor txtSize:17];
+    [btnFilter addTarget:self action:@selector(btnFilterClick) forControlEvents:UIControlEventTouchUpInside];
+    [navigViewTop addSubview:btnFilter];
 
-    lblOrder = [[UILabel alloc]initWithFrame:CGRectMake(475, yyBottom, 90, 44)];
+    UILabel * lblOrder = [[UILabel alloc]initWithFrame:CGRectMake(475, yyBottom, 90, 44)];
     [self setLabelProperties:lblOrder withText:@"Order" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:17];
     [navigViewTop addSubview:lblOrder];
     
-    btnOrder = [[UIButton alloc]initWithFrame:CGRectMake(525, yyBottom, 50, 40)];
+    UIButton * btnOrder = [[UIButton alloc]initWithFrame:CGRectMake(525, yyBottom, 50, 40)];
     [self setButtonProperties:btnOrder withTitle:@"" backColor:allBtnClor textColor:UIColor.clearColor txtSize:17];
     UIImage *btnOrimg = [UIImage imageNamed:@"DownArrow.png.png"];
     [btnOrder setImage:btnOrimg forState:normal];
     [btnOrder addTarget:self action:@selector(btnOrderClick) forControlEvents: UIControlEventTouchUpInside];
     [navigViewTop addSubview:btnOrder];
 
-    lblOutSideTmp = [[UILabel alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-300, 45, 200, 30)];
+    UILabel * lblOutSideTmp = [[UILabel alloc]initWithFrame:CGRectMake(navigViewTop.frame.size.width-300, 45, 200, 30)];
     [self setLabelProperties:lblOutSideTmp withText:@"Outside Temp / Humidity :" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
     lblOutSideTmp.textAlignment = NSTextAlignmentRight;
     [navigViewTop addSubview:lblOutSideTmp];
     
-    lblOutSidTem = [[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-105, 45, 60, 30)];
-    [self setLabelProperties:lblOutSidTem withText:@"22ºC /" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
-    lblOutSidTem.textAlignment = NSTextAlignmentRight;
-    [navigViewTop addSubview:lblOutSidTem];
-    
-    lblOutSidHumid = [[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-62, 45, 60, 30)];
-    [self setLabelProperties:lblOutSidHumid withText:@"76%" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
-    lblOutSidHumid.textAlignment = NSTextAlignmentRight;
-    [navigViewTop addSubview:lblOutSidHumid];
+    lblOursidetempHumidity = [[UILabel alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-105, 45, 60, 30)];
+    [self setLabelProperties:lblOursidetempHumidity withText:@"22ºC /" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:15];
+    lblOursidetempHumidity.textAlignment = NSTextAlignmentRight;
+    [navigViewTop addSubview:lblOursidetempHumidity];
            
-    int aa = navigViewTop.frame.size.width-btnSelect.frame.size.width-btnOrder.frame.size.width+20;
+    int aa = navigViewTop.frame.size.width-btnFilter.frame.size.width-btnOrder.frame.size.width+20;
+    
     UIButton * btnLink = [[UIButton alloc]initWithFrame:CGRectMake(aa, yyBottom, 50, 50)];
     [self setButtonProperties:btnLink withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.clearColor txtSize:20];
     [btnLink addTarget:self action:@selector(btnLinkClick) forControlEvents:UIControlEventTouchUpInside];
-    UIImage *btnimg = [UIImage imageNamed:@"linked.png"];
-    [btnLink setImage:btnimg forState:normal];
+    [btnLink setImage:[UIImage imageNamed:@"linked.png"] forState:normal];
     [navigViewTop addSubview:btnLink];
     
-    btnlistView = [[UIButton alloc]initWithFrame:CGRectMake(aa+103, yyBottom, 35, 50)];
-    btnlistView.backgroundColor = UIColor.clearColor;
-    [btnlistView addTarget:self action:@selector(btnlistViewClick) forControlEvents:UIControlEventTouchUpInside];
-    [btnlistView setImage:[UIImage imageNamed:@"List.png"] forState:normal];
-    [navigViewTop addSubview:btnlistView];
+    btnList = [[UIButton alloc]initWithFrame:CGRectMake(aa+103, yyBottom, 35, 50)];
+    btnList.backgroundColor = UIColor.clearColor;
+    [btnList addTarget:self action:@selector(btnListClick) forControlEvents:UIControlEventTouchUpInside];
+    [btnList setImage:[UIImage imageNamed:@"List.png"] forState:normal];
+    [navigViewTop addSubview:btnList];
         
-    btnGridView = [[UIButton alloc]initWithFrame:CGRectMake(aa+140, yyBottom, 35, 50)];
-    btnGridView.backgroundColor = UIColor.clearColor;
-    [btnGridView addTarget:self action:@selector(btnGridClick) forControlEvents:UIControlEventTouchUpInside];
-    [btnGridView setImage:[UIImage imageNamed:@"GridSelected.png"] forState:normal];
-    [navigViewTop addSubview:btnGridView];
+    btnGrid = [[UIButton alloc]initWithFrame:CGRectMake(aa+140, yyBottom, 35, 50)];
+    btnGrid.backgroundColor = UIColor.clearColor;
+    [btnGrid addTarget:self action:@selector(btnGridClick) forControlEvents:UIControlEventTouchUpInside];
+    [btnGrid setImage:[UIImage imageNamed:@"GridSelected.png"] forState:normal];
+    [navigViewTop addSubview:btnGrid];
     
+    // ========== LIST & GRID VIEW ===============
     gridView = [[UIView alloc]init];
     gridView.frame =CGRectMake(0, 130, DEVICE_WIDTH, DEVICE_HEIGHT-130);
     gridView.backgroundColor = UIColor.blackColor;
@@ -143,7 +110,7 @@
     [self.view addSubview:gridView];
     
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-       _collectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT-130) collectionViewLayout:layout];
+    _collectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT-130) collectionViewLayout:layout];
     [_collectionView setDataSource:self];
     [_collectionView setDelegate:self];
 
@@ -171,19 +138,17 @@
     arrayPickerOrderBy =[[NSMutableArray alloc]initWithObjects:@"Name",@"Number",@"Temperature", nil];
     
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
-    initWithTarget:self action:@selector(handleLongPress:)];
+    initWithTarget:self action:@selector(handleLongPresstoDeletefromList:)];
     lpgr.minimumPressDuration = 1.2; //seconds
     lpgr.delegate = self;
     [tblPlayerList addGestureRecognizer:lpgr];
     
     UILongPressGestureRecognizer *longPCollection = [[UILongPressGestureRecognizer alloc]
-    initWithTarget:self action:@selector(handleLongPress1:)];
+    initWithTarget:self action:@selector(handleLongPresstoDeletefromCollection:)];
     longPCollection.minimumPressDuration = 1.2; //seconds
     longPCollection.delegate = self;
     [_collectionView addGestureRecognizer:longPCollection];
 
- 
-    
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         yyBottom = 90;
@@ -202,8 +167,8 @@
         lblFilter.frame = CGRectMake(135, yyBottom, 60, 35);
         lblFilter.font = [UIFont fontWithName:CGRegular size:textSize-6];
         
-        btnSelect.frame = CGRectMake(170, yyBottom, 70, 35);
-        btnSelect.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        btnFilter.frame = CGRectMake(170, yyBottom, 70, 35);
+        btnFilter.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
 
         lblOrder.frame = CGRectMake(245, yyBottom, 40, 35);
         lblOrder.font = [UIFont fontWithName:CGRegular size:textSize-6];
@@ -218,18 +183,15 @@
         lblOutSideTmp.frame = CGRectMake(navigViewTop.frame.size.width-220, 35, 150, 30);
         lblOutSideTmp.font = [UIFont fontWithName:CGRegular size:textSize-8];
         
-        lblOutSidTem.frame = CGRectMake(navigViewTop.frame.size.width-80, 35, 50, 30);
-        lblOutSidTem.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        lblOursidetempHumidity.frame = CGRectMake(navigViewTop.frame.size.width-80, 35, 50, 30);
+        lblOursidetempHumidity.font = [UIFont fontWithName:CGRegular size:textSize-8];
         
-        lblOutSidHumid.frame = CGRectMake(navigViewTop.frame.size.width-50, 35, 50, 30);
-        lblOutSidHumid.font = [UIFont fontWithName:CGRegular size:textSize-8];
-
         int aa = navigViewTop.frame.size.width-50;
         btnLink = [[UIButton alloc]initWithFrame:CGRectMake(aa, yyBottom, 44, 35)];
         
-        btnlistView.frame = CGRectMake(navigViewTop.frame.size.width-70, 55, 35, 35);
+        btnList.frame = CGRectMake(navigViewTop.frame.size.width-70, 55, 35, 35);
 
-        btnGridView.frame = CGRectMake(navigViewTop.frame.size.width-40, 55, 35, 35);
+        btnGrid.frame = CGRectMake(navigViewTop.frame.size.width-40, 55, 35, 35);
 
 //        gridView.frame =CGRectMake(0, 130, DEVICE_WIDTH, DEVICE_HEIGHT-130);
 //        
@@ -266,10 +228,6 @@
     [_collectionView reloadData];
     [tblPlayerList reloadData];
 }
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
 -(void)SetupForViewWillApeear
 {
     arrSubjects = [[NSMutableArray alloc] init];
@@ -304,25 +262,23 @@
         
         intTemp = [NSNumber numberWithFloat:[[[arrSubjects objectAtIndex:i] valueForKey:@"ing_highF"] floatValue]];
         [[arrSubjects objectAtIndex:i] setObject:intTemp forKey:@"IntTemptur"];
-
     }
     
     [self DataFromnDatabase];
-//    [self getOutSideTempAndHumidity];
+    [self getOutSideTempAndHumidity];
 }
 #pragma mark - Collection Methods
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-        return arrSubjects.count+1;
+    return arrSubjects.count+1;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     CollectionCustomCell *cell=[collectionView  dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
     cell.backgroundColor=[UIColor whiteColor];
     
-    
-      CGFloat vWidth = (DEVICE_WIDTH/3)-10;
-      CGFloat vHeight = vWidth + 20;
+    CGFloat vWidth = (DEVICE_WIDTH/3)-10;
+    CGFloat vHeight = vWidth + 20;
     
     if (arrSubjects.count > indexPath.row)
     {
@@ -332,7 +288,6 @@
         cell.lblTransView.hidden = NO;
         cell.lblName.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"name"];
         cell.lblNo.text = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"number"];
-        
         
         if ([[APP_DELEGATE checkforValidString:[[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"latestSkintempF"]] isEqualToString:@"NA"])
         {
@@ -362,9 +317,7 @@
                 cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºC\nSkin",floatCore];
                 cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºC\nCore",floatSkin];//ºF\nSkin Temp
             }
-
         }
-
 
         UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageCollection"];
         
@@ -377,43 +330,12 @@
             cell.imgViewpProfile.image = imgProf;//Here Default Profile Photo will disply
         }
         
-        int ii ;
-        ii = cell.lblCoreTmp.text.intValue;
-           
-        if (ii<=99 && ii>96)
-        {
-            cell.lblTransView.backgroundColor = [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:0.8];
-            cell.lblCoreTmp.textColor = UIColor.whiteColor;
-            cell.lblSkinTmp.textColor = UIColor.whiteColor;
-            cell.lblName.backgroundColor = [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:1];
-            cell.lblNo.backgroundColor =  [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:1];
-            cell.lblNo.layer.borderWidth = 1;
-            cell.lblName.layer.borderWidth = 1;
-            cell.lblCoreTmp.hidden = false;
-            cell.lblSkinTmp.hidden = false;
-        }
-        else if (ii >= 100)
-        {
-            cell.lblTransView.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:0.8];
-            cell.lblCoreTmp.textColor = UIColor.whiteColor;
-            cell.lblSkinTmp.textColor = UIColor.whiteColor;
-            cell.lblName.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:1];
-            cell.lblNo.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:1];
-            cell.lblNo.layer.borderWidth = 1;
-            cell.lblName.layer.borderWidth = 1;
-            cell.lblCoreTmp.hidden = false;
-            cell.lblSkinTmp.hidden = false;
-        }
-        else
-        {
-            cell.lblCoreTmp.hidden = false;
-            cell.lblSkinTmp.hidden = false;
-        }
-        
+        int ii = cell.lblCoreTmp.text.intValue;
+        [cell UpdateCellforValue:ii];
+
         if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
         {
             cell.imgViewpProfile.frame = CGRectMake(0, 0,vWidth-0, vHeight  - 30);
-
         }
     }
     else
@@ -453,8 +375,6 @@
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-
-    //        [self InsertRecordTbleData];
     if (arrSubjects.count > indexPath.row)
     {
         globalSubjectDetailVC = [[SubjDetailsVC alloc]init];
@@ -467,7 +387,6 @@
         globalSbuSetupVC.isFromEdit = NO;
         [self.navigationController pushViewController:globalSbuSetupVC animated:true];
     }
-    
     NSLog(@"selected index=%ld %ld", (long)indexPath.item, (long)indexPath.row);
 }
 #pragma mark - Tableview Methods
@@ -491,7 +410,6 @@
     static NSString *cellP = @"CellProfile";
     PlayerSubjCELL *cell = [tableView dequeueReusableCellWithIdentifier:cellP];
     cell = [[PlayerSubjCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellP];
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     cell.lblName.text = @"---";
     cell.lblPlayer.text = @"---";
@@ -507,7 +425,6 @@
         {
             cell.lblCoreTmp.text = @"-NA-";
             cell.lblSkinTmp.text = @"-NA-";//ºF\nSkin Temp
-
         }
         else
         {
@@ -531,12 +448,7 @@
                 cell.lblCoreTmp.text = [NSString stringWithFormat:@"%.02fºC\nSkin",floatCore];
                 cell.lblSkinTmp.text = [NSString stringWithFormat:@"%.02fºC\nCore",floatSkin];//ºF\nSkin Temp
             }
-
         }
-        
-      
-  
-        
         cell.imgViewpProfile.frame = CGRectMake(40, 5, 70, 70);
         cell.imgViewpProfile.contentMode = UIViewContentModeScaleAspectFill;
         cell.imgViewpProfile.layer.masksToBounds = YES;
@@ -546,7 +458,6 @@
             cell.imgViewpProfile.frame = CGRectMake(5, 0, 30, 40);
             cell.lblLine.frame = CGRectMake(0, 39, self.view.frame.size.width, 1);
         }
-        
         
         UIImage * imgProf = [[arrSubjects objectAtIndex:indexPath.row] objectForKey:@"profileImageTable"];
         if (imgProf != nil)
@@ -578,44 +489,14 @@
        {
            cell.backgroundColor = UIColor.whiteColor;
        }
-    // above code css commeted
+
     cell.lblLine.frame = CGRectMake(0, 79, self.view.frame.size.width, 1);
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         cell.lblLine.frame = CGRectMake(0, 39, self.view.frame.size.width, 1);
     }
-    int i ;
-    i =  cell.lblCoreTmp.text.intValue;
-    
-     if (i<=99 && i>96)
-    {
-        cell.backgroundColor = [UIColor blueColor];
-        cell.lblName.textColor = UIColor.whiteColor;
-        cell.lblPlayer.textColor = UIColor.whiteColor;
-        cell.lblCoreTmp.textColor = UIColor.whiteColor;
-        cell.lblSkinTmp.textColor = UIColor.whiteColor;
-        cell.lblLine.hidden = false;
-    }
-    else if (i >= 100)
-    {
-        cell.backgroundColor = [UIColor redColor];
-        cell.lblName.textColor = UIColor.whiteColor;
-        cell.lblPlayer.textColor = UIColor.whiteColor;
-        cell.lblCoreTmp.textColor = UIColor.whiteColor;
-        cell.lblSkinTmp.textColor = UIColor.whiteColor;
-        cell.lblLine.hidden = false;
-    }
-    else
-    {
-        cell.backgroundColor = UIColor.whiteColor;
-        cell.lblName.textColor = UIColor.blackColor;
-        cell.lblPlayer.textColor = UIColor.blackColor;
-        cell.lblCoreTmp.textColor = UIColor.blackColor;
-        cell.lblSkinTmp.textColor = UIColor.blackColor;
-        cell.lblLine.hidden = false;
-    }
-    
-    
+    int i =  cell.lblCoreTmp.text.intValue;
+    [cell UpdateCellforValue:i];
     
     return cell;
 }
@@ -690,53 +571,33 @@
     
     return 50;
 }
-#pragma mark- Img Scalling
--(UIImage *)scaleMyImage:(UIImage *)newImg withNewWidth:(double)newWidth newHeight:(double)newHeight
-{
-    double originalW = newImg.size.width;
-    double originalH = newImg.size.height;
-    double updateH = (newHeight * originalH)/ originalW;
-    
-    UIGraphicsBeginImageContext(CGSizeMake(newWidth,updateH));
-    [newImg drawInRect: CGRectMake(0, 0, newWidth, updateH)];
-    UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return smallImage;
-}
-- (NSString *)documentsPathForFileName:(NSString *)name
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-    NSString *documentsPath = [paths objectAtIndex:0];
-    return [documentsPath stringByAppendingPathComponent:name];
-}
-
 #pragma mark - Buttons NavigView
 -(void)btnGridClick
 {
      if (isGridSelected == true)
     {
         isGridSelected = true;
-        btnGridView.enabled = true;
-        [btnlistView setImage:[UIImage imageNamed:@"List.png"] forState:UIControlStateNormal];
-        [btnGridView setImage:[UIImage imageNamed:@"GridSelected.png"] forState:UIControlStateNormal];
+        btnGrid.enabled = true;
+        [btnList setImage:[UIImage imageNamed:@"List.png"] forState:UIControlStateNormal];
+        [btnGrid setImage:[UIImage imageNamed:@"GridSelected.png"] forState:UIControlStateNormal];
         gridView.hidden = false;
         listView.hidden = true;
     }
     else if (isGridSelected == true)
     {
         isGridSelected = false;
-        btnGridView.enabled = false;
-        [btnlistView setImage:[UIImage imageNamed:@"ListSelected.png"] forState:UIControlStateNormal];
-        [btnGridView setImage:[UIImage imageNamed:@"Grid.png"] forState:UIControlStateNormal];
+        btnGrid.enabled = false;
+        [btnList setImage:[UIImage imageNamed:@"ListSelected.png"] forState:UIControlStateNormal];
+        [btnGrid setImage:[UIImage imageNamed:@"Grid.png"] forState:UIControlStateNormal];
         gridView.hidden = true;
         listView.hidden = false;
     }
 }
--(void)btnlistViewClick
+-(void)btnListClick
 {
-    btnGridView.enabled = true;
-    [btnGridView setImage:[UIImage imageNamed:@"Grid.png"] forState:UIControlStateNormal];
-    [btnlistView setImage:[UIImage imageNamed:@"ListSelected.png"] forState:UIControlStateNormal];
+    btnGrid.enabled = true;
+    [btnGrid setImage:[UIImage imageNamed:@"Grid.png"] forState:UIControlStateNormal];
+    [btnList setImage:[UIImage imageNamed:@"ListSelected.png"] forState:UIControlStateNormal];
     gridView.hidden = true;
     listView.hidden = false;
 }
@@ -749,7 +610,7 @@
 {
     [self setUpForNotesButton];
 }
--(void)btnSelectClick
+-(void)btnFilterClick
 {
 //    [viewForPiker removeFromSuperview];
     viewForPiker = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT)];
@@ -847,66 +708,6 @@
         [self exportCSV];
     }
 }
--(void)exportCSV
-{
-    NSArray *Name = [arrSubjects valueForKey:@"name"];
-    NSArray *Number = [arrSubjects valueForKey:@"number"];
-    NSArray *high_Ingest = [arrSubjects valueForKey:@"ing_highF"];
-    NSArray *low_Ingest = [arrSubjects valueForKey:@"ing_lowF"];
-    NSArray *high_drml = [arrSubjects valueForKey:@"drml_highF"];
-    NSArray *low_drml = [arrSubjects valueForKey:@"drml_lowF"];
-
-
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
-    NSString *documentsDir = [paths objectAtIndex:0];
-    NSString *root = [documentsDir stringByAppendingPathComponent:@"PlayerData.csv"];
-        
-        NSMutableString *csv = [[NSMutableString alloc] initWithCapacity:0];
-        for (int i=0; i<1; i++)
-        {
-         if (i == 0)
-         {
-             [csv appendFormat:@"Name , Number , High_ingest , Low_Ingest , high_dermal , Low_dermal \n"];
-         }
-        [csv appendFormat:@"%@,%@,%@,%@,%@,%@\n", Name[i], Number[i], high_Ingest[i], low_Ingest[i],high_drml[i],low_drml[i]];
-        }
-        [csv writeToFile:root atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-
-        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:root]] applicationActivities:nil];
-        
-        
-        if ([activityController respondsToSelector:@selector(popoverPresentationController)] )
-        {
-            activityController.popoverPresentationController.sourceRect = CGRectMake(UIScreen.mainScreen.bounds.size.width / 2, UIScreen.mainScreen.bounds.size.height / 2, 00, 0);//
-            activityController.popoverPresentationController.sourceView = self.view;
-            activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
-        }
-    
-        [self.navigationController presentViewController:activityController animated:YES completion:nil];
-  
-    
-}
-- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
-{
-    switch (result)
-    {
-        case MFMailComposeResultCancelled:
-            NSLog(@"Mail cancelled");
-            break;
-        case MFMailComposeResultSaved:
-            NSLog(@"Mail saved");
-            break;
-        case MFMailComposeResultSent:
-            NSLog(@"Mail sent");
-            break;
-        case MFMailComposeResultFailed:
-            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
-            break;
-        default:
-            break;
-    }
-    [self dismissViewControllerAnimated:YES completion:NULL];
-}
 //MARK: piker view
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView;
 {
@@ -952,16 +753,12 @@
 {
     if ([selectedFromPicker isEqual:@""])
     {
-        [btnSelect setTitle:@"Select" forState:UIControlStateNormal];
+        [btnFilter setTitle:@"Select" forState:UIControlStateNormal];
     }
     else if ([selectedFromPicker isEqual:selectedFromPicker])
     {
-        [btnSelect setTitle:selectedFromPicker forState:UIControlStateNormal];
+        [btnFilter setTitle:selectedFromPicker forState:UIControlStateNormal];
     }
-    // after slected by
-    // [tblPlayerList reloadData];
-    
-    
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
          self-> showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
@@ -972,8 +769,8 @@
     })];
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
-        btnSelect.titleLabel.numberOfLines = 2;
-        btnSelect.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
+        btnFilter.titleLabel.numberOfLines = 2;
+        btnFilter.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-8];
         [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
          {
              self-> showPickerView.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
@@ -1010,7 +807,7 @@
 }
 -(void)btnCancelClick
 {
-       [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
          self-> showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
      }
@@ -1033,7 +830,7 @@
 }
 
 #pragma mark- long Press
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+-(void)handleLongPresstoDeletefromList:(UILongPressGestureRecognizer *)gestureRecognizer
 {
     CGPoint p = [gestureRecognizer locationInView:self->tblPlayerList];
     CGPoint pc = [gestureRecognizer locationInView:self->_collectionView];
@@ -1087,7 +884,7 @@
         }
     }
 }
--(void)handleLongPress1:(UILongPressGestureRecognizer *)gestureRecognizer
+-(void)handleLongPresstoDeletefromCollection:(UILongPressGestureRecognizer *)gestureRecognizer
 {
     CGPoint pc = [gestureRecognizer locationInView:self->_collectionView];
     NSIndexPath * indexP = [self -> _collectionView indexPathForItemAtPoint:pc];
@@ -1137,8 +934,8 @@
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    
 }
+#pragma mark :- Picker Viwe Code
 -(void)setupforPickerOrder
 {
     [viewForOrderPiker removeFromSuperview];
@@ -1158,7 +955,6 @@
     bgViewOrder.frame  = CGRectMake(0, 0, showPickerforOrder.frame.size.width, 70);
     bgViewOrder.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [showPickerforOrder addSubview:bgViewOrder];
-    
     
     UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, showPickerforOrder.frame.size.width , 70)];
     lblHeader.text = @"Order by";
@@ -1196,11 +992,9 @@
     NSInteger indexSelected = [[NSUserDefaults standardUserDefaults] integerForKey:@"sortSelectedIndex"];
     [pikerViewOderSelect selectRow:indexSelected inComponent:0 animated:YES];
     
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-       {
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self->showPickerforOrder.frame = CGRectMake(200, (DEVICE_HEIGHT-300)/2, DEVICE_WIDTH-400, 400);
-       }
-                    completion:NULL];
+       }completion:NULL];
     
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
@@ -1222,7 +1016,6 @@
             self->showPickerforOrder.frame = CGRectMake(10, (DEVICE_HEIGHT-250)/2, DEVICE_WIDTH-20, 250);
            }
                         completion:NULL];
-
     }
 }
 #pragma mark- Buttons Order
@@ -1230,20 +1023,25 @@
 {
     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
      {
+        
          self-> showPickerforOrder.frame = CGRectMake(200, DEVICE_HEIGHT, DEVICE_WIDTH-400, 400);
-     }
-                    completion:(^(BOOL finished){
-                    [self-> viewForOrderPiker removeFromSuperview];
+        
+     }completion:(^(BOOL finished){
+         
+         [self-> viewForOrderPiker removeFromSuperview];
+         
     })];
     
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
-        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-         {
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            
              self-> showPickerforOrder.frame = CGRectMake(10, DEVICE_HEIGHT, DEVICE_WIDTH-20, 250);
-         }
-                        completion:(^(BOOL finished){
+            
+         }completion:(^(BOOL finished){
+             
                         [self-> viewForOrderPiker removeFromSuperview];
+             
         })];
     }
     
@@ -1314,12 +1112,6 @@
     viewforShowNotes.clipsToBounds = true;
     [viewForNotes addSubview:viewforShowNotes];
     
-    UILabel * lblNote = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewforShowNotes.frame.size.width, 45)];
-    [self setLabelProperties:lblNote withText:@"Note" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:40];
-    lblNote.textAlignment = NSTextAlignmentCenter;
-    lblNote.font = [UIFont fontWithName:CGRegular size:40];
-//    [viewforShowNotes addSubview:lblNote];
-    
     UIView * viewBgNote = [[UIView alloc]initWithFrame:CGRectMake(0, 0, viewforShowNotes.frame.size.width, 70)];
     viewBgNote.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [viewforShowNotes addSubview:viewBgNote];
@@ -1330,15 +1122,6 @@
     btnNoteCancel.layer.cornerRadius = 5;
     [viewBgNote addSubview:btnNoteCancel];
     
-//    tblNotesView = [[UITableView alloc]init];
-//    tblNotesView.frame = CGRectMake(0, 70, viewforShowNotes.frame.size.width, viewforShowNotes.frame.size.height-70);
-//    tblNotesView.backgroundColor = UIColor.greenColor;
-//    tblNotesView.delegate = self;
-//    tblNotesView.dataSource = self;
-//    tblNotesView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//    [viewforShowNotes addSubview:tblNotesView];
-    
-        
     UIButton *btnNoteDone = [[UIButton alloc]initWithFrame:CGRectMake(viewforShowNotes.frame.size.width-100, 0, 100, 70)];
     [self setButtonProperties:btnNoteDone withTitle:@"Done" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
     [btnNoteDone addTarget:self action:@selector(btnNoteDoneClick) forControlEvents:UIControlEventTouchUpInside];
@@ -1358,39 +1141,26 @@
     [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
     [txtViewNotes addSubview:lblPlceholdNote];
     
-    
-    
-   NSMutableArray * arrNotes = [[NSMutableArray alloc] init];
+    NSMutableArray * arrNotes = [[NSMutableArray alloc] init];
     NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
     [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes]; // from database data
 
     if ([arrNotes count] >0)
     {
         txtViewNotes.text =  [[arrNotes objectAtIndex:0] valueForKey:@"notes"];
-
-            lblPlceholdNote.text = @"";
+        lblPlceholdNote.text = @"";
     }
-//    if (![[arrNotes valueForKey:@"notes"] isEqual:@""])
-//    {
-//       txtViewNotes.text =  [[NSUserDefaults standardUserDefaults] valueForKey:@"Notes"];;
-//    }
-//    else
-//    {
-//        [self setLabelProperties:lblPlceholdNote withText:@"Write a Notes here" backColor:UIColor.clearColor textColor:UIColor.lightGrayColor textSize:25];
-//    }
     
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-        {
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        
         self->viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT-500)/2, DEVICE_WIDTH-200, 500);
-        }
-                    completion:NULL];
+        
+        }completion:NULL];
     
     
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         viewforShowNotes.frame  = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
-        lblNote.frame = CGRectMake(0, 0, viewforShowNotes.frame.size.width, 40);
-        lblNote.font = [UIFont fontWithName:CGRegular size:textSize-6];
         viewBgNote.frame = CGRectMake(0, 0, viewforShowNotes.frame.size.width, 40);
         
         btnNoteCancel.frame = CGRectMake(0, 0, 60, 40);
@@ -1403,7 +1173,6 @@
 
         lblPlceholdNote.frame = CGRectMake(5, 0, txtViewNotes.frame.size.width, 40);
         lblPlceholdNote.font = [UIFont fontWithName:CGRegular size:textSize-6];
-        
         
         [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
             {
@@ -1422,29 +1191,21 @@
     }
     else
     {
-        NSMutableArray * ArrayNoteIn;
         NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
-        [ArrayNoteIn addObject:dict];
-        
         [dict setObject:txtViewNotes.text forKey:@"notes"];
-//        NSLog(@"%@", dict);
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"dd-MM-yyy hh:mm aa"];
-        NSLog(@"%@",[dateFormatter stringFromDate:[NSDate date]]);
         
         NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
 
-        
-        NSString * strName = [APP_DELEGATE checkforValidString:[dict valueForKey:@"name"]];
+        NSString * strName = @"NA";
         NSString * strNote = [APP_DELEGATE checkforValidString:[dict valueForKey:@"notes"]];
-        
           
         NSMutableArray * arrNotes = [[NSMutableArray alloc] init];
-         NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
-         [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes];
+        NSString * sqlquery = [NSString stringWithFormat:@"select * from Notes_Table"];
+        [[DataBaseManager dataBaseManager] execute:sqlquery resultsArray:arrNotes];
         
-
         if ([arrNotes count] > 0)
         {
             NSString * requestStr1 =    [NSString stringWithFormat:@"update Notes_Table set name = \"%@\", notes = '%@', date = '%@' ",strName,strNote,strTimeHour];
@@ -1456,8 +1217,6 @@
             [[DataBaseManager dataBaseManager] executeSw:requestStr1];
         }
   
-//        NSLog(@"%@", requestStr1);
-        
         FCAlertView *alert = [[FCAlertView alloc] init];
         alert.colorScheme = [UIColor blackColor];
         [alert makeAlertTypeSuccess];
@@ -1469,39 +1228,26 @@
                     andButtons:nil];
         [alert doneActionBlock:^{
     
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self-> viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500);}
+                    completion:(^(BOOL finished){
+        [self-> viewForNotes removeFromSuperview];})];
             
-            [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-            {
-                self-> viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500);
+    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
+    {
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            self-> viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);}
+                        completion:(^(BOOL finished){
+                    [self-> viewForNotes removeFromSuperview];})];
             }
-                            completion:(^(BOOL finished)
-            {
-                [self-> viewForNotes removeFromSuperview];
-            })];
-            
-            if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
-            {
-                [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-                {
-                    self-> viewforShowNotes.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
-                }
-                                completion:(^(BOOL finished)
-                {
-                    [self-> viewForNotes removeFromSuperview];
-                })];
-            }
-            
         }];
     }
 }
 -(void)btnNoteCancelClick
 {
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-    {
-        self-> viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500);
-    }
-                    completion:(^(BOOL finished)
-    {
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self-> viewforShowNotes.frame = CGRectMake(100, (DEVICE_HEIGHT), DEVICE_WIDTH-200, 500);}
+                    completion:(^(BOOL finished){
         [self-> viewForNotes removeFromSuperview];
     })];
     
@@ -1536,23 +1282,35 @@
 }
 -(void)getOutSideTempAndHumidity
 {
-    DictData = [[NSMutableDictionary alloc] init];
+    dictData = [[NSMutableDictionary alloc] init];
     URLManager *mangerl = [[URLManager alloc]init];
     mangerl.delegate = self;
-    NSString *strServerUrl = @"https://api.openweathermap.org/data/2.5/weather?lat=12.3412978&lon=76.612816&appid=e7b2054dc37b1f464d912c00dd309595&units=Metric"; // pass URL here
-    [mangerl getUrlCall:strServerUrl withParameters:DictData];
+//    NSString *strServerUrl = [NSString stringWithFormat:@"https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&appid=e7b2054dc37b1f464d912c00dd309595&units=Metric",globalLatitude,globalLongitude]; ; // pass URL here
+    NSString *strServerUrl = @"https://api.openweathermap.org/data/2.5/weather?lat=12.3412978&lon=76.612816&appid=e7b2054dc37b1f464d912c00dd309595&units=imperial"; // pass URL here
+
+    [mangerl getUrlCall:strServerUrl withParameters:dictData];
 }
 #pragma mark - UrlManager Delegate
 - (void)onResult:(NSDictionary *)result
 {
-//    NSLog(@"The result is...%@", result);
-    NSString * strUrl = [NSString stringWithFormat:@"%@", [[result valueForKey:@"main"] valueForKey:@"temp"]];
-    float temp = strUrl.intValue;
-    NSString * strTemp_C = [NSString stringWithFormat:@"%.0f",temp];
-    strTemp_C = [NSString stringWithFormat:@"%.0f",(temp-273)]; // ºC
-    NSString * strUrlhum = [NSString stringWithFormat:@"%@", [[result valueForKey:@"main"] valueForKey:@"humidity"]];
-    lblOutSidTem.text =  [NSString stringWithFormat:@"%@ºC/",strTemp_C];
-    lblOutSidHumid.text = [NSString stringWithFormat:@"%@%%",strUrlhum];
+    NSLog(@"The result is...%@", result);
+    if (result.count > 0)
+    {
+        NSArray * arrAllKeys = [result allKeys];
+        if ([arrAllKeys containsObject:@"main"])
+        {
+            NSArray * arrTempAllKeys = [[result valueForKey:@"main"] allKeys];
+            if ([arrTempAllKeys containsObject:@"temp"])
+            {
+                NSString * strUrl = [NSString stringWithFormat:@"%@", [[result valueForKey:@"main"] valueForKey:@"temp"]];
+                float temp = strUrl.intValue;
+                NSString * strTemp_C = [NSString stringWithFormat:@"%.0f",temp];
+                strTemp_C = [NSString stringWithFormat:@"%.0f",(temp-273)]; // ºC
+                NSString * strUrlhum = [NSString stringWithFormat:@"%@", [[result valueForKey:@"main"] valueForKey:@"humidity"]];
+                lblOursidetempHumidity.text =  [NSString stringWithFormat:@"%@ºC/%@%%",strTemp_C,strUrlhum];
+            }
+        }
+    }
 }
 - (void)onError:(NSError *)error
 {
@@ -1561,14 +1319,18 @@
     NSMutableDictionary * errorDict = [error.userInfo mutableCopy];
     NSLog(@"errorDict===%@",errorDict);
     if (ancode == -1001 || ancode == -1004 || ancode == -1005 || ancode == -1009)
-    {}
+    {
+        
+    }
     else
-    {}
+    {
+        
+    }
     NSString * strLoginUrl = [NSString stringWithFormat:@"%@%@",WEB_SERVICE_URL,@"token.json"];
-       if ([[errorDict valueForKey:@"NSErrorFailingURLStringKey"] isEqualToString:strLoginUrl])
-       {
-           NSLog(@"NSErrorFailingURLStringKey===%@",[errorDict valueForKey:@"NSErrorFailingURLStringKey"]);
-       }
+    if ([[errorDict valueForKey:@"NSErrorFailingURLStringKey"] isEqualToString:strLoginUrl])
+    {
+        NSLog(@"NSErrorFailingURLStringKey===%@",[errorDict valueForKey:@"NSErrorFailingURLStringKey"]);
+    }
 }
 #pragma mark- Properties of Button and Lable
 -(void)setButtonProperties:(UIButton *)btn withTitle:(NSString *)strText backColor:(UIColor *)backColor textColor:(UIColor *)txtColor txtSize:(int)txtSize
@@ -1607,7 +1369,6 @@
         [dateFormat setDateFormat:@"dd/MM/yyyy hh:mm"];
         NSString *dateString = [dateFormat stringFromDate:today];
         NSString * timestamp = [NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]];
-
         
         NSString * strNA = @"NA";
         NSString * requestStr =    [NSString stringWithFormat:@"insert into 'Record_Table'('user_id','skin_temperature','core_temperature','date_time','time_stamp','check_type') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strid,strSkinTemp,strCoreTemp,dateString,timestamp,strNA];
@@ -1618,19 +1379,18 @@
 {
     if (arrSubjects.count > 0)
     {
-            NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
-            tmpDict = [arrSubjects objectAtIndex:0];
-//            NSLog(@"%@",tmpDict);
+        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
+        tmpDict = [arrSubjects objectAtIndex:0];
         
-            highIngstF = [[tmpDict valueForKey:@"ing_highF"] floatValue];
-            lowIngestF = [[tmpDict valueForKey:@"ing_lowF"] floatValue];
-            highDermalF = [[tmpDict valueForKey:@"drml_highF"] floatValue];
-            lowDermalF = [[tmpDict valueForKey:@"drml_lowF"] floatValue];
+        highIngstF = [[tmpDict valueForKey:@"ing_highF"] floatValue];
+        lowIngestF = [[tmpDict valueForKey:@"ing_lowF"] floatValue];
+        highDermalF = [[tmpDict valueForKey:@"drml_highF"] floatValue];
+        lowDermalF = [[tmpDict valueForKey:@"drml_lowF"] floatValue];
             
-            highIngstC = [[tmpDict valueForKey:@"ing_highC"] floatValue];
-            lowIngestC = [[tmpDict valueForKey:@"ing_lowC"] floatValue];
-            highDermalC = [[tmpDict valueForKey:@"drml_highC"] floatValue];
-            lowDermalC = [[tmpDict valueForKey:@"drml_lowC"] floatValue];
+        highIngstC = [[tmpDict valueForKey:@"ing_highC"] floatValue];
+        lowIngestC = [[tmpDict valueForKey:@"ing_lowC"] floatValue];
+        highDermalC = [[tmpDict valueForKey:@"drml_highC"] floatValue];
+        lowDermalC = [[tmpDict valueForKey:@"drml_lowC"] floatValue];
     }
 }
 -(void)AlertViewFCTypeCaution:(NSString *)strPopup
@@ -1657,6 +1417,86 @@
        withDoneButtonTitle:nil
                 andButtons:nil];
 }
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+-(void)exportCSV
+{
+    NSArray *Name = [arrSubjects valueForKey:@"name"];
+    NSArray *Number = [arrSubjects valueForKey:@"number"];
+    NSArray *high_Ingest = [arrSubjects valueForKey:@"ing_highF"];
+    NSArray *low_Ingest = [arrSubjects valueForKey:@"ing_lowF"];
+    NSArray *high_drml = [arrSubjects valueForKey:@"drml_highF"];
+    NSArray *low_drml = [arrSubjects valueForKey:@"drml_lowF"];
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
+    NSString *documentsDir = [paths objectAtIndex:0];
+    NSString *root = [documentsDir stringByAppendingPathComponent:@"PlayerData.csv"];
+        
+    NSMutableString *csv = [[NSMutableString alloc] initWithCapacity:0];
+    for (int i=0; i<1; i++)
+    {
+        if (i == 0)
+        {
+            [csv appendFormat:@"Name , Number , High_ingest , Low_Ingest , high_dermal , Low_dermal \n"];
+        }
+        [csv appendFormat:@"%@,%@,%@,%@,%@,%@\n", Name[i], Number[i], high_Ingest[i], low_Ingest[i],high_drml[i],low_drml[i]];
+    }
+    
+    [csv writeToFile:root atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:root]] applicationActivities:nil];
+    if ([activityController respondsToSelector:@selector(popoverPresentationController)] )
+    {
+        activityController.popoverPresentationController.sourceRect = CGRectMake(UIScreen.mainScreen.bounds.size.width / 2, UIScreen.mainScreen.bounds.size.height / 2, 00, 0);//
+        activityController.popoverPresentationController.sourceView = self.view;
+        activityController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
+    }
+    [self.navigationController presentViewController:activityController animated:YES completion:nil];
+}
+- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Mail saved");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
+            break;
+        default:
+            break;
+    }
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+#pragma mark- Img Scalling
+-(UIImage *)scaleMyImage:(UIImage *)newImg withNewWidth:(double)newWidth newHeight:(double)newHeight
+{
+    double originalW = newImg.size.width;
+    double originalH = newImg.size.height;
+    double updateH = (newHeight * originalH)/ originalW;
+    
+    UIGraphicsBeginImageContext(CGSizeMake(newWidth,updateH));
+    [newImg drawInRect: CGRectMake(0, 0, newWidth, updateH)];
+    UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return smallImage;
+}
+- (NSString *)documentsPathForFileName:(NSString *)name
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    return [documentsPath stringByAppendingPathComponent:name];
+}
+
+
 @end
 
 

@@ -295,7 +295,7 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
         FCAlertView *alert = [[FCAlertView alloc] init];
         [alert makeAlertTypeSuccess];
         alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
-        [alert showAlertWithTitle:@"HQ-INC" withSubtitle:@"Monitor connected successfully.." withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
+        [alert showAlertWithTitle:@"HQ-INC" withSubtitle:@"Monitor connected successfully" withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
         [alert doneActionBlock:^{
             
             [[BLEManager sharedManager] stopScan];
@@ -306,7 +306,7 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 }
 -(void)GlobalBLuetoothCheck
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Geofence Alert" message:@"Please enable Bluetooth Connection. Tap on enable Bluetooth icon by swiping Up." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"HQ-INC App" message:@"Please enable Bluetooth Connection. Tap on enable Bluetooth icon by swiping Up." preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
     [alertController addAction:defaultAction];
     [self presentViewController:alertController animated:true completion:nil];

@@ -9,19 +9,9 @@
 #import "HomeCell.h"
 #import "BLEService.h"
 #import "HomeCell.h"
-#import "BleTestClass.h"
-
 
 @interface HomeVC ()<UITableViewDelegate,UITableViewDataSource,FCAlertViewDelegate,CBCentralManagerDelegate,UITextFieldDelegate, BLEConnectionDelegate>
 {
-    NSTimer * connectionTimer, * advertiseTimer;;
-    CBCentralManager * centralManager;
-    CBPeripheral * classPeripheral;
-    NSMutableDictionary * dictConnectedPeripheral, * dictLiveSessionData;
-    UIButton *btnCanceldown,*btnDone;
-    FCAlertView *alertConnection;
-    NSInteger totalSensorsofLiveSession;
-    NSMutableArray * arrSensorsofSessions;
 }
 @end
 
@@ -34,18 +24,13 @@
     [self setNeedsStatusBarAppearanceUpdate];
 
     [self setNavigationViewFrames];
+    
     arrGlobalDevices = [[NSMutableArray alloc] init];
+    arrSensorsofSessions = [[NSMutableArray alloc] init];
 
     centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-    arrSensorsofSessions = [[NSMutableArray alloc] init];
-    /*[advertiseTimer invalidate];
-    advertiseTimer = nil;
-    advertiseTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(AdvertiseTimerMethod) userInfo:nil repeats:NO];*/
-
     [APP_DELEGATE endHudProcess];
-//    [APP_DELEGATE startHudProcess:@"Scanning..."];
 
-    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
@@ -94,7 +79,6 @@
     [btnRefresh addTarget:self action:@selector(refreshBtnClick) forControlEvents:UIControlEventTouchUpInside];
     [viewHeader addSubview:btnRefresh];
     
-    
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
      
      btnCanceldown = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
@@ -119,7 +103,6 @@
     tblDeviceList.delegate = self;
     tblDeviceList.dataSource= self;
     tblDeviceList.backgroundColor = UIColor.clearColor;
-//    tblDeviceList.separatorStyle = UITableViewCellSelectionStyleNone;
     [tblDeviceList setShowsVerticalScrollIndicator:NO];
     tblDeviceList.backgroundColor = [UIColor clearColor];
     tblDeviceList.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -152,17 +135,17 @@
 #pragma mark- UITableView Methods
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section;   // custom view for header. will be adjusted to default or specified header height
 {
-        UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-20, 50)];
-        headerView.backgroundColor = [UIColor clearColor];
+    UIView * headerView =[[UIView alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-20, 50)];
+    headerView.backgroundColor = [UIColor clearColor];
         
-        UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH-20, 50)];
-        lblmenu.text = @" Tap on Connect button to pair with device";
-        [lblmenu setTextColor:[UIColor whiteColor]];
-        [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-1]];
-        lblmenu.backgroundColor = UIColor.clearColor;
-        lblmenu.textAlignment = NSTextAlignmentCenter;
-        [headerView addSubview:lblmenu];
-        return headerView;
+    UILabel *lblmenu=[[UILabel alloc]initWithFrame:CGRectMake(10,0, DEVICE_WIDTH-20, 50)];
+    lblmenu.text = @" Tap on Connect button to pair with device";
+    [lblmenu setTextColor:[UIColor whiteColor]];
+    [lblmenu setFont:[UIFont fontWithName:CGRegular size:textSize-1]];
+    lblmenu.backgroundColor = UIColor.clearColor;
+    lblmenu.textAlignment = NSTextAlignmentCenter;
+    [headerView addSubview:lblmenu];
+    return headerView;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -209,7 +192,8 @@
     {
         cell.backgroundColor = [UIColor lightGrayColor];
     }
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    cell.selectionStyle = UITextAlternativeStyleNone;
     cell.backgroundColor = UIColor.clearColor;
     return cell;
 }
@@ -247,14 +231,6 @@
             dictConnectedPeripheral = [arrayDevices objectAtIndex:indexPath.row];
         }
     }
-}
--(void)AddTestingRecords:(NSDictionary *)dict
-{
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        [[[BLEManager sharedManager] foundDevices] addObject:dict];
-        NSIndexPath *index = [NSIndexPath indexPathForRow:([[[BLEManager sharedManager] foundDevices] count] - 1) inSection:0];
-        [self->tblDeviceList insertRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationNone];
-    });
 }
 #pragma mark - BLE Methods
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
@@ -308,14 +284,12 @@
 }
 -(void)NotifiyDiscoveredDevices:(NSNotification*)notification//Update peripheral
 {
-dispatch_async(dispatch_get_main_queue(), ^(void){
+    dispatch_async(dispatch_get_main_queue(), ^(void){
     
     if ( [[[BLEManager sharedManager] foundDevices] count] >0){
         self->tblDeviceList.hidden = false;
         self->lblNoDevice.hidden = true;
         [self->tblDeviceList reloadData];
-//        [self->advertiseTimer invalidate];
-//        self->advertiseTimer = nil;
         [APP_DELEGATE endHudProcess];
     }
     else
@@ -346,52 +320,151 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 }
 -(void)GlobalBLuetoothCheck
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Geofence Alert" message:@"Please enable Bluetooth Connection. Tap on enable Bluetooth icon by swiping Up." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"HQ-INC App" message:@"Please enable Bluetooth Connection. Tap on enable Bluetooth icon by swiping Up." preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
     [alertController addAction:defaultAction];
     [self presentViewController:alertController animated:true completion:nil];
 }
+-(void)MonitorConnnectedIsSessionActive:(BOOL)isSessionActive;
+{
+    if (isSessionActive == NO)
+    {
+        [APP_DELEGATE endHudProcess];
 
--(void)TurnonLED
+        globalPeripheral = classPeripheral;
+        NSMutableArray * tmpArr = [[BLEManager sharedManager] foundDevices];
+        if ([[tmpArr valueForKey:@"peripheral"] containsObject:globalPeripheral])
+        {
+            NSInteger  foudIndex = [[tmpArr valueForKey:@"peripheral"] indexOfObject:globalPeripheral];
+            if (foudIndex != NSNotFound)
+            {
+                if ([tmpArr count] > foudIndex)
+                {
+                    NSString * strCurrentIdentifier = [NSString stringWithFormat:@"%@",globalPeripheral.identifier];
+                    NSString * strName = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"name"];
+                    NSString * strAddress = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"bleAddress"];
+
+                    if (![[arrGlobalDevices valueForKey:@"identifier"] containsObject:strCurrentIdentifier])
+                    {
+                        NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:strCurrentIdentifier,@"identifier",globalPeripheral,@"peripheral",strName,@"name",strAddress,@"bleAddress", nil];
+                        [arrGlobalDevices addObject:dict];
+                        NSLog(@"AuthenticationCompleted with Global Devices=%@",arrGlobalDevices);
+                    }
+                }
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            
+            [self->alertConnection removeFromSuperview];
+            self->alertConnection = [[FCAlertView alloc] init];
+            [self->alertConnection makeAlertTypeSuccess];
+            self->alertConnection.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
+            [self->alertConnection showAlertWithTitle:@"HQ-INC" withSubtitle:@"Monitor connected successfully" withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
+            [self->alertConnection doneActionBlock:^{
+                [globalSbuSetupVC ConnectedMonitorDetail:self->dictConnectedPeripheral];
+                [[BLEManager sharedManager] stopScan];
+
+                [self.navigationController popViewControllerAnimated:true];
+            }];
+        });
+
+    }
+    else
+    {
+        globalPeripheral = classPeripheral;
+
+        arrSensorsofSessions = [[NSMutableArray alloc] init];
+    }
+}
+-(void)RecieveLiveSessionInformation:(NSMutableDictionary *)dictDetail
+{
+    dictLiveSessionData = [[NSMutableDictionary alloc] init];
+    dictLiveSessionData = [dictDetail mutableCopy];
+    if ([[dictDetail allKeys] containsObject:@"no_of_sensor"])
+    {
+        totalSensorsofLiveSession = [[dictLiveSessionData valueForKey:@"no_of_sensor"] integerValue];
+    }
+}
+-(void)RecieveLiveSessionPlayerName:(NSString *)strPlayerName
 {
     
 }
-#pragma mark - Timer Methods
--(void)ConnectionTimeOutMethod
+-(void)RecieveLiveSensorInformationofSession:(NSMutableArray *)arrSensors
 {
+    NSLog(@"====RecieveLiveSensorInformationofSession===%@",arrSensors);
+    for (int i = 0; i < arrSensors.count; i++)
+    {
+        [arrSensorsofSessions addObject:[arrSensors objectAtIndex:i]];
+    }
+    
+    if (self->alertConnection)
+    {
+        [self->alertConnection removeFromSuperview];
+    }
     [APP_DELEGATE endHudProcess];
 
-    if (classPeripheral.state == CBPeripheralStateConnected)
+    if ([arrSensorsofSessions count] == totalSensorsofLiveSession)
     {
-    }
-    else
-    {
-        if (classPeripheral == nil)
+        if ([[dictLiveSessionData allKeys] containsObject:@"player_id"])
         {
-            return;
+            NSString * strPlayerId = [self checkforValidString:[dictLiveSessionData valueForKey:@"player_id"]];
+            NSString * strPlayerName = [self checkforValidString:[dictLiveSessionData valueForKey:@"player_name"]];
+            NSString * strQyery = [NSString stringWithFormat:@"select * from Subject_Table where user_id = '%@'",strPlayerId];
+            
+            NSMutableArray * tmpArr = [[NSMutableArray alloc] init];
+            [[DataBaseManager dataBaseManager] execute:strQyery resultsArray:tmpArr];
+          
+            NSString * strMsg = @"";
+            NSString * strButtonTitle = @"OK";
+            BOOL isPlayerFound = NO;
+           
+            if ([tmpArr count] > 0 )
+            {
+                isPlayerFound = YES;
+                strButtonTitle = @"No";
+                strMsg = [NSString stringWithFormat:@"Monitor is doing Live Session for %@. Do you want to see Live Reading of Session?",strPlayerName];
+            }
+            else
+            {
+                strMsg = [NSString stringWithFormat:@"Monitor is busy with Live Session. Please connect later."];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                
+                FCAlertView *alert = [[FCAlertView alloc] init];
+                [alert makeAlertTypeWarning];
+                alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
+                [alert showAlertWithTitle:@"HQ-INC" withSubtitle:strMsg withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:strButtonTitle andButtons:nil];
+                [alert doneActionBlock:^{
+                        [[BLEManager sharedManager] disconnectDevice:self->classPeripheral];
+                        [self.navigationController popToRootViewControllerAnimated:YES];
+                }];
+                
+                if (isPlayerFound)
+                {
+                    [alert addButton:@"Yes" withActionBlock:
+                     ^{
+                        {
+                            for (UIViewController *vc in self.navigationController.viewControllers)
+                            {
+                                if ([vc isKindOfClass:[SubjDetailsVC class]])
+                                {
+                                    if (vc == globalSubjectDetailVC)
+                                    {
+                                        [globalSubjectDetailVC ReceiveSensorDetails:self->arrSensorsofSessions];
+                                        [globalSubjectDetailVC LiveSessionReadingStarted:self->dictLiveSessionData];
+                                    }
+                                    [self.navigationController popToViewController:vc animated:YES];
+                                }
+                            }
+                        }
+                    }];
+                }
+            });
         }
-        [APP_DELEGATE endHudProcess];
-//        FCAlertView *alert = [[FCAlertView alloc] init];
-//        [alert makeAlertTypeCaution];
-//        alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
-//        [alert showAlertWithTitle:@"HQ-INC" withSubtitle:@"Something went wrong. Please try again later." withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
     }
 }
--(void)AdvertiseTimerMethod
-{
-    [APP_DELEGATE endHudProcess];
-    if ( [[[BLEManager sharedManager] foundDevices] count] >0){
-        self->tblDeviceList.hidden = false;
-        self->lblNoDevice.hidden = true;
-        [self->tblDeviceList reloadData];
-    }
-    else
-    {
-        self->tblDeviceList.hidden = true;
-        self->lblNoDevice.hidden = false;
-    }
-        [self->tblDeviceList reloadData];
-}
+
 
 #pragma mark- Buttons
 -(void)refreshBtnClick
@@ -472,63 +545,36 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
 {
     [self.navigationController popViewControllerAnimated:true];
 }
-#pragma mark - MEScrollToTopDelegate Methods
-- (void) scrollViewDidScroll:(UIScrollView *)scrollView
+-(void)btnCancelSnrClick
 {
-    [topPullToRefreshManager tableViewScrolled];
-}
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-}
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if (scrollView.contentOffset.y >=360.0f)
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
     {
+    self-> viewForSensorNameNum.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 500);
+    }
+        completion:(^(BOOL finished)
+      {
+        [self-> viewForAddSensor removeFromSuperview];
+    })];
+}
+-(void)btnSaveClick
+{
+    if ([txtNameSnr.text isEqual:@""])
+    {
+        [self AlertViewFCTypeCautionCheck:@"Please enter sensor name."];
     }
     else
-        [topPullToRefreshManager tableViewReleased];
-}
-- (void)pullToRefreshTriggered:(MNMPullToRefreshManager *)manager
-{
-    [self performSelector:@selector(stoprefresh) withObject:nil afterDelay:1.5];
-}
--(void)stoprefresh
-{
-    [self refreshBtnClick];
-    [topPullToRefreshManager tableViewReloadFinishedAnimated:NO];
-}
--(NSString *)base64String:(NSString *)str
-{
-    NSData *theData = [str dataUsingEncoding: NSASCIIStringEncoding];
-    const uint8_t* input = (const uint8_t*)[theData bytes];
-    NSInteger length = [theData length];
-    
-    static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    
-    NSMutableData* data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
-    uint8_t* output = (uint8_t*)data.mutableBytes;
-    
-    NSInteger i;
-    for (i=0; i < length; i += 3) {
-        NSInteger value = 0;
-        NSInteger j;
-        for (j = i; j < (i + 3); j++)
-        {
-            value <<= 8;
-            if (j < length) {
-                
-                value |= (0xFF & input[j]);
-            }
-        }
+    {
+      // sensor name adding process
         
-        NSInteger theIndex = (i / 3) * 4;
-        output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
-        output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
-        output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
-        output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
+        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+        {
+        self-> viewForSensorNameNum.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 500);
+        }
+            completion:(^(BOOL finished)
+          {
+            [self-> viewForAddSensor removeFromSuperview];
+        })];
     }
-    
-    return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
 #pragma mark- Add Sensor Setup
 -(void)setupForAddSensor
@@ -605,36 +651,107 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
      }
     return textField;
 }
--(void)btnCancelSnrClick
+
+#pragma mark - Timer Methods
+-(void)ConnectionTimeOutMethod
 {
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+    [APP_DELEGATE endHudProcess];
+    if (classPeripheral.state == CBPeripheralStateConnected)
     {
-    self-> viewForSensorNameNum.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 500);
-    }
-        completion:(^(BOOL finished)
-      {
-        [self-> viewForAddSensor removeFromSuperview];
-    })];
-}
--(void)btnSaveClick
-{
-    if ([txtNameSnr.text isEqual:@""])
-    {
-        [self AlertViewFCTypeCautionCheck:@"Please enter sensor name."];
     }
     else
     {
-      // sensor name adding process
-        
-        [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
+        if (classPeripheral == nil)
         {
-        self-> viewForSensorNameNum.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 500);
+            return;
         }
-            completion:(^(BOOL finished)
-          {
-            [self-> viewForAddSensor removeFromSuperview];
-        })];
+        [APP_DELEGATE endHudProcess];
+//        FCAlertView *alert = [[FCAlertView alloc] init];
+//        [alert makeAlertTypeCaution];
+//        alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
+//        [alert showAlertWithTitle:@"HQ-INC" withSubtitle:@"Something went wrong. Please try again later." withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
     }
+}
+-(void)AdvertiseTimerMethod
+{
+    [APP_DELEGATE endHudProcess];
+    if ( [[[BLEManager sharedManager] foundDevices] count] >0){
+        self->tblDeviceList.hidden = false;
+        self->lblNoDevice.hidden = true;
+        [self->tblDeviceList reloadData];
+    }
+    else
+    {
+        self->tblDeviceList.hidden = true;
+        self->lblNoDevice.hidden = false;
+    }
+        [self->tblDeviceList reloadData];
+}
+
+#pragma mark:- Method to Set Properties
+
+-(void)setButtonProperties:(UIButton *)btn withTitle:(NSString *)strText backColor:(UIColor *)backColor textColor:(UIColor *)txtColor txtSize:(int)txtSize
+{
+    [btn setTitle:strText forState:UIControlStateNormal];
+    btn.titleLabel.font = [UIFont fontWithName:CGRegular size:txtSize];
+    [btn setTitleColor:txtColor forState:UIControlStateNormal];
+    btn.backgroundColor = backColor;
+    btn.clipsToBounds = true;
+}
+-(NSString *)checkforValidString:(NSString *)strRequest
+{
+    NSString * strValid;
+    if (![strRequest isEqual:[NSNull null]])
+    {
+        if (strRequest != nil && strRequest != NULL && ![strRequest isEqualToString:@""] && ![strRequest isEqualToString:@"(null)"])
+        {
+            strValid = strRequest;
+        }
+        else
+        {
+            strValid = @"NA";
+        }
+    }
+    else
+    {
+        strValid = @"NA";
+    }
+    strValid = [strValid stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+
+    return strValid;
+}
+-(NSString *)base64String:(NSString *)str
+{
+    NSData *theData = [str dataUsingEncoding: NSASCIIStringEncoding];
+    const uint8_t* input = (const uint8_t*)[theData bytes];
+    NSInteger length = [theData length];
+    
+    static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    
+    NSMutableData* data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
+    uint8_t* output = (uint8_t*)data.mutableBytes;
+    
+    NSInteger i;
+    for (i=0; i < length; i += 3) {
+        NSInteger value = 0;
+        NSInteger j;
+        for (j = i; j < (i + 3); j++)
+        {
+            value <<= 8;
+            if (j < length) {
+                
+                value |= (0xFF & input[j]);
+            }
+        }
+        
+        NSInteger theIndex = (i / 3) * 4;
+        output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
+        output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
+        output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
+        output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
+    }
+    
+    return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
 -(void)AlertViewFCTypeCautionCheck:(NSString *)strMsg
 {
@@ -660,175 +777,40 @@ dispatch_async(dispatch_get_main_queue(), ^(void){
        withDoneButtonTitle:nil
                 andButtons:nil];
 }
--(void)setButtonProperties:(UIButton *)btn withTitle:(NSString *)strText backColor:(UIColor *)backColor textColor:(UIColor *)txtColor txtSize:(int)txtSize
+
+#pragma mark - MEScrollToTopDelegate Methods
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [btn setTitle:strText forState:UIControlStateNormal];
-    btn.titleLabel.font = [UIFont fontWithName:CGRegular size:txtSize];
-    [btn setTitleColor:txtColor forState:UIControlStateNormal];
-    btn.backgroundColor = backColor;
-    btn.clipsToBounds = true;
+    [topPullToRefreshManager tableViewScrolled];
 }
--(void)MonitorConnnectedIsSessionActive:(BOOL)isSessionActive;
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if (isSessionActive == NO)
+}
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (scrollView.contentOffset.y >=360.0f)
     {
-        [APP_DELEGATE endHudProcess];
-
-        globalPeripheral = classPeripheral;
-        NSMutableArray * tmpArr = [[BLEManager sharedManager] foundDevices];
-        if ([[tmpArr valueForKey:@"peripheral"] containsObject:globalPeripheral])
-        {
-            NSInteger  foudIndex = [[tmpArr valueForKey:@"peripheral"] indexOfObject:globalPeripheral];
-            if (foudIndex != NSNotFound)
-            {
-                if ([tmpArr count] > foudIndex)
-                {
-                    NSString * strCurrentIdentifier = [NSString stringWithFormat:@"%@",globalPeripheral.identifier];
-                    NSString * strName = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"name"];
-                    NSString * strAddress = [[tmpArr  objectAtIndex:foudIndex]valueForKey:@"bleAddress"];
-
-                    if (![[arrGlobalDevices valueForKey:@"identifier"] containsObject:strCurrentIdentifier])
-                    {
-                        NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:strCurrentIdentifier,@"identifier",globalPeripheral,@"peripheral",strName,@"name",strAddress,@"bleAddress", nil];
-                        [arrGlobalDevices addObject:dict];
-                        NSLog(@"AuthenticationCompleted with Global Devices=%@",arrGlobalDevices);
-                    }
-                }
-            }
-        }
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            
-            [self->alertConnection removeFromSuperview];
-            self->alertConnection = [[FCAlertView alloc] init];
-            [self->alertConnection makeAlertTypeSuccess];
-            self->alertConnection.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
-            [self->alertConnection showAlertWithTitle:@"HQ-INC" withSubtitle:@"Monitor connected successfully.." withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:@"OK" andButtons:nil];
-            [self->alertConnection doneActionBlock:^{
-                [globalSbuSetupVC ConnectedMonitorDetail:self->dictConnectedPeripheral];
-                [[BLEManager sharedManager] stopScan];
-
-                [self.navigationController popViewControllerAnimated:true];
-            }];
-        });
-
     }
     else
-    {
-        globalPeripheral = classPeripheral;
-
-        arrSensorsofSessions = [[NSMutableArray alloc] init];
-    }
+        [topPullToRefreshManager tableViewReleased];
 }
--(void)RecieveLiveSessionInformation:(NSMutableDictionary *)dictDetail
+- (void)pullToRefreshTriggered:(MNMPullToRefreshManager *)manager
 {
-    dictLiveSessionData = [[NSMutableDictionary alloc] init];
-    dictLiveSessionData = [dictDetail mutableCopy];
-    if ([[dictDetail allKeys] containsObject:@"no_of_sensor"])
-    {
-        totalSensorsofLiveSession = [[dictLiveSessionData valueForKey:@"no_of_sensor"] integerValue];
-    }
+    [self performSelector:@selector(stoprefresh) withObject:nil afterDelay:1.5];
 }
--(void)RecieveLiveSessionPlayerName:(NSString *)strPlayerName
+-(void)stoprefresh
 {
-    
+    [self refreshBtnClick];
+    [topPullToRefreshManager tableViewReloadFinishedAnimated:NO];
 }
--(void)RecieveLiveSensorInformationofSession:(NSMutableArray *)arrSensors
+-(void)AddTestingRecords:(NSDictionary *)dict
 {
-    NSLog(@"====RecieveLiveSensorInformationofSession===%@",arrSensors);
-    for (int i = 0; i < arrSensors.count; i++)
-    {
-        [arrSensorsofSessions addObject:[arrSensors objectAtIndex:i]];
-    }
-    
-    if (self->alertConnection)
-    {
-            [self->alertConnection removeFromSuperview];
-    }
-    [APP_DELEGATE endHudProcess];
-
-    if ([arrSensorsofSessions count] == totalSensorsofLiveSession)
-    {
-        if ([[dictLiveSessionData allKeys] containsObject:@"player_id"])
-        {
-            NSString * strPlayerId = [self checkforValidString:[dictLiveSessionData valueForKey:@"player_id"]];
-            NSString * strPlayerName = [self checkforValidString:[dictLiveSessionData valueForKey:@"player_name"]];
-            NSString * strQyery = [NSString stringWithFormat:@"select * from Subject_Table where user_id = '%@'",strPlayerId];
-            NSMutableArray * tmpArr = [[NSMutableArray alloc] init];
-            [[DataBaseManager dataBaseManager] execute:strQyery resultsArray:tmpArr];
-            NSString * strMsg = @"";
-            NSString * strButtonTitle = @"OK";
-            BOOL isPlayerFound = NO;
-            if ([tmpArr count] > 0 )
-            {
-                isPlayerFound = YES;
-                strButtonTitle = @"No";
-                strMsg = [NSString stringWithFormat:@"Monitor is doing Live Session for %@. Do you want to see Live Reading of Session?",strPlayerName];
-            }
-            else
-            {
-                strMsg = [NSString stringWithFormat:@"Monitor is busy with Live Session. Please connect later."];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                
-                FCAlertView *alert = [[FCAlertView alloc] init];
-                [alert makeAlertTypeWarning];
-                alert.firstButtonCustomFont = [UIFont fontWithName:CGRegular size:textSize];
-                [alert showAlertWithTitle:@"HQ-INC" withSubtitle:strMsg withCustomImage:[UIImage imageNamed:@"alert-round.png"] withDoneButtonTitle:strButtonTitle andButtons:nil];
-                [alert doneActionBlock:^{
-                        [[BLEManager sharedManager] disconnectDevice:self->classPeripheral];
-                        [self.navigationController popToRootViewControllerAnimated:YES];
-
-                
-                    
-                }];
-                
-                if (isPlayerFound)
-                {
-                    [alert addButton:@"Yes" withActionBlock:
-                     ^{
-                        {
-                            for (UIViewController *vc in self.navigationController.viewControllers)
-                            {
-                                if ([vc isKindOfClass:[SubjDetailsVC class]])
-                                {
-                                    if (vc == globalSubjectDetailVC)
-                                    {
-                                        [globalSubjectDetailVC ReceiveSensorDetails:self->arrSensorsofSessions];
-                                        [globalSubjectDetailVC LiveSessionReadingStarted:self->dictLiveSessionData];
-                                    }
-                                    [self.navigationController popToViewController:vc animated:YES];
-                                }
-                            }
-
-                        }
-                    }];
-                }
-            });
-        }
-    }
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [[[BLEManager sharedManager] foundDevices] addObject:dict];
+        NSIndexPath *index = [NSIndexPath indexPathForRow:([[[BLEManager sharedManager] foundDevices] count] - 1) inSection:0];
+        [self->tblDeviceList insertRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationNone];
+    });
 }
--(NSString *)checkforValidString:(NSString *)strRequest
-{
-    NSString * strValid;
-    if (![strRequest isEqual:[NSNull null]])
-    {
-        if (strRequest != nil && strRequest != NULL && ![strRequest isEqualToString:@""] && ![strRequest isEqualToString:@"(null)"])
-        {
-            strValid = strRequest;
-        }
-        else
-        {
-            strValid = @"NA";
-        }
-    }
-    else
-    {
-        strValid = @"NA";
-    }
-    strValid = [strValid stringByReplacingOccurrencesOfString:@"\"" withString:@""];
 
-    return strValid;
-}
 
 @end

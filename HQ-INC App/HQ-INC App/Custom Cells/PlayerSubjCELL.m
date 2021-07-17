@@ -117,5 +117,32 @@
 {
     [super setSelected:selected animated:animated];
 }
+-(void)UpdateCellforValue:(int)tempValue;
+{
+    if (tempValue<=99 && tempValue>96)
+   {
+       lblName.textColor = UIColor.whiteColor;
+       lblPlayer.textColor = UIColor.whiteColor;
+       lblCoreTmp.textColor = UIColor.whiteColor;
+       lblSkinTmp.textColor = UIColor.whiteColor;
+       lblLine.hidden = false;
+   }
+   else if (tempValue >= 100)
+   {
+       lblName.textColor = UIColor.whiteColor;
+       lblPlayer.textColor = UIColor.whiteColor;
+       lblCoreTmp.textColor = UIColor.whiteColor;
+       lblSkinTmp.textColor = UIColor.whiteColor;
+       lblLine.hidden = false;
+   }
+   else
+   {
+       lblName.textColor = UIColor.blackColor;
+       lblPlayer.textColor = UIColor.blackColor;
+       lblCoreTmp.textColor = UIColor.blackColor;
+       lblSkinTmp.textColor = UIColor.blackColor;
+       lblLine.hidden = false;
+   }
 
+}
 @end

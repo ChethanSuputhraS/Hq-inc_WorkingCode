@@ -20,6 +20,21 @@ NS_ASSUME_NONNULL_BEGIN
     UIView *viewForSensorNameNum, *viewForAddSensor;
     UIButton *btnCancelSnr,*btnSave;
     UITextField *txtNameSnr;
+    
+    NSTimer * connectionTimer, * advertiseTimer;;
+    CBCentralManager * centralManager;
+    CBPeripheral * classPeripheral;
+    NSMutableDictionary * dictConnectedPeripheral;
+    UIButton *btnCanceldown,*btnDone;
+    
+    NSMutableDictionary * dictSessionData;
+    int sensorCount;
+    NSMutableArray * arrSessionData, * arrSensorsofSessions, * arrSessions;
+    NSString * strCurrentSequence;
+    int indexofSession;
+    NSString * strLatestCore, * strLatestSkin;
+    BOOL isDeviceConnectedSuccesfully;
+
 }
 @end
 

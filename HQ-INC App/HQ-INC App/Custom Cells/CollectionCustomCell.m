@@ -107,4 +107,37 @@
     }
     return self;
 }
+-(void)UpdateCellforValue:(int)tempValue;
+{
+    if (tempValue<=99 && tempValue>96)
+    {
+         lblTransView.backgroundColor = [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:0.8];
+         lblCoreTmp.textColor = UIColor.whiteColor;
+         lblSkinTmp.textColor = UIColor.whiteColor;
+         lblName.backgroundColor = [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:1];
+         lblNo.backgroundColor =  [UIColor colorWithRed:23.0/255.0f green:90.0/255.0f blue:255.0/255.0f alpha:1];
+         lblNo.layer.borderWidth = 1;
+         lblName.layer.borderWidth = 1;
+         lblCoreTmp.hidden = false;
+         lblSkinTmp.hidden = false;
+    }
+    else if (tempValue >= 100)
+    {
+         lblTransView.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:0.8];
+         lblCoreTmp.textColor = UIColor.whiteColor;
+         lblSkinTmp.textColor = UIColor.whiteColor;
+         lblName.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:1];
+         lblNo.backgroundColor = [UIColor colorWithRed:242.0/255.0f green:12.0/255.0f blue:27.0/255.0f alpha:1];
+         lblNo.layer.borderWidth = 1;
+         lblName.layer.borderWidth = 1;
+         lblCoreTmp.hidden = false;
+         lblSkinTmp.hidden = false;
+    }
+    else
+    {
+         lblCoreTmp.hidden = false;
+         lblSkinTmp.hidden = false;
+    }
+
+}
 @end

@@ -350,6 +350,34 @@ static DataBaseManager * dataBaseManager = nil;
     }
     return ret;
 }
+-(BOOL)Create_Instant_Reading_Table
+{
+    int rc;
+    
+    // SQL to create new database
+    NSArray* queries = [NSArray arrayWithObjects:@"CREATE TABLE 'instant_read_data' ('id' INTEGER PRIMARY KEY  NOT NULL, 'user_id' VARCHAR, 'temp' VARCHAR, 'timestamp' VARCHAR, 'sensor_type' VARCHAR, 'sensor_id' VARCHAR, 'packet' VARCHAR)",nil];
+    
+    if(queries != nil)
+    {
+        for (NSString* sql in queries)
+        {
+            
+            sqlite3_stmt *stmt;
+            rc = sqlite3_prepare_v2(_database, [sql UTF8String], -1, &stmt, NULL);
+            ret = (rc == SQLITE_OK);
+            if (ret)
+            {
+                // statement built, execute
+                rc = sqlite3_step(stmt);
+                ret = (rc == SQLITE_DONE);
+                sqlite3_finalize(stmt); // free statement
+                //sqlite3_reset(stmt);
+            }
+        }
+    }
+    return ret;
+}
+
 #pragma mark - Insert Query
 /*
  * Method to execute the simple queries

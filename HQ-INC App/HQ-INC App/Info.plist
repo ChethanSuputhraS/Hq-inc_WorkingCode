@@ -33,6 +33,10 @@
 	<string>App needs your Bluetooth permission in order to connect Hq-Inc app with bluetooth.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>App needs to access your camera in order to cature ypur profile picture</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This App makes use of Location to display nearby temperature.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This App makes use of Location to display nearby temperature.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>App wants to access your photo library to get player image</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -49,6 +53,7 @@
 		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
 		<string>fetch</string>
+		<string>location</string>
 		<string>processing</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

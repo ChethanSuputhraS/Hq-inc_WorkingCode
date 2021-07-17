@@ -18,6 +18,18 @@ NS_ASSUME_NONNULL_BEGIN
     NSString * strMsg;
     NSMutableArray * arrAlarm;
     UIView *allView,*viewBorderTmp;
+    UIButton *  btnSwitchC ,*btnSwitchF ;
+    BOOL isCClicked,isCheckBtn;
+    NSInteger EnterdValue;
+    NSMutableArray * arrAlrmResult, * arrSessions;
+    float highIngstF, highIngstC,lowIngestF, lowIngestC, highDermalC,highDermalF,lowDermalF, lowDermalC;
+    NSMutableArray * tmpDummyDataArr;
+    NSMutableDictionary * dictSessionData;
+    int sensorCount;
+    NSMutableArray * arrSessionData, * arrSensorsofSessions;
+    NSString * strCurrentSequence;
+    int indexofSession;
+
 }
 
 @end

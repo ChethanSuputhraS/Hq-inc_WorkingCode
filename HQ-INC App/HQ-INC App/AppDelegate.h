@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MBProgressHUD.h"
 #import <CoreBluetooth/CoreBluetooth.h>
+#import <CoreLocation/CoreLocation.h>
 #import "SubjSetupVC.h"
 #import "AddSensorVC.h"
 #import "SubjDetailsVC.h"
@@ -20,6 +21,7 @@ GlobalSettingVC * globalSettingClassVC;
 
 int textSize;
 int globalStatusHeight;
+double globalLatitude, globalLongitude;
 
 NSMutableArray * globalArr;
 BOOL isUserIntialized, isUserfromLogin;
@@ -40,6 +42,7 @@ AddSensorVC * globalAddSensor;
     UIView * viewNetworkConnectionPopUp;
     NSTimer * timerNetworkConnectionPopUp;
     BOOL isFirstTime;
+    CLLocationManager * locationManager;
 
 }
 @property (strong, nonatomic) UIWindow *window;

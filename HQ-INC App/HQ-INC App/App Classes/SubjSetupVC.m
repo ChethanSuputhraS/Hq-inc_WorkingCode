@@ -12,23 +12,12 @@
 #import "HomeVC.h"
 #import "AddSensorVC.h"
 
-@interface SubjSetupVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UIScrollViewDelegate,UITextViewDelegate,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface SubjSetupVC ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UIScrollViewDelegate,UITextViewDelegate,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource,UIPickerViewDataSource>
 
 @end
 
 @implementation SubjSetupVC  
 @synthesize dataDict,isFromEdit, SubjectDelegate;
-
-UILabel * lblNote , * lblAddmonitorConnect,*lblNosensor, * lblTimeInterval;
-NSString * strMsg;
-bool isBtnSkinSelected;
-bool isRemoveSnrSelect;
-NSMutableArray *tmpArryMonitor,*arrPlayers,*tmpArrySensor, *arrayPiker;
-NSInteger selectedIndex;
-
-UIView *showPickerView,*viewForPiker;
-UIPickerView *pikerViewIntervalSelect;
-NSString *selectedFromPicker;
 
 - (void)viewDidLoad
 {
@@ -38,24 +27,24 @@ NSString *selectedFromPicker;
     self.view.backgroundColor = UIColor.blackColor;
     
     UIColor * lbltxtClor = [UIColor colorWithRed:180.0/255 green:245.0/255 blue:254.0/255 alpha:1];
-    lblSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, DEVICE_WIDTH, 40)];
+    UILabel * lblSubject = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, DEVICE_WIDTH, 40)];
     [self setLabelProperties:lblSubject withText:@"SUBJECT SETUP" backColor:UIColor.clearColor textColor:lbltxtClor textSize:25];
     [self.view addSubview:lblSubject];
       
-    lbladdsetup = [[UILabel alloc]initWithFrame:CGRectMake(40, 60, DEVICE_WIDTH, 45)];
+    UILabel * lbladdsetup = [[UILabel alloc]initWithFrame:CGRectMake(40, 60, DEVICE_WIDTH, 45)];
     [self setLabelProperties:lbladdsetup withText:@"Add Setup" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:30];
     lbladdsetup.font = [UIFont fontWithName:CGBold size:30];
     lbladdsetup.textAlignment = NSTextAlignmentLeft;
     [self.view addSubview:lbladdsetup];
     
     UIColor * btnBgClor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
+    UIButton * btnCancel = [[UIButton alloc]initWithFrame:CGRectMake(100, DEVICE_HEIGHT-60, 150, 50)];
     [self setButtonProperties:btnCancel withTitle:@"Cancel" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnCancel.layer.cornerRadius = 5;
     [btnCancel addTarget:self action:@selector(btnCancelClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnCancel];
         
-    btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
+    UIButton * btnDone = [[UIButton alloc]initWithFrame:CGRectMake(DEVICE_WIDTH-250, DEVICE_HEIGHT-60, 150, 50)];
     [self setButtonProperties:btnDone withTitle:@"Done" backColor:btnBgClor textColor:UIColor.whiteColor txtSize:25];
     btnDone.layer.cornerRadius = 5;
     [btnDone setTitle:@"Done" forState:UIControlStateNormal];
@@ -83,7 +72,6 @@ NSString *selectedFromPicker;
          }
      }
     
-//    10 seconds, 1 minute, 1 hour and 1 Day.
     arrayPiker = [[NSMutableArray alloc]initWithObjects:@"10 Seconds",@"1 Minute",@"1 Hour",@"1 Day", nil];
 
     [self setupProfileImageView];
@@ -92,7 +80,6 @@ NSString *selectedFromPicker;
     [self fromDataDict];
     [self gettingImg];
 
-    
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         lblSubject.frame = CGRectMake(0, 20, DEVICE_WIDTH, 40);
@@ -106,23 +93,14 @@ NSString *selectedFromPicker;
         
         btnDone.frame = CGRectMake(DEVICE_WIDTH-80, DEVICE_HEIGHT-40, 60, 35);
         btnDone.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
-        
     }
     [super viewDidLoad];
-    dict = [NSMutableDictionary dictionary];
     
-    globalSubjectDetailVC = [[SubjDetailsVC alloc]init];
+    dict = [NSMutableDictionary dictionary];
     tmpArrySensor = [[NSMutableArray alloc] init];
     
-//    NSMutableDictionary * dict1 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Dermal",@"sensor_type",@"1",@"sensor_id" ,@"nme",@"name",@"0",@"isSelected", nil];
-//    NSMutableDictionary * dict2 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Skin",@"sensor_type",@"2",@"sensor_id" ,@"name 2",@"name",@"0",@"isSelected", nil];
-//    NSMutableDictionary * dict3 = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Skin",@"sensor_type",@"2",@"sensor_id" ,@"name 2",@"name",@"0",@"isSelected", nil];
-//
-//    [tmpArrySensor addObject:dict1];
-//    [tmpArrySensor addObject:dict2];
-//    [tmpArrySensor addObject:dict3];
-
-
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"DeviceDidDisConnectNotification" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(DeviceDidDisConnectNotification:) name:@"DeviceDidDisConnectNotification" object:nil];
 }
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -146,8 +124,6 @@ NSString *selectedFromPicker;
     imgViewProPic.userInteractionEnabled = YES;
     imgViewProPic.contentMode = UIViewContentModeScaleAspectFill;
     imgViewProPic.layer.masksToBounds = true;
-//    imgViewProPic.contentMode = UIViewContentModeScaleAspectFit;
-
     [addSetUpView addSubview:imgViewProPic];
     
     btnCamera = [[UIButton alloc]init];
@@ -157,9 +133,9 @@ NSString *selectedFromPicker;
     
     if (dataDict.count == 0)
     {
-        UIImage *btncmr = [UIImage imageNamed:@"camera.png"];
-        [btnCamera setImage:btncmr forState:normal];
+        [btnCamera setImage:[UIImage imageNamed:@"camera.png"] forState:normal];
     }
+    
     txtFullName = [[UITextField alloc]initWithFrame:CGRectMake(20, addSetUpView.frame.size.height - 70, addSetUpView.frame.size.width-130, 60)];
     [self setTextfieldProperties:txtFullName withPlaceHolderText:@"Full Name" withTextSize:30];
     txtFullName.returnKeyType = UIReturnKeyNext;
@@ -179,7 +155,6 @@ NSString *selectedFromPicker;
 
         addSetUpView.frame = CGRectMake(0, 80, setupW-10, 180);
         imgViewProPic.frame = CGRectMake(20,5,addSetUpView.frame.size.width-40,imgHeight);
-//        imgViewProPic.backgroundColor = UIColor.redColor;
         btnCamera.frame = CGRectMake((imgViewProPic.frame.size.width-104)/2,(imgViewProPic.frame.size.height-104)/2,104,104);
         txtFullName.frame = CGRectMake(5, addSetUpView.frame.size.height - 45, addSetUpView.frame.size.width-60, 40);
         txtFullName.font = [UIFont fontWithName:CGRegular size:textSize-6];
@@ -221,15 +196,13 @@ NSString *selectedFromPicker;
         lblAddmonitorConnect.text = [NSString stringWithFormat:@"%@ Added",globalPeripheral.name];
     }
 
-
-          int btnyy = 80;
+    int btnyy = 80;
     UIButton * btnAddSensor = [[UIButton alloc]initWithFrame:CGRectMake(200, btnyy, 50, 45)];
     [btnAddSensor setImage:[UIImage imageNamed:@"addBlack.png"] forState:normal];
     [btnAddSensor addTarget:self action:@selector(btnAddSensorClick) forControlEvents:UIControlEventTouchUpInside];
     btnAddSensor.layer.cornerRadius = 25;
     btnAddSensor.backgroundColor = UIColor.whiteColor;
     [addSensorView addSubview:btnAddSensor];
-
   
     UILabel * lblAddSensor = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy, addSensorView.frame.size.width-40, 45)];
     [self setLabelProperties:lblAddSensor withText:@"Add Sensor" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:30];
@@ -256,7 +229,6 @@ NSString *selectedFromPicker;
     btnRemoveSensors.titleLabel.numberOfLines = 2;
     [addSensorView addSubview:btnRemoveSensors];
 
-    
     UILabel *lblSensorCheck = [[UILabel alloc]init];
     lblSensorCheck.frame = CGRectMake(15, btnyy+120, addSensorView.frame.size.width-100, 40);
     [self setLabelProperties:lblSensorCheck withText:@"Sensor Check" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:25];
@@ -270,36 +242,6 @@ NSString *selectedFromPicker;
     btnOk.layer.cornerRadius = 20;
     [addSensorView addSubview:btnOk];
     
-    lblType1 = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy, 150, 45)];
-    [self setLabelProperties:lblType1 withText:@"--NA--" backColor:typeColor textColor:UIColor.whiteColor textSize:20];
-//    [addSensorView addSubview:lblType1];
-        
-    lblNameNo1 = [[UILabel alloc]initWithFrame:CGRectMake(170, btnyy, addSensorView.frame.size.width-180, 45)];
-    [self setLabelProperties:lblNameNo1 withText:@"Name / Number" backColor:UIColor.whiteColor textColor:UIColor.blackColor textSize:18];
-//    [addSensorView addSubview:lblNameNo1];
-        
-    lblType2 = [[UILabel alloc]initWithFrame:CGRectMake(10, btnyy+50, 150, 45)];
-    [self setLabelProperties:lblType2 withText:@"--NA--" backColor:typeColor textColor:UIColor.whiteColor textSize:20];
-//    [addSensorView addSubview:lblType2];
-            
-    lblNameNo2 = [[UILabel alloc]initWithFrame:CGRectMake(170, btnyy+50, addSensorView.frame.size.width-180, 45)];
-    [self setLabelProperties:lblNameNo2 withText:@"Name / Number" backColor:UIColor.whiteColor textColor:UIColor.blackColor textSize:18];
-//    [addSensorView addSubview:lblNameNo2];
-        
-
-            
-    UILabel *lblLineSep =[[UILabel alloc] init];
-    lblLineSep.frame= CGRectMake(15, btnyy+260, addSensorView.frame.size.width-30, 2);
-    lblLineSep.layer.borderWidth = 2;
-    lblLineSep.layer.borderColor = UIColor.lightGrayColor.CGColor;
-//    [addSensorView addSubview:lblLineSep];
-        
-    UILabel *lblAddMonitor = [[UILabel alloc]init];
-    lblAddMonitor.frame = CGRectMake(15, btnyy+270, 175, 44);
-    lblAddMonitor.text = @"Add Monitor";
-    lblAddMonitor.font  = [UIFont boldSystemFontOfSize:20];
-//    [addSensorView addSubview:lblAddMonitor];
-    
     if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
     {
         addSensorView.frame = CGRectMake(DEVICE_WIDTH/2 , 80, DEVICE_WIDTH/2, 230);
@@ -310,7 +252,6 @@ NSString *selectedFromPicker;
 
         lblAddmonitorConnect.frame = CGRectMake(5, 35, addSensorView.frame.size.width, 25);
         lblAddmonitorConnect.font = [UIFont fontWithName:CGRegular size:textSize-6];
-        
         
         int btnyy = 45;
         btnAddSensor.frame = CGRectMake(addSensorView.frame.size.width-45, btnyy+10, 30, 30);
@@ -329,24 +270,9 @@ NSString *selectedFromPicker;
         lblSensorCheck.frame = CGRectMake(5, btnyy+80, addSensorView.frame.size.width-10, 35);
         lblSensorCheck.font = [UIFont fontWithName:CGRegular size:textSize-6];
 
-
         btnOk.frame = CGRectMake(addSensorView.frame.size.width-45, btnyy+80, 30, 30);
         btnOk.titleLabel.font = [UIFont fontWithName:CGRegular size:textSize-6];
         btnOk.layer.cornerRadius = 15;
-        
-        lblType1.frame = CGRectMake(10, btnyy, 150, 45);
-        lblType1.font = [UIFont fontWithName:CGRegular size:textSize-6];
-        
-        lblNameNo1.frame = CGRectMake(170, btnyy, addSensorView.frame.size.width-180, 45);
-        lblNameNo1.font = [UIFont fontWithName:CGRegular size:textSize-6];
-
-        lblType2.frame = CGRectMake(10, btnyy+50, 150, 45);
-        lblNameNo1.font = [UIFont fontWithName:CGRegular size:textSize-6];
-
-        lblNameNo2.frame = CGRectMake(170, btnyy+50, addSensorView.frame.size.width-180, 45);
-        lblNameNo2.font = [UIFont fontWithName:CGRegular size:textSize-6];
-        
-
     }
 }
 #pragma mark - Setup Alarm View
@@ -367,23 +293,22 @@ NSString *selectedFromPicker;
     addAlarmsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVICE_WIDTH-80, indiVisualView.frame.size.height/1.7)];
     addAlarmsView.layer.cornerRadius = 6;
     addAlarmsView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-//    addAlarmsView.backgroundColor = UIColor.purpleColor;
     [indiVisualView addSubview:addAlarmsView];
         
-    lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, DEVICE_WIDTH, 40)];
+    UILabel * lblAddAlarms = [[UILabel alloc]initWithFrame:CGRectMake(20, 5, DEVICE_WIDTH, 40)];
     [self setLabelProperties:lblAddAlarms withText:@"Add Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:30];
     lblAddAlarms.textAlignment = NSTextAlignmentLeft;
     [addAlarmsView addSubview:lblAddAlarms];
           
     int y = 40;
-    lblType2iblSenAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y, DEVICE_WIDTH, 50)];
+    UILabel * lblType2iblSenAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y, DEVICE_WIDTH, 50)];
     [self setLabelProperties:lblType2iblSenAlarm withText:@"Ingestible Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20.0];
     lblType2iblSenAlarm.textAlignment = NSTextAlignmentLeft;
     lblType2iblSenAlarm.font = [UIFont boldSystemFontOfSize:20.0];
     [addAlarmsView addSubview:lblType2iblSenAlarm];
         
     
-    lblHighTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y+40, 150, 55)];
+    UILabel * lblHighTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(20, y+40, 150, 55)];
     [self setLabelProperties:lblHighTempAlarm withText:@"High Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:17];
     [addAlarmsView addSubview:lblHighTempAlarm];
          
@@ -394,7 +319,7 @@ NSString *selectedFromPicker;
     txtIngesTmpHigh.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtIngesTmpHigh];
 
-    lblLowTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-350, y+40, 200, 55)];
+    UILabel * lblLowTempAlarm = [[UILabel alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-350, y+40, 200, 55)];
     [self setLabelProperties:lblLowTempAlarm withText:@"Low Temp Alarm" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:17];
     [addAlarmsView addSubview:lblLowTempAlarm];
          
@@ -404,10 +329,9 @@ NSString *selectedFromPicker;
     txtlngeslowTmpAl.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtlngeslowTmpAl];
          
-    //1 Dermal
-    
+    //DERMAL
     int yy = addAlarmsView.frame.size.height-130 ;
-    lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(20, yy+10, DEVICE_WIDTH, 30)];
+    UILabel *  lblDermalSensorAlram = [[UILabel alloc]initWithFrame:CGRectMake(20, yy+10, DEVICE_WIDTH, 30)];
     [self setLabelProperties:lblDermalSensorAlram withText:@"Dermal Sensor Alarms" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20.0];
     lblDermalSensorAlram.textAlignment = NSTextAlignmentLeft;
     lblDermalSensorAlram.font = [UIFont boldSystemFontOfSize:20.0];
@@ -420,7 +344,6 @@ NSString *selectedFromPicker;
         
     txtDemalTmpHigh = [[UITextField alloc]initWithFrame:CGRectMake(170, yy+45, 150, 55)];
     [self setTextfieldProperties:txtDemalTmpHigh withPlaceHolderText:@" 100.0ºF" withTextSize:25.0];
-//    txtDemalTmpHigh.placeholder = @" 102.0ºF";
     txtDemalTmpHigh.keyboardType = UIKeyboardTypeNumberPad;
     txtDemalTmpHigh.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtDemalTmpHigh];
@@ -431,13 +354,11 @@ NSString *selectedFromPicker;
          
     txtDermalLowTmp = [[UITextField alloc]initWithFrame:CGRectMake(addAlarmsView.frame.size.width-170, yy+45, 150, 55)];
     [self setTextfieldProperties:txtDermalLowTmp withPlaceHolderText:@" 94.0ºF" withTextSize:25.0];
-//    txtDermalLowTmp.placeholder = @" 92.0ºF";
     txtDermalLowTmp.keyboardType = UIKeyboardTypeNumberPad;
     txtDermalLowTmp.returnKeyType = UIReturnKeyNext;
     [addAlarmsView addSubview:txtDermalLowTmp];
 
-    // set time interval
-    
+    //SET TIMER INTERVAL
     UIView * timeIntervalView = [[UIView alloc] initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+10, indiVisualView.frame.size.width, 60)];
     timeIntervalView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     timeIntervalView.clipsToBounds = true;
@@ -451,13 +372,12 @@ NSString *selectedFromPicker;
     
     lblTimeInterval = [[UILabel alloc]initWithFrame:CGRectMake(timeIntervalView.frame.size.width/2,5, 200, 50)];
     [self setLabelProperties:lblTimeInterval withText:@"10 Seconds" backColor:UIColor.clearColor textColor:UIColor.blackColor textSize:20];
-//    lblTimeInterval.textAlignment = NSTextAlignmentLeft;
     lblTimeInterval.font = [UIFont fontWithName:CGRegular size:23];
     lblTimeInterval.backgroundColor= UIColor.whiteColor;
     lblTimeInterval.layer.cornerRadius = 6;
     [timeIntervalView addSubview:lblTimeInterval];
     
-    if (![[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
+    if (![[self checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
     {
         lblTimeInterval.text = [dataDict valueForKey:@"timeInterval"];
     }
@@ -468,15 +388,13 @@ NSString *selectedFromPicker;
     [timeIntervalView addSubview:btnTimeInterval];
 
 
-    // note view
-    
+    // NOTE VIEW
     lblNote = [[UILabel alloc]initWithFrame:CGRectMake(10, addAlarmsView.frame.size.height+70, DEVICE_WIDTH, 35)];
     [self setLabelProperties:lblNote withText:@"Notes" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:30];
     lblNote.textAlignment = NSTextAlignmentLeft;
     lblNote.font = [UIFont fontWithName:CGBold size:25];
     [indiVisualView addSubview:lblNote];
     
-        
     txtViewNote = [[UITextView alloc]initWithFrame:CGRectMake(0, addAlarmsView.frame.size.height+110, indiVisualView.frame.size.width, indiVisualView.frame.size.height-addAlarmsView.frame.size.height-115)];
     txtViewNote.clipsToBounds = true;
     txtViewNote.layer.cornerRadius = 6;
@@ -512,8 +430,6 @@ NSString *selectedFromPicker;
         indiVisualView.frame = CGRectMake(0, addSensorView.frame.size.height+80, DEVICE_WIDTH, DEVICE_HEIGHT-addSensorView.frame.size.height-125);
         addAlarmsView.frame = CGRectMake(0, 0, indiVisualView.frame.size.width, indiVisualView.frame.size.height/1.7);
         
-//        addAlarmsView.backgroundColor = UIColor.redColor;
-        
         lblAddAlarms.frame = CGRectMake(10, 0, DEVICE_WIDTH, 20);
         lblAddAlarms.font = [UIFont fontWithName:CGRegular size:textSize-6];
 
@@ -534,7 +450,7 @@ NSString *selectedFromPicker;
         txtlngeslowTmpAl.frame = CGRectMake(addAlarmsView.frame.size.width-80, y, 70, 44);
         txtlngeslowTmpAl.font = [UIFont fontWithName:CGRegular size:textSize-8];
 
-    //Dermal
+    //DERMAL
 
         int yy = addAlarmsView.frame.size.height-80 ;
         lblDermalSensorAlram.frame = CGRectMake(5, yy, DEVICE_WIDTH, 30);
@@ -553,7 +469,7 @@ NSString *selectedFromPicker;
         txtDermalLowTmp.frame = CGRectMake(addAlarmsView.frame.size.width-80, yy, 70, 44);
         txtDermalLowTmp.font = [UIFont fontWithName:CGRegular size:textSize-8];
 
-        // set time interval
+        // TIMER INTERVAL
         
         timeIntervalView.frame = CGRectMake(0, addAlarmsView.frame.size.height+2, indiVisualView.frame.size.width, 40);
         lblTimeInterval.font = [UIFont fontWithName:CGRegular size:textSize-6];
@@ -564,15 +480,13 @@ NSString *selectedFromPicker;
         txtTimeInterval.frame = CGRectMake(timeIntervalView.frame.size.width/2,5, 60, 40);
         txtTimeInterval.font = [UIFont fontWithName:CGRegular size:textSize-8];
 
-        // note view
+        //NOTE VIEW
         
         lblNote.frame = CGRectMake(5, addAlarmsView.frame.size.height+40, DEVICE_WIDTH, 25);
         lblNote.font = [UIFont fontWithName:CGBold size:textSize-6];
 
         txtViewNote.frame = CGRectMake(0, addAlarmsView.frame.size.height+65, indiVisualView.frame.size.width, indiVisualView.frame.size.height);
         txtViewNote.font = [UIFont fontWithName:CGRegular size:textSize-8];
-        
-        
     }
 }
 
@@ -608,68 +522,18 @@ NSString *selectedFromPicker;
     [alert addAction:defaultAc];
     [self presentViewController:alert animated:YES completion:nil];
 }
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(nullable NSDictionary<UIImagePickerControllerInfoKey, id> *)editingInfo API_DEPRECATED("", ios(2.0, 3.0));
-{
-    if (image.size.width > 1000 || image.size.height > 1000)
-    {
-        image = [self scaleMyImage:image withNewWidth:1000 newHeight:1000];
-    }
-    isImageEdited = YES;
-    imgViewProPic.image = image;
-    imgViewProPic.image = [self scaleMyImage:image withNewWidth:300 newHeight:300];
-    imgViewProPic.contentMode = UIViewContentModeScaleAspectFill;
-    imgViewProPic.layer.masksToBounds = true;
-    [btnCamera setImage:[UIImage imageNamed:@" "] forState:UIControlStateNormal];
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-- (NSString *)documentsPathForFileName:(NSString *)name
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-    NSString *documentsPath = [paths objectAtIndex:0];
-    return [documentsPath stringByAppendingPathComponent:name];
-}
--(NSString *)saveImagetoDocumentDirectoryIsforthumbNail:(BOOL)isThumbNail
-{
-    NSString * imageName;
-    // to give unique name based on time stamp
-    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
-    NSNumber *timeStampObj = [NSNumber numberWithInteger: timeStamp];
-    
-    //taking random no and assigning to make it more unique
-    int randomID = arc4random() % 9000 + 1000;
-    imageName = [NSString stringWithFormat:@"/player-%@-%d%@.jpg", CURRENT_USER_ID,randomID,timeStampObj];
-    imageName = [imageName stringByReplacingOccurrencesOfString:@" " withString:@""];
-    
-    NSString * stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:@"PlayerPhoto"]; // New Folder is your folder name
-    NSError *error = nil;
-    UIImage * givenImg = imgViewProPic.image;
-    if (isThumbNail)
-    {
-        givenImg = [self scaleMyImage:givenImg withNewWidth:250 newHeight:250];
-    }
-    if (![[NSFileManager defaultManager] fileExistsAtPath:stringPath])        [[NSFileManager defaultManager] createDirectoryAtPath:stringPath withIntermediateDirectories:NO attributes:nil error:&error];
-    NSString *fileName = [stringPath stringByAppendingString:imageName];
-    NSData *data = UIImageJPEGRepresentation(givenImg, 0.2);
-    [data writeToFile:fileName atomically:YES];
-    
-    return imageName;
-}
 -(void)btnCancelClick
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"DeviceDidDisConnectNotification" object:nil];
     [self.navigationController popViewControllerAnimated:true];
 }
 -(void)btnDoneClick
 {
-     BOOL isValidEntrys = NO;
-//    if  (imgViewProPic.image == nil)
-//    {
-//        strMsg = @"Please add player image";
-//    }
-//    else
+    BOOL isValidEntrys = NO;
     if ([txtFullName.text  isEqual: @""])
-     {
+    {
         strMsg = @"Enter Full Name";
-     }
+    }
     else if ([txtHash.text isEqual:@""])
     {
         strMsg = @"Enter  Number";
@@ -700,7 +564,6 @@ NSString *selectedFromPicker;
         lowIngest = txtlngeslowTmpAl.text.intValue;
         HighDermal = txtDemalTmpHigh.text.intValue;
         lowDermal = txtDermalLowTmp.text.intValue;
-
         
         if([self isNumberUnique:txtHash.text] == NO)
         {
@@ -721,37 +584,32 @@ NSString *selectedFromPicker;
                strImagePath =  @"NA";
                strThumbNail = @"NA";
            }
-           NSString * strName = [APP_DELEGATE checkforValidString:txtFullName.text];
-           NSString * strNum = [APP_DELEGATE checkforValidString:txtHash.text];
+           NSString * strName = [self checkforValidString:txtFullName.text];
+           NSString * strNum = [self checkforValidString:txtHash.text];
 //           @"%.02f ºC"
-           NSString * strIngHighF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",highIngstF]];
-           NSString * strIngLowF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",lowIngestF]];
-           NSString * strDrmlHighF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",highDermalF]];
-           NSString * strDrmlLowF = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºF",lowDermalF]];
+           NSString * strIngHighF = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºF",highIngstF]];
+           NSString * strIngLowF = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºF",lowIngestF]];
+           NSString * strDrmlHighF = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºF",highDermalF]];
+           NSString * strDrmlLowF = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºF",lowDermalF]];
           
            // text field entry or else calulation for c and insert to the data base.
-           NSString * strIngstHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",highIngstC]];
-           NSString * strIngstLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",lowIngestC]];
-           NSString * strDermlHighC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",highDermalC]];
-           NSString * strDermlLowC = [APP_DELEGATE checkforValidString:[NSString stringWithFormat:@"%.02f ºC",lowDermalC]];
+           NSString * strIngstHighC = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºC",highIngstC]];
+           NSString * strIngstLowC = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºC",lowIngestC]];
+           NSString * strDermlHighC = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºC",highDermalC]];
+           NSString * strDermlLowC = [self checkforValidString:[NSString stringWithFormat:@"%.02f ºC",lowDermalC]];
 
            NSString * strUserId = [NSString stringWithFormat:@"%.0f",[[NSDate date] timeIntervalSince1970]];
            NSString * requestStr1 = @"NA";
-           NSString * strNotes = [APP_DELEGATE checkforValidString:txtViewNote.text];
+           NSString * strNotes = [self checkforValidString:txtViewNote.text];
 
            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
            [dateFormatter setDateFormat:@"dd-MM-yyy hh:mm aa"];
-           NSString * strTimeHour = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:[NSDate date]]];
-
       
            NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-           [[NSUserDefaults standardUserDefaults] setValue:[APP_DELEGATE checkforValidString:txtViewNote.text] forKey:@"Notes"];
+           [[NSUserDefaults standardUserDefaults] setValue:[self checkforValidString:txtViewNote.text] forKey:@"Notes"];
 
            NSMutableArray* mutableAccounts = [[defaults objectForKey:@"Notes"] mutableCopy];
-           // Add or remove accounts:
-      
            [defaults setObject:mutableAccounts forKey:@"Notes"];
-           
            
            if (isFromEdit == YES)
            {
@@ -771,7 +629,6 @@ NSString *selectedFromPicker;
                    }
                }
                requestStr1 =  [NSString stringWithFormat:@"update Subject_Table set name = \"%@\", number = \"%@\", photo_URl = \"%@\", photo_URLThumbNail = \"%@\", ing_highF = \"%@\", ing_lowF = \"%@\", drml_highF = \"%@\", drml_lowF = \"%@\", ing_highC = \"%@\", ing_lowC = \"%@\", drml_highC = \"%@\", drml_lowC = \"%@\", notes = '%@', timeInterval ='%@' where id =\"%@\"",strName,strNum,strImagePath,strThumbNail,strIngHighF,strIngLowF,strDrmlHighF,strDrmlLowF,strIngstHighC,strIngstLowC,strDermlHighC,strDermlLowC,strNotes,selectedFromPicker,[dataDict valueForKey:@"id"]];
-               
            }
            else
            {
@@ -796,13 +653,11 @@ NSString *selectedFromPicker;
            [dataDict setValue:strNotes forKey:@"notes"];
            [dataDict setValue:selectedFromPicker forKey:@"timeInterval"];
 
-           
-//           -(void)UpdatePlayerDatafromSetup:(NSMutableDictionary *)updatedDataDict;
-
            [[DataBaseManager dataBaseManager] executeSw:requestStr1];
            [self.navigationController popViewControllerAnimated:YES];
-           
-               [SubjectDelegate UpdatePlayerDatafromSetup:dataDict];
+           [[NSNotificationCenter defaultCenter] removeObserver:self name:@"DeviceDidDisConnectNotification" object:nil];
+
+           [SubjectDelegate UpdatePlayerDatafromSetup:dataDict];
        }
     }
     if (isValidEntrys == NO)
@@ -816,20 +671,6 @@ NSString *selectedFromPicker;
         {
             [globalSubjectDetailVC ReceiveSensorDetails:tmpArrySensor];
         }
-    }
-}
--(BOOL)isNumberUnique:(NSString *)strCurrentNumber
-{
-    NSString * strQuery = [NSString stringWithFormat:@"select * from Subject_Table where number = '%@' and id != '%@'",strCurrentNumber, [dataDict valueForKey:@"id"]];
-    NSMutableArray * tmpArr = [[NSMutableArray alloc] init];
-    [[DataBaseManager dataBaseManager] execute:strQuery resultsArray:tmpArr];
-    if ([tmpArr count]==0)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;;
     }
 }
 -(void)btnAddSensorClick
@@ -861,8 +702,17 @@ NSString *selectedFromPicker;
     HomeVC *hvn = [[HomeVC alloc] init];
     [self.navigationController pushViewController:hvn animated:true];
     
-     [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"isMonitorSelect"];
-     [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"isMonitorSelect"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+#pragma mark:- BLEManager Device Disconnection Method
+-(void)DeviceDidDisConnectNotification:(NSNotification*)notification//Disconnect periperal
+{
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        
+        self->lblAddmonitorConnect.text = @"Monitor not added";
+    });
 }
 #pragma mark- Textview method
 - (void)textViewDidBeginEditing:(UITextView *)textView
@@ -871,7 +721,7 @@ NSString *selectedFromPicker;
     {
         self.view.frame = CGRectMake(0, -200, DEVICE_WIDTH, DEVICE_HEIGHT);
     }
-   self.view.frame = CGRectMake(0, -275, DEVICE_WIDTH, DEVICE_HEIGHT);
+    self.view.frame = CGRectMake(0, -275, DEVICE_WIDTH, DEVICE_HEIGHT);
 }
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
@@ -947,10 +797,6 @@ NSString *selectedFromPicker;
             {
                 strValue = [arrDotsCheck objectAtIndex:0];
             }
-            else
-            {
-            }
-            
             strValue = [strValue stringByReplacingOccurrencesOfString:@" " withString:@""];
             textField.text = strValue;
         }
@@ -971,7 +817,7 @@ NSString *selectedFromPicker;
     {
       self.view.frame = CGRectMake(0, -250, DEVICE_WIDTH, DEVICE_HEIGHT);
     }
-     if (textField == txtNameSnr || txtNumberSnr)
+    if (textField == txtNameSnr || txtNumberSnr)
     {
         self.view.frame = CGRectMake(0, -60, DEVICE_WIDTH, DEVICE_HEIGHT);
     }
@@ -991,7 +837,7 @@ NSString *selectedFromPicker;
     }
     else if (textField == txtFullName)
     {
-        if ([[APP_DELEGATE checkforValidString:textField.text] isEqualToString:@"NA"])
+        if ([[self checkforValidString:textField.text] isEqualToString:@"NA"])
         {
             strMsg = @"Please Enter values";
         }
@@ -1077,29 +923,9 @@ NSString *selectedFromPicker;
     NSString * strErrMsg = @"NA";
     if(isCClicked == YES)
     {
-        /*if(valC > 38.1)
-        {
-            isValidValue = NO;
-            strErrMsg = @"Maximum value exceed for temperature in ºC";
-        }
-        else if (valC < 32.0)
-        {
-            isValidValue = NO;
-            strErrMsg = @"Temperature can't be less than 32 ºC";
-        }    */             //Temperature
     }
     else
     {
-        /*if(valF > 100.5)
-        {
-            isValidValue = NO;
-            strErrMsg = @"Maximum value exceed for temperature in ºF";
-        }
-        else if (valF < 94)
-        {
-            isValidValue = NO;
-            strErrMsg = @"Temperature can't be less than 94 ºF";
-        }*/
     }
     if (isValidValue == NO)
     {
@@ -1124,44 +950,17 @@ NSString *selectedFromPicker;
    else if (textField == txtIngesTmpHigh || textField == txtlngeslowTmpAl || textField == txtDemalTmpHigh || textField == txtDermalLowTmp)
     {
         NSCharacterSet *numbersOnly = [NSCharacterSet characterSetWithCharactersInString:@".0123456789"];
-           NSCharacterSet *characterSetFromTextField = [NSCharacterSet characterSetWithCharactersInString:textField.text];
+        NSCharacterSet *characterSetFromTextField = [NSCharacterSet characterSetWithCharactersInString:textField.text];
 
-           BOOL stringIsValid = [numbersOnly isSupersetOfSet:characterSetFromTextField];
-           return stringIsValid;
-        
-//        NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-//        NSString *expression = @"^([0-9]+)?(\\.([0-9]{1,2})?)?$";
-//        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:expression
-//        options:NSRegularExpressionCaseInsensitive error:nil];
-//        NSUInteger numberOfMatches = [regex numberOfMatchesInString:newString options:0 range:NSMakeRange(0, [newString length] )];
-//        if (numberOfMatches == 0)
-//                return NO;
-//        }
-//    //   in tis formate  100.00˚F
-//    NSUInteger decimalPlacesLimit = 2;
-//    NSRange rangeDot = [textField.text rangeOfString:@"." options:NSCaseInsensitiveSearch];
-//    NSRange rangeComma = [textField.text rangeOfString:@"," options:NSCaseInsensitiveSearch];
-//    if (rangeDot.length > 0 || rangeComma.length > 0){
-//        if([string isEqualToString:@"."]) {
-//            NSLog(@"textField already contains a separator");
-//            return NO;
-//        }
-//        else
-//        {
-//            NSArray *explodedString = [textField.text componentsSeparatedByString:@"."];
-//            NSString *decimalPart = explodedString[1];
-//            if (decimalPart.length >= decimalPlacesLimit && ![string isEqualToString:@""]) {
-//                NSLog(@"textField already contains %lu decimal places", (unsigned long)decimalPlacesLimit);
-//                return NO;
-//            }
-//        }
+        BOOL stringIsValid = [numbersOnly isSupersetOfSet:characterSetFromTextField];
+        return stringIsValid;
     }
     return YES;
 }
 #pragma mark-Get F From C
 -(NSArray *)getFarnhitefromCelcius:(NSString *)strVal
 {
-    if ([[APP_DELEGATE checkforValidString:strVal] isEqualToString:@"NA"])
+    if ([[self checkforValidString:strVal] isEqualToString:@"NA"])
     {
         return [NSArray new];
     }
@@ -1183,29 +982,29 @@ NSString *selectedFromPicker;
 -(void)showAlertForEmptyTextField:(UITextField *)txtfild
 {
     if(txtfild == txtIngesTmpHigh)
-        {
-            strMsg = @"Please enater High Ingest value.";
-        }
-        else if (txtfild == txtlngeslowTmpAl)
-        {
-            strMsg = @"Please enter Low Ingest Vlaue.";
-        }
-        else if (txtfild == txtDemalTmpHigh)
-        {
-            strMsg = @"Please enter High Dermal value.";
-        }
-        else if (txtfild == txtDermalLowTmp)
-        {
-            strMsg = @"Please enter Low Dermal value.";
-        }
-        else if (txtfild == txtHash)
-        {
+    {
+        strMsg = @"Please enater High Ingest value.";
+    }
+    else if (txtfild == txtlngeslowTmpAl)
+    {
+        strMsg = @"Please enter Low Ingest Vlaue.";
+    }
+    else if (txtfild == txtDemalTmpHigh)
+    {
+        strMsg = @"Please enter High Dermal value.";
+    }
+    else if (txtfild == txtDermalLowTmp)
+    {
+        strMsg = @"Please enter Low Dermal value.";
+    }
+    else if (txtfild == txtHash)
+    {
         strMsg = @"Please enter number.";
-        }
-        else if (txtfild == txtFullName)
-        {
+    }
+    else if (txtfild == txtFullName)
+    {
         strMsg = @"Pleasse enter name.";
-        }
+    }
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -1214,182 +1013,7 @@ NSString *selectedFromPicker;
     [self.view endEditing:YES];
 }
 #pragma mark- Add Sensor Setup
--(void)setupForAddSensor
-{
-    viewForAddSensor = [[UIView alloc]init];
-    viewForAddSensor.frame = CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT);
-    viewForAddSensor.backgroundColor = [UIColor colorWithRed:0 green:(CGFloat)0 blue:0 alpha:0.8];
-    [self.view addSubview:viewForAddSensor];
-    
-    viewForSensorNameNum = [[UIView alloc]init];
-    viewForSensorNameNum.frame = CGRectMake(150, (DEVICE_HEIGHT), DEVICE_WIDTH-300, 500);
-    viewForSensorNameNum.backgroundColor = UIColor.whiteColor;
-    viewForSensorNameNum.layer.cornerRadius = 6;
-    viewForSensorNameNum.clipsToBounds = true;
-    [viewForAddSensor addSubview:viewForSensorNameNum];
-    
-    UIView *bgView = [[UIView alloc]init];
-    bgView.frame = CGRectMake(0, 0, viewForSensorNameNum.frame.size.width, 70);
-    bgView.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    [viewForSensorNameNum addSubview:bgView];
-    
-    btnCancelSnr = [[UIButton alloc]init];
-    btnCancelSnr.frame = CGRectMake(10, 0, 100, 70);
-    [btnCancelSnr addTarget:self action:@selector(btnCancelSnrClick) forControlEvents:UIControlEventTouchUpInside];
-    [btnCancelSnr setTitle:@"Cancel" forState:normal];
-    [btnCancelSnr setTitleColor:UIColor.whiteColor forState:normal];
-    btnCancelSnr.backgroundColor = UIColor.clearColor;
-    btnCancelSnr.titleLabel.font = [UIFont fontWithName:CGRegular size:28];
-    [bgView addSubview:btnCancelSnr];
-           
-    btnSave = [[UIButton alloc]init];
-    btnSave.frame = CGRectMake(viewForSensorNameNum.frame.size.width-100, 0, 100, 70);
-    [btnSave addTarget:self action:@selector(btnSaveClick) forControlEvents:UIControlEventTouchUpInside];
-    [btnSave setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    btnSave.backgroundColor = UIColor.clearColor;
-    [btnSave setTitle:@"Save" forState:normal];
-    //       [btnDone setTitleColor:UIColor.blueColor forState:normal];
-    btnSave.titleLabel.font = [UIFont fontWithName:CGRegular size:28];
-    [bgView addSubview:btnSave];
-    
-    int yy = 80;
-    UILabel * lblAddSnr = [[UILabel alloc]init];
-    lblAddSnr.frame = CGRectMake(0, yy, viewForSensorNameNum.frame.size.width, 50);
-    lblAddSnr.text = @"Add Sensor";
-    lblAddSnr.textAlignment = NSTextAlignmentCenter;
-    lblAddSnr.font = [UIFont fontWithName:CGRegular size:28];
-    [viewForSensorNameNum addSubview:lblAddSnr];
-    
-    yy = yy + 80;
-    txtNameSnr = [[UITextField alloc]initWithFrame:CGRectMake(40, yy, viewForSensorNameNum.frame.size.width-80, 70)];
-    [self setTextfieldProperties:txtNameSnr withPlaceHolderText:@"Sensor Name" withTextSize:30];
-    txtNameSnr.layer.cornerRadius = 6;
-    txtNameSnr.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    txtNameSnr.textAlignment = NSTextAlignmentLeft;
-    txtNameSnr.returnKeyType = UIReturnKeyNext;
-    [viewForSensorNameNum addSubview:txtNameSnr];
-    
-    yy = yy + 90;
-    txtNumberSnr  = [[UITextField alloc] initWithFrame:CGRectMake(40, yy, viewForSensorNameNum.frame.size.width-80, 70)];
-    [self setTextfieldProperties:txtNumberSnr withPlaceHolderText:@"Senesor Number" withTextSize:30];
-    txtNumberSnr.layer.cornerRadius = 6;
-    txtNumberSnr.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
-    txtNumberSnr.keyboardType = UIKeyboardTypeNumberPad;
-    txtNumberSnr.textAlignment = NSTextAlignmentLeft;
-    txtNumberSnr.returnKeyType = UIReturnKeyDone;
-    [viewForSensorNameNum addSubview:txtNumberSnr];
-    
-    yy = yy + 100;
-    btnSkinAddSnr = [[UIButton alloc]initWithFrame:CGRectMake(40, yy, (viewForSensorNameNum.frame.size.width-50)/2-5, 55)];
-    
-    UIColor * btnSkinINgBGC = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    [self setButtonProperties:btnSkinAddSnr withTitle:@"Skin" backColor:btnSkinINgBGC textColor:UIColor.whiteColor txtSize:25];
-    [btnSkinAddSnr addTarget:self action:@selector(btnSKinAddSnrClick:) forControlEvents:UIControlEventTouchUpInside];
-    btnSkinAddSnr.layer.borderWidth = 1;
-    [viewForSensorNameNum addSubview:btnSkinAddSnr];
-    
-    btnIngsetAddSnr = [[UIButton alloc]initWithFrame:CGRectMake((viewForSensorNameNum.frame.size.width-50)/2+30, yy, (viewForSensorNameNum.frame.size.width-50)/2-20, 55)];
-    [self setButtonProperties:btnIngsetAddSnr withTitle:@"Ingestible" backColor:UIColor.whiteColor textColor:btnSkinINgBGC txtSize:25];
-    [btnIngsetAddSnr addTarget:self action:@selector(btnIngestAddSnrClick) forControlEvents:UIControlEventTouchUpInside];
-    btnIngsetAddSnr.layer.borderWidth = 1;
-    [viewForSensorNameNum addSubview:btnIngsetAddSnr];
 
-    
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-    {
-        self->viewForSensorNameNum.frame = CGRectMake(150, (DEVICE_HEIGHT/2)-200, DEVICE_WIDTH-300, 450);
-    }
-        completion:NULL];
-    
-    
-    
-    if ( IS_IPHONE_4 || IS_IPHONE_5 || IS_IPHONE_6 || IS_IPHONE_6plus)
-    {
-        viewForSensorNameNum.frame = CGRectMake(10, (DEVICE_HEIGHT), DEVICE_WIDTH-20, 250);
-
-        
-    }
-    
-    }
--(void)btnSaveClick
-{
-    if ([txtNameSnr.text isEqual:@""])
-    {
-        strMsg = @"Please enter sensor Name";
-        [self AlertViewFCTypeCautionCheck];
-    }
-    else if ([txtNumberSnr.text isEqual:@""])
-    {
-        strMsg = @"Please enter sensor Number";
-        [self AlertViewFCTypeCautionCheck];
-    }
-    else
-    {
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
-        [dict setObject:txtNameSnr.text forKey:@"name"];
-        [dict setObject:txtNumberSnr.text forKey:@"number"];
-        if (isBtnSkinSelected == YES)
-        {
-            [dict setObject:@"Skin" forKey:@"type"];
-        }
-        else
-        {
-            [dict setObject:@"Ingestible" forKey:@"type"];
-        }
-        [dict setObject:@"0" forKey:@"isSelected"];
-        [tmpArrySensor addObject:dict];
-//        [self UpdateSensorsLabels];
-        
-       // inserting data
-
-       /* NSString * strbleaddress = [APP_DELEGATE checkforValidString:[dict valueForKey:@"--NA--"]];
-        NSString * strName = [APP_DELEGATE checkforValidString:[dict valueForKey:@"name"]];
-        NSString * strNumber = [APP_DELEGATE checkforValidString:[dict valueForKey:@"number"]];
-        NSString * strIsActive = [APP_DELEGATE checkforValidString:[dict valueForKey:@"--NA--"]];
-        NSString * strMonitorId = [APP_DELEGATE checkforValidString:[dict valueForKey:@"--NA--"]];
-        NSString * strSubID = [APP_DELEGATE checkforValidString:[dict valueForKey:@"--NA--"]];
-        NSString * strType = [APP_DELEGATE checkforValidString:[dict valueForKey:@"type"]];
-
-        NSString * requestStr =  [NSString stringWithFormat:@"insert into 'Sensor_Table'('ble_address','name','number','is_active','monitor_id','subject_id','type') values(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strbleaddress,strName,strNumber,strIsActive,strMonitorId,strSubID,strType];
-        [[DataBaseManager dataBaseManager] executeSw:requestStr];*/
-        
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-    {
-    self-> viewForSensorNameNum.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 500);
-    }
-        completion:(^(BOOL finished)
-      {
-        [self-> viewForAddSensor removeFromSuperview];
-    })];
-    }
-    }
--(void)btnSKinAddSnrClick:(id)sender
-{
-    isBtnSkinSelected = YES;
-    btnSkinAddSnr.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    [btnSkinAddSnr setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    [btnIngsetAddSnr setTitleColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] forState:UIControlStateNormal];
-    btnIngsetAddSnr.backgroundColor = UIColor.whiteColor;
-}
--(void)btnCancelSnrClick
-{
-     [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-        {
-            self-> viewForSensorNameNum.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 500);
-        }
-                     completion:(^(BOOL finished)
-    {
-         [self-> viewForAddSensor removeFromSuperview];
-     })];
-}
--(void)btnIngestAddSnrClick
-{
-    isBtnSkinSelected = NO;
-    btnIngsetAddSnr.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
-    [btnIngsetAddSnr setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    [btnSkinAddSnr setTitleColor:[UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1] forState:UIControlStateNormal];
-    btnSkinAddSnr.backgroundColor = UIColor.whiteColor;
-}
 #pragma mark-View All Sensor Methoda
 -(void)setupForViewAllSensors
 {
@@ -1407,15 +1031,9 @@ NSString *selectedFromPicker;
     viewForBgAllSnr.backgroundColor = [UIColor colorWithRed:24.0/255 green:(CGFloat)157.0/255 blue:191.0/255 alpha:1];
     [viewForListOfSensor addSubview:viewForBgAllSnr];
     
-    lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, viewAllSensor.frame.size.width-100, 60)];
-    [self setLabelProperties:lblHeader withText:@"Please select any  sensors" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
+    UILabel * lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, viewAllSensor.frame.size.width-100, 60)];
+    [self setLabelProperties:lblHeader withText:@"Please select any sensors" backColor:UIColor.clearColor textColor:UIColor.whiteColor textSize:25];
     lblHeader.textAlignment = NSTextAlignmentCenter;
-//    [viewForBgAllSnr addSubview:lblHeader];
-
-//    if (isRemoveSnrSelect == YES)
-//    {
-//         lblHeader.text = @"Select to Remove sensor";
-//    }
 
     if (isRemoveSnrSelect == NO)
     {
@@ -1433,17 +1051,16 @@ NSString *selectedFromPicker;
     btnCancelSlSnr.layer.cornerRadius = 5;
     [viewForBgAllSnr addSubview:btnCancelSlSnr];
 
-    UIButton *btnSelectOk = [[UIButton alloc]initWithFrame:CGRectMake(viewForListOfSensor.frame.size.width-60, 0, 50, 60)];
-    [self setButtonProperties:btnSelectOk withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
-    [btnSelectOk addTarget:self action:@selector(btnOkSelClick) forControlEvents:UIControlEventTouchUpInside];
-    [viewForBgAllSnr addSubview:btnSelectOk];
+    UIButton *btnFilterOk = [[UIButton alloc]initWithFrame:CGRectMake(viewForListOfSensor.frame.size.width-60, 0, 50, 60)];
+    [self setButtonProperties:btnFilterOk withTitle:@"" backColor:UIColor.clearColor textColor:UIColor.whiteColor txtSize:25];
+    [btnFilterOk addTarget:self action:@selector(btnOkSelClick) forControlEvents:UIControlEventTouchUpInside];
+    [viewForBgAllSnr addSubview:btnFilterOk];
     
-
     if(isRemoveSnrSelect == YES)
     {
         [tmpArrySensor setValue:@"0" forKey:@"isRemoveSelected"];
-        btnSelectOk.frame = CGRectMake(viewForListOfSensor.frame.size.width-150, 0, 150, 60);
-        [btnSelectOk setTitle:@"Remove" forState:UIControlStateNormal];
+        btnFilterOk.frame = CGRectMake(viewForListOfSensor.frame.size.width-150, 0, 150, 60);
+        [btnFilterOk setTitle:@"Remove" forState:UIControlStateNormal];
     }
     tblListOfSensor = [[UITableView alloc]initWithFrame: CGRectMake(0, 125, viewForListOfSensor.frame.size.width, viewForListOfSensor.frame.size.height-250) style:UITableViewStylePlain];
     tblListOfSensor.frame = CGRectMake(0, 60, viewForListOfSensor.frame.size.width, viewForListOfSensor.frame.size.height);
@@ -1466,7 +1083,7 @@ NSString *selectedFromPicker;
     {
         self-> viewForListOfSensor.frame = CGRectMake(40, DEVICE_HEIGHT, DEVICE_WIDTH-80, DEVICE_HEIGHT-40);
     }
-                    completion:(^(BOOL finished)
+    completion:(^(BOOL finished)
     {
                     [self-> viewAllSensor removeFromSuperview];
     })];
@@ -1478,7 +1095,6 @@ NSString *selectedFromPicker;
         [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
         {
             self-> viewForListOfSensor.frame = CGRectMake(40, DEVICE_HEIGHT, DEVICE_WIDTH-80, DEVICE_HEIGHT-40);
-//            [self UpdateSensorsLabels];
             }
                         completion:(^(BOOL finished)
         {
@@ -1518,37 +1134,27 @@ NSString *selectedFromPicker;
                             andButtons:nil];
                 
                 NSMutableArray * tmparr = [[NSMutableArray alloc] init];
-                for (int i = 0; i<[tmpArrySensor count]; i++)
+                for (int i = 0; i<[self->tmpArrySensor count]; i++)
                 {
-                    if ([[[tmpArrySensor objectAtIndex:i] objectForKey:@"isRemoveSelected"] isEqualToString:@"1"])
+                    if ([[[self->tmpArrySensor objectAtIndex:i] objectForKey:@"isRemoveSelected"] isEqualToString:@"1"])
                     {
-                        [tmparr addObject:[tmpArrySensor objectAtIndex:i]];
+                        [tmparr addObject:[self->tmpArrySensor objectAtIndex:i]];
                     }
                 }
                 for (int k = 0; k<tmparr.count; k++)
                 {
-                    NSInteger foundIndex = [tmpArrySensor indexOfObject:[tmparr objectAtIndex:k]];
+                    NSInteger foundIndex = [self->tmpArrySensor indexOfObject:[tmparr objectAtIndex:k]];
                     if (foundIndex != NSNotFound)
                     {
-                        if (tmpArrySensor.count > foundIndex)
+                        if (self->tmpArrySensor.count > foundIndex)
                         {
-                            [tmpArrySensor removeObjectAtIndex:foundIndex];
-                            lblNosensor.text = [NSString stringWithFormat:@"%lu Sensor Added",(unsigned long)tmpArrySensor.count];
+                            [self->tmpArrySensor removeObjectAtIndex:foundIndex];
+                            self->lblNosensor.text = [NSString stringWithFormat:@"%lu Sensor Added",(unsigned long)self->tmpArrySensor.count];
                         }
                     }
                 }
-//                [self UpdateSensorsLabels];
                 [self->tblListOfSensor reloadData];
                 }];
-            
-//            [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-//            {
-//                self-> viewForListOfSensor.frame = CGRectMake(40, (DEVICE_HEIGHT), DEVICE_WIDTH-80, DEVICE_HEIGHT-40);
-//            }
-//                            completion:(^(BOOL finished)
-//            {
-//                [self-> viewAllSensor removeFromSuperview];
-//            })];
             
             [alert showAlertInView:self
                          withTitle:@"HQ-Inc App"
@@ -1558,58 +1164,6 @@ NSString *selectedFromPicker;
         }
     }
 }
-#pragma mark- To Update Sensors lables with Type after selection
--(void)UpdateSensorsLabels
-{
-    if (arrSensors.count == 0)
-    {
-        lblType1.text = @"--NA--";
-        lblType2.text = @"--NA--";
-        lblNameNo1.text = @"--NA--";
-        lblNameNo2.text = @"--NA--";
-    }
-    else if (arrSensors.count == 1)
-         {
-             lblNameNo1.text = [NSString stringWithFormat:@"%@ / %@",[[arrSensors objectAtIndex:0] valueForKey:@"name"], [[arrSensors objectAtIndex:0] valueForKey:@"number"]];
-             lblType1.text = [[arrSensors objectAtIndex:0] valueForKey:@"type"];
-             [[arrSensors objectAtIndex:0] setObject:@"1" forKey:@"isSelected"];
-         }
-         else if (arrSensors.count == 2)
-         {
-             //For First part
-              lblNameNo1.text = [NSString stringWithFormat:@"%@/%@",[[arrSensors objectAtIndex:0] valueForKey:@"name"], [[arrSensors objectAtIndex:0] valueForKey:@"number"]];
-              lblType1.text = [[arrSensors objectAtIndex:0] valueForKey:@"type"];
-              [[arrSensors objectAtIndex:0] setObject:@"1" forKey:@"isSelected"];
-             
-             //for Second part
-             lblNameNo2.text = [NSString stringWithFormat:@"%@/%@",[[arrSensors objectAtIndex:1] valueForKey:@"name"], [[arrSensors objectAtIndex:1] valueForKey:@"number"]];
-             lblType2.text = [[arrSensors objectAtIndex:1] valueForKey:@"type"];
-             [[arrSensors objectAtIndex:1] setObject:@"1" forKey:@"isSelected"];
-         }
-         else if (arrSensors.count > 0)
-         {
-             int lblCount = 0;
-             for (int i=0; i<arrSensors.count; i++)
-             {
-                 if ([[[arrSensors objectAtIndex:i] valueForKey:@"isSelected"] isEqualToString:@"1"])
-                 {
-                     if (lblCount == 0)
-                     {
-                         lblNameNo1.text = [NSString stringWithFormat:@"%@/%@",[[arrSensors objectAtIndex:i] valueForKey:@"name"], [[arrSensors objectAtIndex:i] valueForKey:@"number"]];
-                         lblType1.text = [[arrSensors objectAtIndex:i] valueForKey:@"type"];
-                         lblCount = 1;
-                     }
-                     else if(lblCount ==1)
-                     {
-                         lblNameNo2.text = [NSString stringWithFormat:@"%@/%@",[[arrSensors objectAtIndex:i] valueForKey:@"name"], [[arrSensors objectAtIndex:i] valueForKey:@"number"]];
-                         lblType2.text = [[arrSensors objectAtIndex:i] valueForKey:@"type"];
-                         lblCount = 2;
-                         break;
-                     }
-                 }
-             }
-         }
-    }
 #pragma mark- Table view Method
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -1634,10 +1188,6 @@ NSString *selectedFromPicker;
     NSString *cellSensor = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     SubjectSetUpCELL  *cell = [tableView dequeueReusableCellWithIdentifier:cellSensor];
     cell = [[SubjectSetUpCELL alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellSensor];
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    //@"Dummy";//[NSString stringWithFormat:@"%@",[[tmpArryMonitor objectAtIndex:indexPath.row] valueForKey:@"id"]];//,[[arrSensors objectAtIndex:indexPath.row] valueForKey:@"number"]];
-
     cell.lblSensor.frame = CGRectMake(20, 0, tableView.frame.size.width/2, 70);
     cell.lblNameSnr.frame = CGRectMake(tableView.frame.size.width/2, 0, tableView.frame.size.width/2-60, 70);
     
@@ -1758,7 +1308,7 @@ NSString *selectedFromPicker;
 {
     if (tmpArrySensor.count == 0)
     {
-    [self AlertViewFCTypeCaution:@"Sensor not added."];
+        [self AlertViewFCTypeCaution:@"Sensor not added."];
     }
     else
     {
@@ -1782,9 +1332,6 @@ NSString *selectedFromPicker;
     selectedFromPicker = @"10 Seconds";
     if (dataDict.count > 0)
     {
-        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] init];
-//        tmpDict = [arrPlayers objectAtIndex:0];
-            
         txtFullName.text = [dataDict valueForKey:@"name"];
         txtHash.text = [dataDict valueForKey:@"number"];
         txtViewNote.text = [dataDict valueForKey:@"notes"];
@@ -1820,7 +1367,7 @@ NSString *selectedFromPicker;
 #pragma mark- Img Scalling
 -(void)gettingImg
 {
-    if ([[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"photo_URL"]] isEqualToString:@"NA"])
+    if ([[self checkforValidString:[dataDict valueForKey:@"photo_URL"]] isEqualToString:@"NA"])
     {
         if (isFromEdit)
         {
@@ -1877,7 +1424,6 @@ NSString *selectedFromPicker;
 {
     [btn setTitle:strText forState:UIControlStateNormal];
     btn.titleLabel.font = [UIFont fontWithName:CGRegular size:txtSize];
-//    btn.titleLabel.textAlignment = NSTextAlignmentCenter;
     [btn setTitleColor:txtColor forState:UIControlStateNormal];
     btn.backgroundColor = backColor;
     btn.clipsToBounds = true;
@@ -1921,10 +1467,10 @@ NSString *selectedFromPicker;
 -(void)ConnectedMonitorDetail:(NSMutableDictionary *)arryFromAddMonitor
 {
     NSString * strDeviceName = @"Monitor";
-    if (![[APP_DELEGATE checkforValidString:[arryFromAddMonitor valueForKey:@"name"]] isEqualToString:@"NA"])
+    if (![[self checkforValidString:[arryFromAddMonitor valueForKey:@"name"]] isEqualToString:@"NA"])
     {
         strDeviceName = [arryFromAddMonitor valueForKey:@"name"];
-        if (![[APP_DELEGATE checkforValidString:[arryFromAddMonitor valueForKey:@"bleAddress"]] isEqualToString:@"NA"])
+        if (![[self checkforValidString:[arryFromAddMonitor valueForKey:@"bleAddress"]] isEqualToString:@"NA"])
         {
             strDeviceName = [NSString stringWithFormat:@"%@",[arryFromAddMonitor valueForKey:@"name"]];
         }
@@ -1933,11 +1479,13 @@ NSString *selectedFromPicker;
 }
 -(void)SetNameforConnectedMonitor:(NSString *)strDeviceName
 {
-    if ([[APP_DELEGATE checkforValidString:strDeviceName] isEqualToString:@"NA"])
+    if ([[self checkforValidString:strDeviceName] isEqualToString:@"NA"])
     {
         strDeviceName = @"Monitor";
     }
-    lblAddmonitorConnect.text = [NSString stringWithFormat:@"%@ Added",strDeviceName];
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        self->lblAddmonitorConnect.text = [NSString stringWithFormat:@"%@ Added",strDeviceName];
+    });
 }
 -(void)SetupDemoFromAddSensorData:(NSMutableArray *)arryData
 {
@@ -2012,7 +1560,7 @@ NSString *selectedFromPicker;
 //    NSInteger indexSelctTemp = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectIndexTempr"];
     NSInteger foundIndex = 0;
     
-    if (![[APP_DELEGATE checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
+    if (![[self checkforValidString:[dataDict valueForKey:@"timeInterval"]] isEqualToString:@"NA"])
     {
         if ([arrayPiker containsObject:[dataDict valueForKey:@"timeInterval"]])
         {
@@ -2030,17 +1578,14 @@ NSString *selectedFromPicker;
             }
         }
     }
-
     
     [pikerViewIntervalSelect selectRow:foundIndex inComponent:0 animated:YES];
     [showPickerView addSubview:pikerViewIntervalSelect];
 
-      [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-         {
-         showPickerView.frame = CGRectMake(150, (DEVICE_HEIGHT-400)/2, DEVICE_WIDTH-300, 400);
-         }
-         completion:(^(BOOL finished)
-         {
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self->showPickerView.frame = CGRectMake(150, (DEVICE_HEIGHT-400)/2, DEVICE_WIDTH-300, 400);
+        }
+    completion:(^(BOOL finished){
         })];
 }
 -(void)btnTiemIntervalClick
@@ -2049,25 +1594,20 @@ NSString *selectedFromPicker;
 }
 -(void)btnTimeCancelClick
 {
-    
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-     {
-      showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self->showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
      }
-                 completion:(^(BOOL finished)
-                             {
-     [viewForPiker removeFromSuperview];
+        completion:(^(BOOL finished){
+        [self->viewForPiker removeFromSuperview];
     })];
 }
 -(void)btnTimeDoneClick
 {
-    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^
-     {
-      showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
+    [UIView transitionWithView:self.view duration:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self->showPickerView.frame = CGRectMake(150, DEVICE_HEIGHT, DEVICE_WIDTH-300, 400);
      }
-                    completion:(^(BOOL finished)
-    {
-        [viewForPiker removeFromSuperview];
+        completion:(^(BOOL finished){
+        [self->viewForPiker removeFromSuperview];
     })];
     
     lblTimeInterval.text = selectedFromPicker;
@@ -2105,7 +1645,7 @@ NSString *selectedFromPicker;
 }
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-        return arrayPiker.count;
+    return arrayPiker.count;
 }
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
@@ -2119,11 +1659,87 @@ NSString *selectedFromPicker;
         selectedFromPicker = [arrayPiker objectAtIndex:row];
     }
 }
+-(NSString *)checkforValidString:(NSString *)strRequest
+{
+    NSString * strValid;
+    if (![strRequest isEqual:[NSNull null]])
+    {
+        if (strRequest != nil && strRequest != NULL && ![strRequest isEqualToString:@""] && ![strRequest isEqualToString:@"(null)"])
+        {
+            strValid = strRequest;
+        }
+        else
+        {
+            strValid = @"NA";
+        }
+    }
+    else
+    {
+        strValid = @"NA";
+    }
+    strValid = [strValid stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+
+    return strValid;
+}
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(nullable NSDictionary<UIImagePickerControllerInfoKey, id> *)editingInfo API_DEPRECATED("", ios(2.0, 3.0));
+{
+    if (image.size.width > 1000 || image.size.height > 1000)
+    {
+        image = [self scaleMyImage:image withNewWidth:1000 newHeight:1000];
+    }
+    isImageEdited = YES;
+    imgViewProPic.image = image;
+    imgViewProPic.image = [self scaleMyImage:image withNewWidth:300 newHeight:300];
+    imgViewProPic.contentMode = UIViewContentModeScaleAspectFill;
+    imgViewProPic.layer.masksToBounds = true;
+    [btnCamera setImage:[UIImage imageNamed:@" "] forState:UIControlStateNormal];
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+- (NSString *)documentsPathForFileName:(NSString *)name
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    return [documentsPath stringByAppendingPathComponent:name];
+}
+-(NSString *)saveImagetoDocumentDirectoryIsforthumbNail:(BOOL)isThumbNail
+{
+    NSString * imageName;
+    // to give unique name based on time stamp
+    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+    NSNumber *timeStampObj = [NSNumber numberWithInteger: timeStamp];
+    
+    //taking random no and assigning to make it more unique
+    int randomID = arc4random() % 9000 + 1000;
+    imageName = [NSString stringWithFormat:@"/player-%@-%d%@.jpg", CURRENT_USER_ID,randomID,timeStampObj];
+    imageName = [imageName stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    NSString * stringPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:@"PlayerPhoto"]; // New Folder is your folder name
+    NSError *error = nil;
+    UIImage * givenImg = imgViewProPic.image;
+    if (isThumbNail)
+    {
+        givenImg = [self scaleMyImage:givenImg withNewWidth:250 newHeight:250];
+    }
+    if (![[NSFileManager defaultManager] fileExistsAtPath:stringPath])        [[NSFileManager defaultManager] createDirectoryAtPath:stringPath withIntermediateDirectories:NO attributes:nil error:&error];
+    NSString *fileName = [stringPath stringByAppendingString:imageName];
+    NSData *data = UIImageJPEGRepresentation(givenImg, 0.2);
+    [data writeToFile:fileName atomically:YES];
+    
+    return imageName;
+}
+-(BOOL)isNumberUnique:(NSString *)strCurrentNumber
+{
+    NSString * strQuery = [NSString stringWithFormat:@"select * from Subject_Table where number = '%@' and id != '%@'",strCurrentNumber, [dataDict valueForKey:@"id"]];
+    NSMutableArray * tmpArr = [[NSMutableArray alloc] init];
+    [[DataBaseManager dataBaseManager] execute:strQuery resultsArray:tmpArr];
+    if ([tmpArr count]==0)
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;;
+    }
+}
 
 @end
-/*
- Subject setup shows monitor and sensor as not connected.
- After setting up a subject, connecting a monitor and a sensor, tapping Done and then re-entering Subject setup, the Monitor and Sensors say Not Connected.
-
- ---- sensors needs to be added, it can not be auto connected
- **/

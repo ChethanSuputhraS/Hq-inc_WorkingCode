@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UIImageView *imgViewpProfile;
 @property(nonatomic,strong)UIView *viewpProfileRed;
 
-
+-(void)UpdateCellforValue:(int)tempValue;
 @end
 
 NS_ASSUME_NONNULL_END

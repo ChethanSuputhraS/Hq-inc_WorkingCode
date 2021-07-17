@@ -12,7 +12,6 @@
 #import "SubjSetupVC.h"
 #import "PlayerSubjVC.h"
 #import "PlayerSubjCELL.h"
-#import "SessionReadVC.h"
 #import "BLEService.h"
 #import <MessageUI/MessageUI.h>
 #import "UIFloatLabelTextField.h"
